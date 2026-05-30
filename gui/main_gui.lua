@@ -10,7 +10,7 @@ local function header(gui_id)
     type = "flow",
     name = "titlebar",
     children = {
-    --   {type = "label", style = "frame_title", caption = {"rocket-log.header"}, ignored_by_interaction = true},
+      {type = "label", style = "frame_title", caption = {"spelevator-log.header"}, ignored_by_interaction = true},
       {type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true},
       {
         type = "sprite-button",
@@ -36,7 +36,7 @@ local function open_gui(player)
       {
         type = "frame",
         direction = "vertical",
-        name = "rocket-log-window",
+        name = "spelevator-log-window",
         children = {
           header(gui_id),
         --   toolbar.create_toolbar(gui_id),
@@ -47,7 +47,7 @@ local function open_gui(player)
               {
                 tab = {
                   type = "tab",
-                  caption = { "rocket-log.tab-events" }
+                  caption = { "spelevator-log.tab-events" }
                 },
                 content = {
                   type = "flow",
@@ -58,7 +58,7 @@ local function open_gui(player)
               {
                 tab = {
                   type = "tab",
-                  caption = { "rocket-log.tab-summary" }
+                  caption = { "spelevator-log.tab-summary" }
                 },
                 content = {
                   type = "flow",
