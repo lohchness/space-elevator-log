@@ -1,6 +1,8 @@
 local tables =  require("__flib__.table")
 local format = require("__flib__.format")
 local util = require("util")
+local flib_gui = require("__flib__.gui")
+local sl_gui = require("gui/main_gui")
 
 script.on_init(reset_storage)
 
@@ -8,7 +10,7 @@ function reset_storage()
     storage = {}
     storage.guis = {}
     storage.history = {}
-    storage.trains = {}
+    -- storage.trains = {}
 end
 
 function check_storage()
@@ -102,7 +104,13 @@ end
 
 script.on_load(init_events)
 
+script.on_event("space-log-open", function (event)
+    sl_gui.open_or_close_gui(game.players[event.player_index])
+end)
 
 commands.add_command("sl_reset_storage", nil, reset_storage)
 commands.add_command("sl_check_storage", nil, check_storage)
 commands.add_command("sl_last_entry", nil, print_last_entry)
+
+
+flib_gui.handle_events()
