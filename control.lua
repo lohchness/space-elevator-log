@@ -25,23 +25,24 @@ function print_last_entry()
     ---@type LogEntry
     local entry = storage.history[#storage.history]
 
-    game.print(format.time(entry.time, true).." ago")
+    game.print(format.time(game.tick - entry.time, true).." ago")
     game.print("Contents:")
     for _,item in pairs(entry.contents) do
         game.print(item.name..": "..item.count)
     end
 
     game.print("Remaining Stops:")
-    -- if entry.schedule then
-    --     local records = entry.schedule.get_records()
-    --     local current = entry.current
+    if entry.schedule then
+        local records = entry.schedule.get_records()
+        local current = entry.current
     --     for i=current, #records, 1 do
     --         game.print(records[i].station)
     --     end
-    -- end
-    for _,record in pairs(records) do
-        game.print(record.station)
+        for _,record in pairs(records) do
+            game.print(record.station)
+        end
     end
+    
 end
 
 -- defines.events.se_on_train_teleport_started
@@ -97,9 +98,10 @@ end
 
 function init_events()
     -- local train_teleport_start = remote.call("space-exploration", "get_on_train_teleport_started_event")
-    local train_teleport_end = remote.call("space-exploration", "get_on_train_teleport_finished_event")
+    -- local train_teleport_end = remote.call("space-exploration", "get_on_train_teleport_finished_event")
     -- script.on_event(train_teleport_start, AddTrainLog)
-    script.on_event(train_teleport_end, AddTrainLog)
+    -- script.on_event(train_teleport_end, AddTrainLog)
+    script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 end
 
 script.on_load(init_events)
