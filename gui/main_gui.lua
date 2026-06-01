@@ -4,7 +4,9 @@ local flib_gui = require("__flib__.gui")
 -- local events_table = require("gui/events_table")
 local gui_handlers = {}
 
-
+---Create Header GuiELemDef for flib
+---@param gui_id string
+---@return flib.GuiElemDef
 local function header(gui_id)
   return {
     type = "flow",
@@ -28,11 +30,15 @@ local function header(gui_id)
 end
 
 --- Creates
+--- @param player LuaPlayer
 local function open_gui(player)
   local gui_id = "gui-" .. player.name
+
+  --- If player hasn't opened GUI, then create a new GUI and put it in storage.guis.
   if not storage.guis[gui_id] then
     --game.print(tostring(game.tick).." creating new gui")
     -- log("Creating new gui for "..gui_id)
+    ---@type flib.GuiElemDef[]
     local gui_contents = {
       {
         type = "frame",
@@ -73,7 +79,7 @@ local function open_gui(player)
       }
     }
     ---@type table<string,LuaGuiElement>, LuaGuiElement
-    local _,new_gui = flib_gui.add(player.gui.screen, gui_contents)
+    local _,new_gui = flib_gui.add(player.gui.screen, gui_contents) 
     log(new_gui.name)
     -- local filter_guis = {
     --   time_period = new_gui.toolbar.row1.filter_time_period,
@@ -92,16 +98,19 @@ local function open_gui(player)
       summary_contents = new_gui.tabs_pane.summary_contents
     }
   end
-  local rocket_log_gui = storage.guis[gui_id]
-  if player.opened and player.opened ~= rocket_log_gui.gui then
+
+  --- Retrieve existing GUI element from storage.guis 
+  --- and re-centers and/or replaces player's current GUI element.
+  local spelevator_log_gui = storage.guis[gui_id]
+  if player.opened and player.opened ~= spelevator_log_gui.gui then
     --game.print(tostring(game.tick).." closing other gui before opening rocketlog")
     player.opened = nil
   end
---   toolbar.refresh(gui_id)
-  rocket_log_gui.gui.visible = true
-  rocket_log_gui.gui.titlebar.drag_target = rocket_log_gui.gui
-  rocket_log_gui.gui.force_auto_center()
-  player.opened = rocket_log_gui.gui
+  -- toolbar.refresh(gui_id)
+  spelevator_log_gui.gui.visible = true
+  spelevator_log_gui.gui.titlebar.drag_target = spelevator_log_gui.gui
+  spelevator_log_gui.gui.force_auto_center()
+  player.opened = spelevator_log_gui.gui
   --game.print(tostring(player.opened))
   --game.print(tostring(game.tick).." showing rocketlog gui")
 --   events_table.create_events_table(gui_id)
@@ -118,9 +127,9 @@ end
 local function destroy_gui(gui_id)
   if storage.guis[gui_id] then
     --game.print(tostring(game.tick).." hiding gui")
-    local rocket_log_gui = storage.guis[gui_id]
-    rocket_log_gui.gui.visible = false
-    if storage.guis[gui_id].player.opened == rocket_log_gui.gui then
+    local spelevator_log_gui = storage.guis[gui_id]
+    spelevator_log_gui.gui.visible = false
+    if storage.guis[gui_id].player.opened == spelevator_log_gui.gui then
       storage.guis[gui_id].player.opened = nil
       --game.print(tostring(game.tick).." player cleared")
     end
@@ -152,9 +161,9 @@ end
 local function destroy_gui(gui_id)
   if storage.guis[gui_id] then
     --game.print(tostring(game.tick).." hiding gui")
-    local rocket_log_gui = storage.guis[gui_id]
-    rocket_log_gui.gui.visible = false
-    if storage.guis[gui_id].player.opened == rocket_log_gui.gui then
+    local spelevator_log_gui = storage.guis[gui_id]
+    spelevator_log_gui.gui.visible = false
+    if storage.guis[gui_id].player.opened == spelevator_log_gui.gui then
       storage.guis[gui_id].player.opened = nil
       --game.print(tostring(game.tick).." player cleared")
     end

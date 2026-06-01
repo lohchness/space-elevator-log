@@ -2,11 +2,11 @@ local tables =  require("__flib__.table")
 local format = require("__flib__.format")
 local util = require("util")
 local flib_gui = require("__flib__.gui")
-local sl_gui = require("gui/main_gui")
+local spelevator_log_gui = require("gui/main_gui")
 
 function reset_storage()
     storage = {}
-    ---@type GuiConfig
+    ---@type table<string, GuiConfig>
     storage.guis = {}
     ---@type LogEntry[]
     storage.history = {}
