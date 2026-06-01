@@ -1,3 +1,0 @@
-local gui = {}
-
-return gui

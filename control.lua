@@ -6,7 +6,9 @@ local sl_gui = require("gui/main_gui")
 
 function reset_storage()
     storage = {}
+    ---@type GuiConfig
     storage.guis = {}
+    ---@type LogEntry[]
     storage.history = {}
     -- storage.trains = {}
 end
@@ -32,10 +34,6 @@ function print_last_entry()
     game.print("Remaining Stops:")
     if entry.schedule then
         local records = entry.schedule.get_records()
-        local current = entry.current
-    --     for i=current, #records, 1 do
-    --         game.print(records[i].station)
-    --     end
         for _,record in pairs(records) do
             game.print(record.station)
         end
@@ -76,7 +74,7 @@ function AddTrainLog(event)
     local log_entry = {
         time = game.tick,
         train = event.train,
-        contents = event.train.get_contents(),
+        contents = event.train.get_contents(), -- is a new copy
         teleporter = event.teleporter
     }
 
@@ -91,7 +89,7 @@ function AddTrainLog(event)
     -- for i,_ in pairs(contents) do
     --     game.print(contents[i].name.." "..contents[i].count)
     -- end
-
+    
     table.insert(storage.history, log_entry)
 end
 
@@ -105,7 +103,7 @@ script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
 -- For Custom Input defined in data.lua
 script.on_event("space-log-open", function (event)
-    sl_gui.open_or_close_gui(game.players[event.player_index])
+    spelevator_log_gui.open_or_close_gui(game.players[event.player_index])
 end)
 
 commands.add_command("sl_reset_storage", nil, reset_storage)

@@ -2,7 +2,7 @@ local flib_gui = require("__flib__.gui")
 -- local gui = require("__flib__.gui")
 -- local toolbar = require("gui/toolbar")
 -- local events_table = require("gui/events_table")
-local gui_handlers = require("gui/handlers")
+local gui_handlers = {}
 
 
 local function header(gui_id)
@@ -27,6 +27,7 @@ local function header(gui_id)
   }
 end
 
+--- Creates
 local function open_gui(player)
   local gui_id = "gui-" .. player.name
   if not storage.guis[gui_id] then
@@ -71,6 +72,7 @@ local function open_gui(player)
         }
       }
     }
+    ---@type table<string,LuaGuiElement>, LuaGuiElement
     local _,new_gui = flib_gui.add(player.gui.screen, gui_contents)
     log(new_gui.name)
     -- local filter_guis = {
@@ -80,11 +82,12 @@ local function open_gui(player)
     --   item = new_gui.toolbar.row2.filter_item,
     --   stats = new_gui.toolbar.row1.filter_stats
     -- }
+    ---@type GuiConfig
     storage.guis[gui_id] = {
       gui_id = gui_id,
       gui = new_gui,
       player = player,
-      filter_guis = filter_guis,
+    --   filter_guis = filter_guis,
       events_contents = new_gui.tabs_pane.events_contents,
       summary_contents = new_gui.tabs_pane.summary_contents
     }
@@ -128,9 +131,10 @@ local function destroy_gui(gui_id)
 end
 
 
-local function open_or_close_gui(player, always_open)
+---@param player LuaPlayer
+local function open_or_close_gui(player)
   local gui_id = "gui-" .. player.name
-  if (not always_open) and storage.guis[gui_id] and storage.guis[gui_id].gui.visible then
+  if storage.guis[gui_id] and storage.guis[gui_id].gui.visible then
     destroy_gui(gui_id)  -- Hide existing gui
   else
     open_gui(player)   -- Create new or show existing gui
@@ -172,6 +176,4 @@ end)
 
 return {
     open_or_close_gui = open_or_close_gui,
-    open = open_gui,
-    close = close_gui,
 }

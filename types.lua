@@ -14,3 +14,11 @@
 ---@field schedule LuaSchedule               copy of schedule
 ---@field current uint32                     schedule index of destination
 ---@field teleporter SpaceElevatorStruct     
+
+---@class GuiConfig
+---@field gui_id string
+---@field gui LuaGuiElement
+---@field player LuaPlayer
+-----@field filter_guis table
+---@field events_contents table
+---@field summary_contents table
