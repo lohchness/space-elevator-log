@@ -18,12 +18,12 @@ function check_storage()
         game.print("storage.guis not initiated")
         return
     end
-    game.print(#storage.history)
+    game.print(table_size(storage.history))
 end
 
 function print_last_entry()
     ---@type LogEntry
-    local entry = storage.history[#storage.history]
+    local entry = storage.history[table_size(storage.history)]
 
     game.print(format.time(game.tick - entry.time, true).." ago")
     game.print("Contents:")

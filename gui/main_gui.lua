@@ -114,7 +114,6 @@ local function open_gui(player)
   --game.print(tostring(player.opened))
   --game.print(tostring(game.tick).." showing rocketlog gui")
 --   events_table.create_events_table(gui_id)
-  
 end
 
 
