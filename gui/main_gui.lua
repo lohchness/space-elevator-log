@@ -1,7 +1,7 @@
 local flib_gui = require("__flib__.gui")
 -- local gui = require("__flib__.gui")
 -- local toolbar = require("gui/toolbar")
--- local events_table = require("gui/events_table")
+local events_table = require("gui/events")
 local gui_handlers = {}
 
 ---Create Header GuiELemDef for flib
@@ -113,7 +113,14 @@ local function open_gui(player)
   player.opened = spelevator_log_gui.gui
   --game.print(tostring(player.opened))
   --game.print(tostring(game.tick).." showing rocketlog gui")
---   events_table.create_events_table(gui_id)
+
+  --- Destroys children to prevent event_contents.children from
+  --- being populated with the same information because
+  --- destroy_gui() does not destroy the GUI elements (yet?)
+  --- and open_gui() re-calls create_events_table
+  spelevator_log_gui.events_contents.clear()
+
+  events_table.create_events_table(spelevator_log_gui)
 end
 
 
@@ -163,6 +170,8 @@ local function destroy_gui(gui_id)
     local spelevator_log_gui = storage.guis[gui_id]
     spelevator_log_gui.gui.visible = false
     if storage.guis[gui_id].player.opened == spelevator_log_gui.gui then
+    --   storage.guis[gui_id].gui.window.destroy()
+    --   game.print(table_size(storage.guis[gui_id].events_contents.children))
       storage.guis[gui_id].player.opened = nil
       --game.print(tostring(game.tick).." player cleared")
     end
