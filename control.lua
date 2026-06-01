@@ -4,8 +4,6 @@ local util = require("util")
 local flib_gui = require("__flib__.gui")
 local sl_gui = require("gui/main_gui")
 
-script.on_init(reset_storage)
-
 function reset_storage()
     storage = {}
     storage.guis = {}
@@ -74,6 +72,7 @@ function AddTrainLog(event)
 
     local schedule = util.table.deepcopy(event.train.get_schedule())
     ---@type LogEntry
+    ---@diagnostic disable-next-line: missing-fields
     local log_entry = {
         time = game.tick,
         train = event.train,
@@ -96,16 +95,15 @@ function AddTrainLog(event)
     table.insert(storage.history, log_entry)
 end
 
-function init_events()
-    -- local train_teleport_start = remote.call("space-exploration", "get_on_train_teleport_started_event")
-    -- local train_teleport_end = remote.call("space-exploration", "get_on_train_teleport_finished_event")
-    -- script.on_event(train_teleport_start, AddTrainLog)
-    -- script.on_event(train_teleport_end, AddTrainLog)
-    script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
-end
+-- function init_events()
+--     script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
+-- end
 
-script.on_load(init_events)
+script.on_init(reset_storage)
+-- script.on_load(init_events)
+script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
+-- For Custom Input defined in data.lua
 script.on_event("space-log-open", function (event)
     sl_gui.open_or_close_gui(game.players[event.player_index])
 end)
