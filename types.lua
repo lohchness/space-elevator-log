@@ -20,8 +20,8 @@
 ---@field gui LuaGuiElement
 ---@field player LuaPlayer
 -----@field filter_guis table
----@field events_contents table
----@field summary_contents table
+---@field events_contents LuaGuiElement
+---@field summary_contents LuaGuiElement
 
 
 --- A GUI element definition. This extends `LuaGuiElement.add_param` with several new attributes.

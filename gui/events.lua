@@ -70,6 +70,13 @@ end
 ---@param spelevator_log_gui GuiConfig
 local function create_events_table(spelevator_log_gui)
 
+    --- Destroys children to prevent event_contents.children from
+    --- being populated with the same information because
+    --- destroy_gui() does not destroy the GUI elements (yet?)
+    --- and open_gui() re-calls create_events_table()
+    spelevator_log_gui.events_contents.clear()
+    spelevator_log_gui.summary_contents.clear()
+
     --- storage.history should already be sorted?
     --- keys inserted first are iterated first.
 
