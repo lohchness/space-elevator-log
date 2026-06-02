@@ -10,7 +10,8 @@ function reset_storage()
     storage.guis = {}
     ---@type LogEntry[]
     storage.history = {}
-    -- storage.trains = {}
+    ---@type table<string, string>   Planet name: Planet Orbit Name
+    storage.surfaces = {}
 end
 
 function check_storage()
@@ -66,8 +67,6 @@ Event data:
 ]]
 ---@param event TrainTeleportFinishedEvent
 function AddTrainLog(event) 
-    game.print("Inserting log entry")
-
     local schedule = util.table.deepcopy(event.train.get_schedule())
     ---@type LogEntry
     ---@diagnostic disable-next-line: missing-fields
@@ -89,8 +88,21 @@ function AddTrainLog(event)
     -- for i,_ in pairs(contents) do
     --     game.print(contents[i].name.." "..contents[i].count)
     -- end
-    
+
     table.insert(storage.history, log_entry)
+
+    --- Insert surface names into storage here instead of iterating 
+    --- every entry upon opening GUI because train logs will be very large.
+    --- storage.surfaces[n] should be {"solid name": "orbit name"}
+    local surface_name = game.get_surface(event.old_surface_index).name
+    local opposite_surface_name = event.teleporter.surface.name
+    if not storage.surfaces[surface_name] and not storage.surfaces[opposite_surface_name] then
+        if surface_name and not surface_name:find("Orbit") then
+            storage.surfaces[surface_name] = opposite_surface_name
+        else
+            storage.surfaces[opposite_surface_name] = surface_name
+        end
+    end
 end
 
 -- function init_events()
