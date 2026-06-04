@@ -4,7 +4,21 @@ local util = require("util")
 local flib_gui = require("__flib__.gui")
 local spelevator_log_gui = require("gui/main_gui")
 
-function reset_storage()
+function destroy_existing_gui_element_in_parent(data)
+    -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()  
+    local c = game.get_player(data.player_index).gui.screen.children
+    for _, i in pairs(c) do
+        if i.name == 'spelevator-log-window' then
+            i.destroy()
+        end
+    end
+end
+
+function reset_storage(data)
+    for gui_id, gui_data in pairs(storage.guis) do
+        gui_data.gui.destroy()
+    end
+
     storage = {}
     ---@type table<string, GuiConfig>
     storage.guis = {}
@@ -40,6 +54,13 @@ function print_last_entry()
         end
     end
     
+end
+
+function print_storage_surfaces()
+    if not storage.surfaces then end
+    for i, j in storage.surfaces do
+        print (i.." - "..j)
+    end
 end
 
 -- defines.events.se_on_train_teleport_started
@@ -121,6 +142,8 @@ end)
 commands.add_command("sl_reset_storage", nil, reset_storage)
 commands.add_command("sl_check_storage", nil, check_storage)
 commands.add_command("sl_last_entry", nil, print_last_entry)
+commands.add_command("print_storage_surfaces", nil, print_storage_surfaces)
+commands.add_command("destroy_existing_gui_element_in_parent", nil, destroy_existing_gui_element_in_parent)
 
 
 flib_gui.handle_events()

@@ -19,7 +19,7 @@
 ---@field gui_id string
 ---@field gui LuaGuiElement
 ---@field player LuaPlayer
------@field filter_guis table
+---@field filter_guis table
 ---@field events_contents LuaGuiElement
 ---@field summary_contents LuaGuiElement
 

@@ -1,6 +1,6 @@
 local flib_gui = require("__flib__.gui")
 -- local gui = require("__flib__.gui")
--- local toolbar = require("gui/toolbar")
+local toolbar = require("gui/toolbar")
 local events_table = require("gui/events")
 local gui_handlers = {}
 
@@ -46,7 +46,7 @@ local function open_gui(player)
         name = "spelevator-log-window",
         children = {
           header(gui_id),
-        --   toolbar.create_toolbar(gui_id),
+          toolbar.create_toolbar(gui_id),
           {
             type = "tabbed-pane",
             name = "tabs_pane",
@@ -79,21 +79,18 @@ local function open_gui(player)
       }
     }
     ---@type table<string,LuaGuiElement>, LuaGuiElement
-    local _,new_gui = flib_gui.add(player.gui.screen, gui_contents) 
+    local _,new_gui = flib_gui.add(player.gui.screen, gui_contents)
     log(new_gui.name)
-    -- local filter_guis = {
-    --   time_period = new_gui.toolbar.row1.filter_time_period,
-    --   origin_list = new_gui.toolbar.row2.filter_origin_list,
-    --   target_list = new_gui.toolbar.row2.filter_target_list,
-    --   item = new_gui.toolbar.row2.filter_item,
-    --   stats = new_gui.toolbar.row1.filter_stats
-    -- }
+    local filter_guis = {
+      time_period = new_gui.toolbar.row1.filter_time_period,
+      item = new_gui.toolbar.row2.filter_item,
+    }
     ---@type GuiConfig
     storage.guis[gui_id] = {
       gui_id = gui_id,
       gui = new_gui,
       player = player,
-    --   filter_guis = filter_guis,
+      filter_guis = filter_guis,
       events_contents = new_gui.tabs_pane.events_contents,
       summary_contents = new_gui.tabs_pane.summary_contents
     }
@@ -114,6 +111,7 @@ local function open_gui(player)
   --game.print(tostring(player.opened))
   --game.print(tostring(game.tick).." showing rocketlog gui")
 
+  toolbar.refresh(spelevator_log_gui.filter_guis)
   events_table.create_events_table(spelevator_log_gui)
 end
 
