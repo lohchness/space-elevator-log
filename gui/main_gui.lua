@@ -84,6 +84,7 @@ local function open_gui(player)
     local filter_guis = {
       time_period = new_gui.toolbar.row1.filter_time_period,
       item = new_gui.toolbar.row2.filter_item,
+      surface_list = new_gui.toolbar.row2.filter_surface_list,
     }
     ---@type GuiConfig
     storage.guis[gui_id] = {

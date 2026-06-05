@@ -1,5 +1,6 @@
 local time_filter = require("scripts/filter-time")
 local gui_handlers = {}
+local utils = require("scripts/utils")
 
 
 local function update_filters(filter_guis)
@@ -11,6 +12,29 @@ local function update_filters(filter_guis)
     --         new_surface_index = 
     --     end
     -- end
+
+    if table_size(storage.surfaces) == 0 then
+        return
+    end
+
+    -- Save currently selected surface before rebuilding dropdown so it can be restored if it exists
+    -- local old_selected_index = storage.surfaces.get_item()
+    local new_surface_index = 0
+    local old_selected_surface_name = filter_guis.surface_list.selected_name
+
+    local new_surface_list = {}
+    for planet, orbit in pairs(storage.surfaces) do
+        table.insert(new_surface_list, utils.title(planet))
+    end
+
+    for index, surface in pairs(new_surface_list) do
+        if old_selected_surface_name and old_selected_surface_name:lower() == surface:lower() then
+            new_surface_index = index
+        end
+    end
+
+    filter_guis.surface_list.items = new_surface_list
+    filter_guis.surface_list.selected_index = new_surface_index
 end
 
 local function refresh(filter_guis)
@@ -75,8 +99,8 @@ local function create_toolbar()
                         type = "drop-down",
                         name = "filter_surface_list",
                         items = {},
-                        -- selected_index = 1,
-                        selected_surface_name = "",
+                        -- selected_name = "",
+                        selected_index = 0,
                         handler = gui_handlers.refresh,
                     },
 
