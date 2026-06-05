@@ -69,7 +69,7 @@ local function create_toolbar()
                     {
                         type = "sprite-button",
                         sprite = "entity/se-space-elevator",
-                        tooltip = "spelevator.filter-surface-label",
+                        tooltip = "spelevator-log.filter-surface-label",
                     },
                     {
                         type = "drop-down",
