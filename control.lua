@@ -5,7 +5,7 @@ local flib_gui = require("__flib__.gui")
 local spelevator_log_gui = require("gui/main_gui")
 local utils = require("scripts/utils")
 
-function destroy_existing_gui_element_in_parent()
+function destroy_player_gui()
     -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()  
     local c = game.player.gui.screen.children
     for _, i in pairs(c) do
@@ -13,9 +13,11 @@ function destroy_existing_gui_element_in_parent()
             i.destroy()
         end
     end
+
+    reset_storage()
 end
 
-function reset_storage(data)
+function reset_storage()
     for gui_id, gui_data in pairs(storage.guis) do
         gui_data.gui.destroy()
     end
@@ -172,7 +174,7 @@ commands.add_command("sl_reset_storage", nil, reset_storage)
 commands.add_command("sl_check_storage", nil, check_storage)
 commands.add_command("sl_last_entry", nil, print_last_entry)
 commands.add_command("sl_print_storage_surfaces", nil, print_storage_surfaces)
-commands.add_command("sl_destroy_existing_gui_element_in_parent", nil, destroy_existing_gui_element_in_parent)
+commands.add_command("sl_destroy_existing_gui_element_in_parent", nil, destroy_player_gui)
 commands.add_command("sl_clear_storage_surfaces", nil, clear_storage_surfaces)
 
 
