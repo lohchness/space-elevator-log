@@ -56,6 +56,10 @@ function print_last_entry()
     
 end
 
+function clear_storage_surfaces()
+    storage.surfaces = {}
+end
+
 function print_storage_surfaces()
     if table_size(storage.surfaces) == 0 then
         game.player.print("Storage surfaces is empty")
@@ -75,6 +79,15 @@ Event data:
         teleporter = struct.main -- space elevator entity doing the transferring
       })
 ]]
+function on_teleport_started(event)
+    -- game.print("-- on teleport started --")
+
+    -- local surface_name = game.get_surface(event.old_surface_index).name
+    -- local opposite_surface_name = event.teleporter.surface.name
+
+    -- game.print("old_surface_index: "..surface_name)
+    -- game.print("opposite_surface_name: "..opposite_surface_name)
+end
 
 
 -- defines.events.se_on_train_teleport_finished
@@ -90,6 +103,7 @@ Event data:
 ]]
 ---@param event TrainTeleportFinishedEvent
 function AddTrainLog(event) 
+    game.print("-- on teleport finished --")
     local schedule = util.table.deepcopy(event.train.get_schedule())
     ---@type LogEntry
     ---@diagnostic disable-next-line: missing-fields
@@ -117,10 +131,17 @@ function AddTrainLog(event)
     --- Insert surface names into storage here instead of iterating 
     --- every entry upon opening GUI because train logs will be very large.
     --- storage.surfaces[n] should be {"solid name": "orbit name"}
+    --- @type SpaceElevatorInfo
+    local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
+
     local surface_name = game.get_surface(event.old_surface_index).name
-    local opposite_surface_name = event.teleporter.surface.name
+    local opposite_surface_name = space_elevator_info.opposite.surface.name
+
+    game.print("old_surface_name: "..surface_name)
+    game.print("opposite_surface_name: "..opposite_surface_name)
+
     if not storage.surfaces[surface_name] and not storage.surfaces[opposite_surface_name] then
-        if surface_name and not surface_name:find("Orbit") then
+        if not surface_name:find("Orbit") then
             storage.surfaces[surface_name] = opposite_surface_name
         else
             storage.surfaces[opposite_surface_name] = surface_name
@@ -144,8 +165,9 @@ end)
 commands.add_command("sl_reset_storage", nil, reset_storage)
 commands.add_command("sl_check_storage", nil, check_storage)
 commands.add_command("sl_last_entry", nil, print_last_entry)
-commands.add_command("print_storage_surfaces", nil, print_storage_surfaces)
-commands.add_command("destroy_existing_gui_element_in_parent", nil, destroy_existing_gui_element_in_parent)
+commands.add_command("sl_print_storage_surfaces", nil, print_storage_surfaces)
+commands.add_command("sl_destroy_existing_gui_element_in_parent", nil, destroy_existing_gui_element_in_parent)
+commands.add_command("sl_clear_storage_surfaces", nil, clear_storage_surfaces)
 
 
 flib_gui.handle_events()

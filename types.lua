@@ -7,6 +7,13 @@
 ---@field old_surface_index uint32        ??
 ---@field teleporter LuaEntity            space elevator entity doing the transferring
 
+---@class SpaceElevatorInfo               Info about the space elevator
+---@field main LuaEntity                  Entity doing the transfer
+---@field train_stop string
+---@field opposite LuaEntity              Space elevator on opposite side
+---@field constructed boolean
+---@field powered boolean
+
 ---@class LogEntry
 ---@field time MapTick                       tick of event
 ---@field train LuaTrain                      
