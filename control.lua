@@ -3,6 +3,7 @@ local format = require("__flib__.format")
 local util = require("util")
 local flib_gui = require("__flib__.gui")
 local spelevator_log_gui = require("gui/main_gui")
+local utils = require("scripts/utils")
 
 function destroy_existing_gui_element_in_parent()
     -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()  
@@ -126,7 +127,6 @@ function AddTrainLog(event)
     --     game.print(contents[i].name.." "..contents[i].count)
     -- end
 
-    table.insert(storage.history, log_entry)
 
     --- Insert surface names into storage here instead of iterating 
     --- every entry upon opening GUI because train logs will be very large.
@@ -134,8 +134,8 @@ function AddTrainLog(event)
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
 
-    local surface_name = game.get_surface(event.old_surface_index).name
-    local opposite_surface_name = space_elevator_info.opposite.surface.name
+    local surface_name = utils.title(game.get_surface(event.old_surface_index).name)
+    local opposite_surface_name = utils.title(space_elevator_info.opposite.surface.name)
 
     game.print("old_surface_name: "..surface_name)
     game.print("opposite_surface_name: "..opposite_surface_name)
@@ -143,10 +143,16 @@ function AddTrainLog(event)
     if not storage.surfaces[surface_name] and not storage.surfaces[opposite_surface_name] then
         if not surface_name:find("Orbit") then
             storage.surfaces[surface_name] = opposite_surface_name
+            log_entry.solid_surface_name = surface_name
+            log_entry.solid_surface_index = event.old_surface_index
         else
             storage.surfaces[opposite_surface_name] = surface_name
+            log_entry.solid_surface_name = opposite_surface_name
+            log_entry.solid_surface_index = space_elevator_info.opposite.surface.index
         end
     end
+
+    table.insert(storage.history, log_entry)
 end
 
 -- function init_events()

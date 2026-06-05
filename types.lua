@@ -20,7 +20,9 @@
 ---@field contents ItemWithQualityCount[]    copy of contents at the time
 ---@field schedule LuaSchedule               copy of schedule
 ---@field current uint32                     schedule index of destination
----@field teleporter LuaEntity      
+---@field teleporter LuaEntity
+---@field solid_surface_name string
+---@field solid_surface_index integer
 
 ---@class GuiConfig
 ---@field gui_id string
