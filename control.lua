@@ -4,9 +4,9 @@ local util = require("util")
 local flib_gui = require("__flib__.gui")
 local spelevator_log_gui = require("gui/main_gui")
 
-function destroy_existing_gui_element_in_parent(data)
+function destroy_existing_gui_element_in_parent()
     -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()  
-    local c = game.get_player(data.player_index).gui.screen.children
+    local c = game.player.gui.screen.children
     for _, i in pairs(c) do
         if i.name == 'spelevator-log-window' then
             i.destroy()
@@ -30,36 +30,38 @@ end
 
 function check_storage()
     if not next(storage) then
-        game.print("storage.guis not initiated")
+        game.player.print("storage.guis not initiated")
         return
     end
-    game.print(table_size(storage.history))
+    game.player.print(table_size(storage.history))
 end
 
 function print_last_entry()
     ---@type LogEntry
     local entry = storage.history[table_size(storage.history)]
 
-    game.print(format.time(game.tick - entry.time, true).." ago")
-    game.print("Contents:")
+    game.player.print(format.time(game.tick - entry.time, true).." ago")
+    game.player.print("Contents:")
     for _,item in pairs(entry.contents) do
-        game.print(item.name..": "..item.count)
+        game.player.print(item.name..": "..item.count)
     end
 
-    game.print("Remaining Stops:")
+    game.player.print("Remaining Stops:")
     if entry.schedule then
         local records = entry.schedule.get_records()
         for _,record in pairs(records) do
-            game.print(record.station)
+            game.player.print(record.station)
         end
     end
     
 end
 
 function print_storage_surfaces()
-    if not storage.surfaces then end
-    for i, j in storage.surfaces do
-        print (i.." - "..j)
+    if table_size(storage.surfaces) == 0 then
+        game.player.print("Storage surfaces is empty")
+    end
+    for i, j in pairs(storage.surfaces) do
+        game.player.print(i.." - "..j)
     end
 end
 
