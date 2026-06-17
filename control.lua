@@ -4,6 +4,7 @@ local util = require("util")
 local flib_gui = require("__flib__.gui")
 local spelevator_log_gui = require("gui/main_gui")
 local utils = require("scripts/utils")
+local mod_gui_button = require("gui/mod_gui_button")
 
 function destroy_player_gui()
     -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()  
@@ -13,6 +14,8 @@ function destroy_player_gui()
             i.destroy()
         end
     end
+
+    mod_gui_button.add_mod_gui_button(game.player)
 
     reset_storage()
 end
@@ -166,7 +169,7 @@ script.on_init(reset_storage)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
 -- For Custom Input defined in data.lua
-script.on_event("space-log-open", function (event)
+script.on_event("space-log-open-custom-input", function (event)
     spelevator_log_gui.open_or_close_gui(game.players[event.player_index])
 end)
 
