@@ -1,8 +1,7 @@
 local flib_gui = require("__flib__.gui")
--- local gui = require("__flib__.gui")
 local toolbar = require("gui/toolbar")
 local events_table = require("gui/events")
-local gui_handlers = {}
+local gui_handlers = require("gui/handlers")
 
 ---Create Header GuiELemDef for flib
 ---@param gui_id string
@@ -179,9 +178,14 @@ function gui_handlers.close_window(event)
     destroy_gui(gui_id)
 end
 
+function gui_handlers.mod_gui_button_click(event)
+    local player = game.players[event.player_index]
+    open_or_close_gui(player)
+end
+
 flib_gui.add_handlers(gui_handlers, function(e, handler) 
     handler(e)
-end) 
+end)
 
 
 return {
