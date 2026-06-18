@@ -30,7 +30,7 @@ function reset_storage()
     storage.guis = {}
     ---@type LogEntry[]
     storage.history = {}
-    ---@type table<string, string>   Planet name: Planet Orbit Name
+    ---@type SurfaceInfo[]
     storage.surfaces = {}
 end
 
@@ -71,9 +71,30 @@ function print_storage_surfaces()
         game.player.print("Storage surfaces is empty")
     end
     for i, j in pairs(storage.surfaces) do
-        game.player.print(i.." - "..j)
+        -- game.player.print(i.." - "..j)
+        game.player.print(j.name..", "..j.type..", "..j.index)
+    end 
+end
+
+local function save_surface_storage(name)
+    if not utils.find(storage.surfaces, function(i, j) return i.name == name end) then
+        local zone_info = remote.call(
+            "space-exploration",
+            "get_zone_from_name",
+            { zone_name = name }
+        )
+
+        table.insert(
+            storage.surfaces,
+            {
+                name = name,
+                type = zone_info.type == "orbit" and "orbit" or "solid",
+                index = zone_info.index,
+            }
+        )
     end
 end
+
 
 -- defines.events.se_on_train_teleport_started
 --[[
@@ -135,7 +156,6 @@ function AddTrainLog(event)
 
     --- Insert surface names into storage here instead of iterating 
     --- every entry upon opening GUI because train logs will be very large.
-    --- storage.surfaces[n] should be {"solid name": "orbit name"}
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
 
@@ -145,17 +165,20 @@ function AddTrainLog(event)
     game.print("old_surface_name: "..surface_name)
     game.print("opposite_surface_name: "..opposite_surface_name)
 
-    if not storage.surfaces[surface_name] and not storage.surfaces[opposite_surface_name] then
-        if not surface_name:find("Orbit") then
-            storage.surfaces[surface_name] = opposite_surface_name
-            log_entry.solid_surface_name = surface_name
-            log_entry.solid_surface_index = event.old_surface_index
-        else
-            storage.surfaces[opposite_surface_name] = surface_name
-            log_entry.solid_surface_name = opposite_surface_name
-            log_entry.solid_surface_index = space_elevator_info.opposite.surface.index
-        end
+    if surface_name:find("Orbit") then
+        log_entry.solid_surface_name = opposite_surface_name
+        log_entry.solid_surface_index = space_elevator_info.opposite.surface.index
+
+        save_surface_storage(surface_name, "orbit")
+        save_surface_storage(opposite_surface_name, "solid")
+    else
+        log_entry.solid_surface_name = surface_name
+        log_entry.solid_surface_index = event.old_surface_index
+
+        save_surface_storage(surface_name, "solid")
+        save_surface_storage(opposite_surface_name, "orbit")
     end
+    -- end
 
     table.insert(storage.history, log_entry)
 end

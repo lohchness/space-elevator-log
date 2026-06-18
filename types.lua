@@ -32,6 +32,10 @@
 ---@field events_contents LuaGuiElement
 ---@field summary_contents LuaGuiElement
 
+---@class SurfaceInfo
+---@field name string
+---@field type string
+---@field index int
 
 --- A GUI element definition. This extends `LuaGuiElement.add_param` with several new attributes.
 --- Children may be defined in the array portion as an alternative to the `children` subtable.
