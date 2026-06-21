@@ -20,7 +20,12 @@ local function find(tbl, func, ...)
     return nil
 end
 
+local function any(table, func, ...)
+    return find(table, func, ...) ~= nil
+end
+
 return {
     title = title,
-    find = find
+    find = find,
+    any = any,
 }
