@@ -20,6 +20,14 @@ function destroy_player_gui()
     reset_storage()
 end
 
+--- Surface Index differs from Zone Index.
+--- Zone Index is the surface order starting from Calidus Orbit, 
+--- then the first planet and its orbit, its moon (if any) and its orbit, 
+--- and so on to the next star system,
+--- whereas Surface Index increments on exploring a new surface.
+--- /c game.print("Zone Index: "..serpent.block(
+--- remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = game.player.surface.index}).index
+--- ))
 function reset_storage()
     for gui_id, gui_data in pairs(storage.guis) do
         gui_data.gui.destroy()
@@ -30,8 +38,8 @@ function reset_storage()
     storage.guis = {}
     ---@type LogEntry[]
     storage.history = {}
-    ---@type SurfaceInfo[]
-    storage.surfaces = {}
+    ---@type table<int, ElevatorZone>
+    storage.zone_by_surface = {}
 end
 
 function check_storage()
@@ -39,7 +47,9 @@ function check_storage()
         game.player.print("storage.guis not initiated")
         return
     end
-    game.player.print(table_size(storage.history))
+    game.player.print("History: "..table_size(storage.history).." entries")
+    game.player.print("Surfaces: "..table_size(storage.zone_by_surface).." entries")
+    game.player.print(serpent.dump(storage.zone_by_surface))
 end
 
 function print_last_entry()
@@ -63,36 +73,50 @@ function print_last_entry()
 end
 
 function clear_storage_surfaces()
-    storage.surfaces = {}
+    storage.zone_by_surface = {}
 end
 
 function print_storage_surfaces()
-    if table_size(storage.surfaces) == 0 then
-        game.player.print("Storage surfaces is empty")
+    if table_size(storage.zone_by_surface) == 0 then
+        game.player.print("Storage zone by surface is empty")
     end
-    for i, j in pairs(storage.surfaces) do
-        -- game.player.print(i.." - "..j)
-        game.player.print(j.name..", "..j.type..", "..j.index)
+    for i, j in pairs(storage.zone_by_surface) do
+        -- game.player.print(j.name..", "..j.type..", "..j.zone_index)
+        game.player.print(
+            serpent.block(j, { compact=true })
+        )
     end 
 end
 
-local function save_surface_storage(name)
-    if not utils.find(storage.surfaces, function(i, j) return i.name == name end) then
-        local zone_info = remote.call(
-            "space-exploration",
-            "get_zone_from_name",
-            { zone_name = name }
-        )
+local function store_zone_pair(planet_surface_index, orbit_surface_index)
+    --- Store zones from SE remote interface, with the key being surface index.
+    --- Easier lookup, will still have to sort by zone index in toolbar drop down list.
 
-        table.insert(
-            storage.surfaces,
-            {
-                name = name,
-                type = zone_info.type == "orbit" and "orbit" or "solid",
-                index = zone_info.index,
-            }
-        )
+    if storage.zone_by_surface[planet_surface_index] then
+        assert(storage.zone_by_surface[orbit_surface_index])
+        return
     end
+
+    ---@type SEZoneType
+    local planet_zone = remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = planet_surface_index})
+    ---@type SEZoneType
+    local orbit_zone = remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = orbit_surface_index})
+
+    storage.zone_by_surface[planet_surface_index] = {
+        name = utils.title(planet_zone.name),
+        type = planet_zone.type,
+        zone_index = planet_zone.index,
+        surface_index = planet_surface_index,
+        opposite = nil,
+    }
+    storage.zone_by_surface[orbit_surface_index] = {
+        name = utils.title(orbit_zone.name),
+        type = orbit_zone.type,
+        zone_index = orbit_zone.index,
+        surface_index = orbit_surface_index,
+        opposite = storage.zone_by_surface[planet_surface_index],
+    }
+    storage.zone_by_surface[planet_surface_index].opposite = storage.zone_by_surface[orbit_surface_index]
 end
 
 
@@ -153,32 +177,26 @@ function AddTrainLog(event)
     --     game.print(contents[i].name.." "..contents[i].count)
     -- end
 
-
     --- Insert surface names into storage here instead of iterating 
     --- every entry upon opening GUI because train logs will be very large.
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
 
-    local surface_name = utils.title(game.get_surface(event.old_surface_index).name)
+    local surface_name = utils.title(space_elevator_info.main.surface.name)
     local opposite_surface_name = utils.title(space_elevator_info.opposite.surface.name)
 
-    game.print("old_surface_name: "..surface_name)
-    game.print("opposite_surface_name: "..opposite_surface_name)
+    game.print("Main Surface Name: "..surface_name)
+    game.print("Opposite Surface Name: "..opposite_surface_name)
 
     if surface_name:find("Orbit") then
         log_entry.solid_surface_name = opposite_surface_name
-        log_entry.solid_surface_index = space_elevator_info.opposite.surface.index
-
-        save_surface_storage(surface_name, "orbit")
-        save_surface_storage(opposite_surface_name, "solid")
+        log_entry.solid_surface_index = space_elevator_info.opposite.surface_index
+        store_zone_pair(space_elevator_info.opposite.surface_index, space_elevator_info.main.surface.index)
     else
         log_entry.solid_surface_name = surface_name
-        log_entry.solid_surface_index = event.old_surface_index
-
-        save_surface_storage(surface_name, "solid")
-        save_surface_storage(opposite_surface_name, "orbit")
+        log_entry.solid_surface_index = space_elevator_info.main.surface.index
+        store_zone_pair(space_elevator_info.main.surface.index, space_elevator_info.opposite.surface_index)
     end
-    -- end
 
     table.insert(storage.history, log_entry)
 end

@@ -32,10 +32,18 @@
 ---@field events_contents LuaGuiElement
 ---@field summary_contents LuaGuiElement
 
----@class SurfaceInfo
----@field name string
----@field type string
----@field index int
+---@class ElevatorZone
+---@field name string              Titlecase of Surface name
+---@field type string              "orbit" or "planet"
+---@field zone_index int           Zone Index given by Space Exploration
+---@field opposite ElevatorZone
+---@field surface_index int
+
+---@class SEZoneType
+---@field name string           
+---@field index int             Zone Index
+---@field surface_index int
+---@field type string           "planet" or "orbit"
 
 --- A GUI element definition. This extends `LuaGuiElement.add_param` with several new attributes.
 --- Children may be defined in the array portion as an alternative to the `children` subtable.
