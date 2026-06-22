@@ -77,9 +77,6 @@ local function create_events_table(spelevator_log_gui)
     spelevator_log_gui.events_contents.clear()
     spelevator_log_gui.summary_contents.clear()
 
-    --- storage.history should already be sorted?
-    --- keys inserted first are iterated first.
-
     local columns = { "timestamp", "contents"}
 
     local children_guis, count = create_result_guis(storage.history, columns)

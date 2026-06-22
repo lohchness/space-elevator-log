@@ -2,10 +2,16 @@
 
 ---@class TrainTeleportFinishedEvent
 ---@field train LuaTrain                  fully built newly created train post transfer
----@field old_train_id_1 uint32           id of the train prior to transer start
----@field stranded? uint32                optional: only if train is split due to incomplete transfer
----@field old_surface_index uint32        ??
+---@field old_train_id_1 int              id of the train prior to transer start
+---@field stranded? int                   optional: only if train is split due to incomplete transfer
+---@field old_surface_index int
 ---@field teleporter LuaEntity            space elevator entity doing the transferring
+
+---@class TrainTeleportStartedEvent
+---@field train LuaTrain
+---@field old_train_id_1 int
+---@field old_surface_index int
+---@field teleporter LuaEntity
 
 ---@class SpaceElevatorInfo               Info about the space elevator
 ---@field main LuaEntity                  Entity doing the transfer
@@ -16,10 +22,10 @@
 
 ---@class LogEntry
 ---@field time MapTick                       tick of event
----@field train LuaTrain                      
+---@field train LuaTrain
 ---@field contents ItemWithQualityCount[]    copy of contents at the time
 ---@field records ScheduleRecord[]?          stops in schedule
----@field current uint32                     record index of next station
+---@field current int                        record index of next station
 ---@field teleporter LuaEntity
 ---@field solid_surface_name string
 ---@field solid_surface_index integer

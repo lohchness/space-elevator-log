@@ -121,42 +121,14 @@ local function store_zone_pair(planet_surface_index, orbit_surface_index)
 end
 
 
--- defines.events.se_on_train_teleport_started
---[[
-Event data:
-      {
-        train = carriage_new_train, -- newly created train consisting of the first carriage to be transferred
-        old_train_id_1 = struct.old_train_id, -- id of train behind which is about to be invalidated
-        old_surface_index = struct.surface.index,
-        teleporter = struct.main -- space elevator entity doing the transferring
-      })
-]]
+---@param event TrainTeleportStartedEvent
 function on_teleport_started(event)
-    -- game.print("-- on teleport started --")
-
-    -- local surface_name = game.get_surface(event.old_surface_index).name
-    -- local opposite_surface_name = event.teleporter.surface.name
-
-    -- game.print("old_surface_index: "..surface_name)
-    -- game.print("opposite_surface_name: "..opposite_surface_name)
+    return
 end
 
 
--- defines.events.se_on_train_teleport_finished
---[[
-Event data:
-      {
-        train = carriage_ahead.train, -- fully built newly created train post transfer
-        old_train_id_1 = struct.old_train_id, -- id of the train prior to transer start
-        stranded = elevator.train_behind, --optional: only if train is split due to incomplete transfer
-        old_surface_index = struct.surface.index,
-        teleporter = struct.main, -- space elevator entity doing the transferring
-      })
-]]
 ---@param event TrainTeleportFinishedEvent
 function AddTrainLog(event) 
-    game.print("-- on teleport finished --")
-
     ---@type LogEntry
     ---@diagnostic disable-next-line: missing-fields
     local log_entry = {
@@ -180,9 +152,6 @@ function AddTrainLog(event)
 
     local surface_name = utils.title(space_elevator_info.main.surface.name)
     local opposite_surface_name = utils.title(space_elevator_info.opposite.surface.name)
-
-    game.print("Main Surface Name: "..surface_name)
-    game.print("Opposite Surface Name: "..opposite_surface_name)
 
     if surface_name:find("Orbit") then
         log_entry.solid_surface_name = opposite_surface_name
