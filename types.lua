@@ -18,8 +18,8 @@
 ---@field time MapTick                       tick of event
 ---@field train LuaTrain                      
 ---@field contents ItemWithQualityCount[]    copy of contents at the time
----@field schedule LuaSchedule               copy of schedule
----@field current uint32                     schedule index of destination
+---@field records ScheduleRecord[]?          stops in schedule
+---@field current uint32                     record index of next station
 ---@field teleporter LuaEntity
 ---@field solid_surface_name string
 ---@field solid_surface_index integer

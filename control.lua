@@ -63,11 +63,12 @@ function print_last_entry()
     end
 
     game.player.print("Remaining Stops:")
-    if entry.schedule then
-        local records = entry.schedule.get_records()
-        for _,record in pairs(records) do
+    if entry.records then
+        for _,record in pairs(entry.records) do
             game.player.print(record.station)
         end
+    else
+        print("No Records")
     end
     
 end
@@ -155,27 +156,22 @@ Event data:
 ---@param event TrainTeleportFinishedEvent
 function AddTrainLog(event) 
     game.print("-- on teleport finished --")
-    local schedule = util.table.deepcopy(event.train.get_schedule())
+
     ---@type LogEntry
     ---@diagnostic disable-next-line: missing-fields
     local log_entry = {
         time = game.tick,
         train = event.train,
-        contents = event.train.get_contents(), -- is a new copy
+        contents = event.train.get_contents(),
         teleporter = event.teleporter
     }
 
-    if schedule then
-        log_entry.schedule = schedule
+    local schedule = event.train.get_schedule()
+    local records = schedule.get_records()
+    if records then
+        log_entry.records = records
         log_entry.current = schedule.current
     end
-
-    -- game.print(event.train)
-    -- local train = game.train_manager.get_train_by_id(event.train)
-    -- local contents = event.train.get_contents()
-    -- for i,_ in pairs(contents) do
-    --     game.print(contents[i].name.." "..contents[i].count)
-    -- end
 
     --- Insert surface names into storage here instead of iterating 
     --- every entry upon opening GUI because train logs will be very large.
