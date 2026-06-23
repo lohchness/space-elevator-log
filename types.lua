@@ -26,9 +26,9 @@
 ---@field contents ItemWithQualityCount[]    copy of contents at the time
 ---@field records ScheduleRecord[]?          stops in schedule
 ---@field current int                        record index of next station
----@field teleporter LuaEntity
----@field solid_surface_name string
----@field solid_surface_index integer
+---@field teleporter_id int                  the elevator's LuaEntity unit number
+---@field from_surface int
+---@field to_surface int
 
 ---@class GuiConfig
 ---@field gui_id string

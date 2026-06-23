@@ -135,7 +135,7 @@ function AddTrainLog(event)
         time = game.tick,
         train = event.train,
         contents = event.train.get_contents(),
-        teleporter = event.teleporter
+        teleporter_id = event.teleporter.unit_number
     }
 
     local schedule = event.train.get_schedule()
@@ -150,16 +150,14 @@ function AddTrainLog(event)
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
 
+    log_entry.from_surface = space_elevator_info.opposite.surface_index
+    log_entry.to_surface = space_elevator_info.main.surface_index
     local surface_name = utils.title(space_elevator_info.main.surface.name)
-    local opposite_surface_name = utils.title(space_elevator_info.opposite.surface.name)
+    -- local opposite_surface_name = utils.title(space_elevator_info.opposite.surface.name)
 
     if surface_name:find("Orbit") then
-        log_entry.solid_surface_name = opposite_surface_name
-        log_entry.solid_surface_index = space_elevator_info.opposite.surface_index
         store_zone_pair(space_elevator_info.opposite.surface_index, space_elevator_info.main.surface.index)
     else
-        log_entry.solid_surface_name = surface_name
-        log_entry.solid_surface_index = space_elevator_info.main.surface.index
         store_zone_pair(space_elevator_info.main.surface.index, space_elevator_info.opposite.surface_index)
     end
 
