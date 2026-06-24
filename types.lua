@@ -34,9 +34,14 @@
 ---@field gui_id string
 ---@field gui LuaGuiElement
 ---@field player LuaPlayer
----@field filter_guis table
+---@field toolbar ToolbarGui
 ---@field events_contents LuaGuiElement
 ---@field summary_contents LuaGuiElement
+
+---@class ToolbarGui
+---@field time_period LuaGuiElement
+---@field item LuaGuiElement
+---@field zone_list LuaGuiElement
 
 ---@class ElevatorZone
 ---@field name string              Titlecase of Surface name

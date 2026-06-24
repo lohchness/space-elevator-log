@@ -80,17 +80,18 @@ local function open_gui(player)
     ---@type table<string,LuaGuiElement>, LuaGuiElement
     local _,new_gui = flib_gui.add(player.gui.screen, gui_contents)
     log(new_gui.name)
-    local filter_guis = {
+    ---@type ToolbarGui
+    local toolbar_struct = {
       time_period = new_gui.toolbar.row1.filter_time_period,
       item = new_gui.toolbar.row2.filter_item,
-      surface_list = new_gui.toolbar.row2.filter_surface_list,
+      zone_list = new_gui.toolbar.row2.filter_zone_list,
     }
     ---@type GuiConfig
     storage.guis[gui_id] = {
       gui_id = gui_id,
       gui = new_gui,
       player = player,
-      filter_guis = filter_guis,
+      toolbar = toolbar_struct,
       events_contents = new_gui.tabs_pane.events_contents,
       summary_contents = new_gui.tabs_pane.summary_contents
     }
@@ -111,7 +112,7 @@ local function open_gui(player)
   --game.print(tostring(player.opened))
   --game.print(tostring(game.tick).." showing rocketlog gui")
 
-  toolbar.refresh(spelevator_log_gui.filter_guis)
+  toolbar.refresh(spelevator_log_gui.toolbar)
   events_table.create_events_table(spelevator_log_gui)
 end
 
