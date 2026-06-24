@@ -1,7 +1,7 @@
 data:extend {
     {
         type = 'custom-input',
-        name = 'space-log-open-custom-input',
+        name = 'open-custom-input',
         key_sequence = 'CONTROL + H',
         enabled_while_spectating = true,
     },

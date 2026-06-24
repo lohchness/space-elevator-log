@@ -173,7 +173,7 @@ script.on_init(reset_storage)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
 -- For Custom Input defined in data.lua
-script.on_event("space-log-open-custom-input", function (event)
+script.on_event("open-custom-input", function (event)
     spelevator_log_gui.open_or_close_gui(game.players[event.player_index])
 end)
 
