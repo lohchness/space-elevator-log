@@ -42,6 +42,7 @@
 ---@field time_period LuaGuiElement
 ---@field item LuaGuiElement
 ---@field zone_list LuaGuiElement
+---@field views LuaGuiElement
 
 ---@class ElevatorZone
 ---@field name string              Titlecase of Surface name

@@ -44,12 +44,13 @@ end
 
 function check_storage()
     if not next(storage) then
-        game.player.print("storage.guis not initiated")
+        game.player.print("storage not initiated")
         return
     end
     game.player.print("History: "..table_size(storage.history).." entries")
     game.player.print("Surfaces: "..table_size(storage.zone_by_surface).." entries")
-    game.player.print(serpent.dump(storage.zone_by_surface))
+    game.player.print("Storage: "..table_size(storage.guis).." entries")
+    -- game.player.print(serpent.dump(storage.zone_by_surface))
 end
 
 function print_last_entry()

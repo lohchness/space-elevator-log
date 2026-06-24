@@ -1,5 +1,5 @@
 local time_filter = require("scripts/filter-time")
-local gui_handlers = {}
+local gui_handlers = require("gui/handlers")
 local utils = require("scripts/utils")
 
 
@@ -21,8 +21,32 @@ local function refresh(toolbar)
     update_filters(toolbar)
 end
 
+function gui_handlers.switch_view(event)
+    -- TODO Figure out why this fires twice, 
+    -- first with on_gui_checked_state_changed, 
+    -- and next with on_gui_click
+    local gui_id = event.element.tags.gui_id
 
-local function create_toolbar()
+    local toolbar = storage.guis[gui_id].toolbar
+    for _, radio in pairs(toolbar.views.children) do
+        radio.state = false
+    end
+    event.element.state = true
+
+    -- local function reverse_event(id)
+    -- for name, event_id in pairs(defines.events) do
+    --     if id == event_id then
+    --     return name
+    --     end
+    -- end
+    -- end
+    -- game.players[event.player_index].print(reverse_event(event.name))
+
+    refresh(toolbar)
+end
+
+
+local function create_toolbar(gui_id)
     return {
         type = "flow",
         direction = "vertical",
@@ -88,6 +112,38 @@ local function create_toolbar()
                         name="filter_item",
                         handler = gui_handlers.refresh,
                     }
+                }
+            },
+            {
+                type = "flow",
+                direction = "horizontal",
+                name = "row3",
+
+                children = {
+                    {
+                        type = "radiobutton",
+                        state = "true",
+                        name = "incoming",
+                        caption = { "spelevator-log.incoming" },
+                        handler = gui_handlers.switch_view,
+                        tags = {gui_id = gui_id},
+                    },
+                    {
+                        type = "radiobutton",
+                        state = "false",
+                        name = "outgoing",
+                        caption = { "spelevator-log.outgoing" },
+                        handler = gui_handlers.switch_view,
+                        tags = {gui_id = gui_id},
+                    },
+                    {
+                        type = "radiobutton",
+                        state = "false",
+                        name = "combined",
+                        caption = { "spelevator-log.combined" },
+                        handler = gui_handlers.switch_view,
+                        tags = {gui_id = gui_id},
+                    },
                 }
             }
         }
