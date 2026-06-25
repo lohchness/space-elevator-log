@@ -22,9 +22,6 @@ local function refresh(toolbar)
 end
 
 function gui_handlers.switch_view(event)
-    -- TODO Figure out why this fires twice, 
-    -- first with on_gui_checked_state_changed, 
-    -- and next with on_gui_click
     local gui_id = event.element.tags.gui_id
 
     local toolbar = storage.guis[gui_id].toolbar
@@ -33,20 +30,12 @@ function gui_handlers.switch_view(event)
     end
     event.element.state = true
 
-    -- local function reverse_event(id)
-    -- for name, event_id in pairs(defines.events) do
-    --     if id == event_id then
-    --     return name
-    --     end
-    -- end
-    -- end
-    -- game.players[event.player_index].print(reverse_event(event.name))
-
     refresh(toolbar)
 end
 
 
 local function create_toolbar(gui_id)
+    local radio_handler = {[defines.events.on_gui_checked_state_changed] = gui_handlers.switch_view}
     return {
         type = "flow",
         direction = "vertical",
@@ -125,7 +114,7 @@ local function create_toolbar(gui_id)
                         state = "true",
                         name = "incoming",
                         caption = { "spelevator-log.incoming" },
-                        handler = gui_handlers.switch_view,
+                        handler = radio_handler,
                         tags = {gui_id = gui_id},
                     },
                     {
@@ -133,7 +122,7 @@ local function create_toolbar(gui_id)
                         state = "false",
                         name = "outgoing",
                         caption = { "spelevator-log.outgoing" },
-                        handler = gui_handlers.switch_view,
+                        handler = radio_handler,
                         tags = {gui_id = gui_id},
                     },
                     {
@@ -141,7 +130,7 @@ local function create_toolbar(gui_id)
                         state = "false",
                         name = "combined",
                         caption = { "spelevator-log.combined" },
-                        handler = gui_handlers.switch_view,
+                        handler = radio_handler,
                         tags = {gui_id = gui_id},
                     },
                 }
