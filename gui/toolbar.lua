@@ -19,11 +19,14 @@ local function update_filters(toolbar)
     local new_index = 1
 
     local new_zone_list = {}
+    local count = 1
     for i, j in pairs(storage.zone_by_surface) do
         table.insert(new_zone_list, j.name)
         if j.name == old_selected then
-            new_index = i
+            new_index = count
+            toolbar.selected_surface_index = i
         end
+        count = count + 1
     end
 
     toolbar.zone_list.items = new_zone_list

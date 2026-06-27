@@ -86,6 +86,7 @@ local function open_gui(player)
       item = new_gui.toolbar.row2.filter_item,
       zone_list = new_gui.toolbar.row2.filter_zone_list,
       views = new_gui.toolbar.row3,
+      selected_surface_index = 0,
     }
     ---@type GuiConfig
     storage.guis[gui_id] = {

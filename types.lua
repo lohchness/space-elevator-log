@@ -43,6 +43,7 @@
 ---@field item LuaGuiElement
 ---@field zone_list LuaGuiElement
 ---@field views LuaGuiElement
+---@field selected_surface_index int
 
 ---@class ElevatorZone
 ---@field name string              Titlecase of Surface name
