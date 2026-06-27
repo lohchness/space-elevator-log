@@ -2,13 +2,32 @@ local time_filter = require("scripts/filter-time")
 local gui_handlers = require("gui/handlers")
 local utils = require("scripts/utils")
 
-
+---@param toolbar ToolbarGui
 local function update_filters(toolbar)
     if table_size(storage.zone_by_surface) == 0 then
         return
     end
 
     -- Save currently selected surface before rebuilding dropdown so it can be restored if it exists
+    local old_index = toolbar.zone_list.selected_index
+    local old_selected =
+        toolbar.zone_list.items and
+        old_index ~= 0 and
+        toolbar.zone_list.get_item(old_index)
+        or 1
+
+    local new_index = 1
+
+    local new_zone_list = {}
+    for i, j in pairs(storage.zone_by_surface) do
+        table.insert(new_zone_list, j.name)
+        if j.name == old_selected then
+            new_index = i
+        end
+    end
+
+    toolbar.zone_list.items = new_zone_list
+    toolbar.zone_list.selected_index = new_index
 end
 
 local function refresh(toolbar)
@@ -86,7 +105,6 @@ local function create_toolbar(gui_id)
                         type = "drop-down",
                         name = "filter_zone_list",
                         items = {},
-                        selected_index = 0,
                         handler = gui_handlers.refresh,
                     },
 
