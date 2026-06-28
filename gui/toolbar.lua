@@ -1,5 +1,6 @@
 local time_filter = require("scripts/filter-time")
 local gui_handlers = require("gui/handlers")
+local events_table = require("gui/events")
 local utils = require("scripts/utils")
 
 ---@param toolbar ToolbarGui
@@ -33,7 +34,7 @@ local function update_filters(toolbar)
     toolbar.zone_list.selected_index = new_index
 end
 
-local function refresh(toolbar)
+local function update_toolbar(toolbar)
     toolbar.item.tooltip = (
         toolbar.item.elem_value and 
         prototypes.item[toolbar.item.elem_value] and
@@ -43,17 +44,27 @@ local function refresh(toolbar)
     update_filters(toolbar)
 end
 
+local function refresh(gui_config)
+    update_toolbar(gui_config.toolbar)
+    events_table.create_events_table(gui_config)
+end
+
 function gui_handlers.select_radio(event)
     local gui_id = event.element.tags.gui_id
+    local gui_config = storage.guis[gui_id]
 
-    local toolbar = storage.guis[gui_id].toolbar
+    local toolbar = gui_config.toolbar
     for _, radio in pairs(toolbar.radios.children) do
         radio.state = false
     end
     event.element.state = true
     toolbar.selected_radio = event.element.name
 
-    refresh(toolbar)
+    refresh(gui_config)
+end
+
+function gui_handlers.refresh_handler(event)
+    refresh(storage.guis[event.element.tags.gui_id])
 end
 
 
@@ -82,7 +93,8 @@ local function create_toolbar(gui_id)
                         items = time_filter.time_period_items,
                         selected_index = time_filter.default_index,
                         tooltip = { "spelevator-log.filter-time-period-label" },
-                        handler = gui_handlers.refresh,
+                        handler = gui_handlers.refresh_handler,
+                        tags = {gui_id = gui_id},
                     },
 
                     {
@@ -90,7 +102,8 @@ local function create_toolbar(gui_id)
                         sprite = "utility/refresh",
                         style = "item_and_count_select_confirm",
                         tooltip = { "spelevator-log.refresh" },
-                        handler = gui_handlers.refresh,
+                        handler = gui_handlers.refresh_handler,
+                        tags = {gui_id = gui_id},
                     },
                 },
             },
@@ -109,7 +122,8 @@ local function create_toolbar(gui_id)
                         type = "drop-down",
                         name = "filter_zone_list",
                         items = {},
-                        handler = gui_handlers.refresh,
+                        handler = gui_handlers.refresh_handler,
+                        tags = {gui_id = gui_id},
                     },
 
                     {
@@ -121,7 +135,8 @@ local function create_toolbar(gui_id)
                         type = "choose-elem-button",
                         elem_type = "item",
                         name="filter_item",
-                        handler = gui_handlers.refresh,
+                        handler = gui_handlers.refresh_handler,
+                        tags = {gui_id = gui_id},
                     }
                 }
             },

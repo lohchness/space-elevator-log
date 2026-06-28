@@ -115,8 +115,7 @@ local function open_gui(player)
   --game.print(tostring(player.opened))
   --game.print(tostring(game.tick).." showing rocketlog gui")
 
-  toolbar.refresh(spelevator_log_gui.toolbar)
-  events_table.create_events_table(spelevator_log_gui)
+  toolbar.refresh(spelevator_log_gui)
 end
 
 
