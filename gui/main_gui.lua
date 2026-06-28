@@ -85,8 +85,9 @@ local function open_gui(player)
       time_period = new_gui.toolbar.row1.filter_time_period,
       item = new_gui.toolbar.row2.filter_item,
       zone_list = new_gui.toolbar.row2.filter_zone_list,
-      views = new_gui.toolbar.row3,
+      radios = new_gui.toolbar.row3,
       selected_surface_index = 0,
+      selected_radio = new_gui.toolbar.row3.incoming.name,
     }
     ---@type GuiConfig
     storage.guis[gui_id] = {

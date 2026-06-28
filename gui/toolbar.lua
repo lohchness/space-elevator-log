@@ -43,21 +43,22 @@ local function refresh(toolbar)
     update_filters(toolbar)
 end
 
-function gui_handlers.switch_view(event)
+function gui_handlers.select_radio(event)
     local gui_id = event.element.tags.gui_id
 
     local toolbar = storage.guis[gui_id].toolbar
-    for _, radio in pairs(toolbar.views.children) do
+    for _, radio in pairs(toolbar.radios.children) do
         radio.state = false
     end
     event.element.state = true
+    toolbar.selected_radio = event.element.name
 
     refresh(toolbar)
 end
 
 
 local function create_toolbar(gui_id)
-    local radio_handler = {[defines.events.on_gui_checked_state_changed] = gui_handlers.switch_view}
+    local radio_handler = {[defines.events.on_gui_checked_state_changed] = gui_handlers.select_radio}
     return {
         type = "flow",
         direction = "vertical",
