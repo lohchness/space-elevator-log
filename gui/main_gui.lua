@@ -88,6 +88,7 @@ local function open_gui(player)
       radios = new_gui.toolbar.row3,
       selected_surface_index = 0,
       selected_radio = new_gui.toolbar.row3.incoming.name,
+      selected_elem = nil,
     }
     ---@type GuiConfig
     storage.guis[gui_id] = {

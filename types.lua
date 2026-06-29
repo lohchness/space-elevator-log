@@ -45,6 +45,7 @@
 ---@field radios LuaGuiElement
 ---@field selected_surface_index int
 ---@field selected_radio string
+---@field selected_elem string?
 
 ---@class ElevatorZone
 ---@field name string              Titlecase of Surface name

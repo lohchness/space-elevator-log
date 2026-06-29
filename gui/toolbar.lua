@@ -67,6 +67,19 @@ function gui_handlers.refresh_handler(event)
     refresh(storage.guis[event.element.tags.gui_id])
 end
 
+function gui_handlers.elem_button(event)
+    local gui_config = storage.guis[event.element.tags.gui_id]
+
+    gui_config.toolbar.selected_elem = event.element.elem_value
+    if event.element.name == "filter_item" then
+        event.element.parent.filter_fluid.elem_value = nil
+    else
+        event.element.parent.filter_item.elem_value = nil
+    end
+
+    refresh(gui_config)
+end
+
 
 local function create_toolbar(gui_id)
     local radio_handler = {[defines.events.on_gui_checked_state_changed] = gui_handlers.select_radio}
@@ -135,9 +148,18 @@ local function create_toolbar(gui_id)
                         type = "choose-elem-button",
                         elem_type = "item",
                         name="filter_item",
-                        handler = gui_handlers.refresh_handler,
+                        handler = {[defines.events.on_gui_elem_changed] =
+                            gui_handlers.elem_button},
                         tags = {gui_id = gui_id},
-                    }
+                    },
+                    {
+                        type = "choose-elem-button",
+                        elem_type = "fluid",
+                        name="filter_fluid",
+                        handler = {[defines.events.on_gui_elem_changed] =
+                            gui_handlers.elem_button},
+                        tags = {gui_id = gui_id},
+                    },
                 }
             },
             {
