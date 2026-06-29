@@ -1,5 +1,6 @@
 local format = require("__flib__.format")
 local flib_gui = require("__flib__.gui")
+local time_filter = require("scripts/filter-time")
 
 local function sprite_button_name_amount(name, amount)
     local prototype = prototypes.item[name]
@@ -17,12 +18,10 @@ local function sprite_button_name_amount(name, amount)
 end
 
 
----comment
 ---@param entry LogEntry
----@param children table
-local function create_row(entry, children)
-    local departure_time = entry.time
-    local relative_time = game.tick - departure_time
+---@param events_rows table
+local function create_row(entry, events_rows)
+    local relative_time = game.tick - entry.time
 
     local timestamp = {
         type = "label",
@@ -40,30 +39,66 @@ local function create_row(entry, children)
         direction = "horizontal",
         children = contents_children
     }
-    table.insert(children, timestamp)
-    table.insert(children, contents_flow)
+    table.insert(events_rows, timestamp)
+    table.insert(events_rows, contents_flow)
 end
 
----comment
+---@param log_entry LogEntry
+---@param toolbar ToolbarGui
+local function matches_filter(log_entry, toolbar)
+    local time_period = game.tick - time_filter.ticks(toolbar.time_period.selected_index)
+    if log_entry.time < time_period then return false end
+
+    local check_content = (toolbar.selected_elem ~= nil)
+    local check_radio = toolbar.selected_radio
+    local matches_content = not check_content
+
+    if check_radio == "incoming" then
+        if not (log_entry.to_surface == toolbar.selected_surface_index) then return false end
+    elseif check_radio == "outgoing" then
+        if not (log_entry.from_surface == toolbar.selected_surface_index) then return false end
+    elseif check_radio == "combined" then
+        if not(
+            (log_entry.to_surface == toolbar.selected_surface_index) or
+            (log_entry.from_surface == toolbar.selected_surface_index)
+        ) then return false end
+    end
+
+    if check_content then
+        for _, i in pairs(log_entry.contents) do
+            if i.name == toolbar.selected_elem then
+                matches_content = true
+                break
+            end
+        end
+    end
+
+    return matches_content
+end
+
 ---@param entries LogEntry[]
 ---@param columns string[]
 ---@return table, integer
-local function create_result_guis(entries, columns)
-    local children = {}
+local function create_events_rows(entries, toolbar, columns)
+    local events_rows = {}
     local count = 0
 
+    -- First row is column names
     for _, col in pairs(columns) do
-        table.insert(children, {
+        table.insert(events_rows, {
             type = "label",
             caption = { "spelevator-log.table-header-"..col }
         })
     end
 
-    for _, log_entry in pairs(entries) do
-        create_row(log_entry, children)
-        count = count + 1
+    for i = table_size(entries), 1, -1 do
+        local log_entry = entries[i]
+        if matches_filter(log_entry, toolbar) then
+            create_row(log_entry, events_rows)
+            count = count + 1
+        end
     end
-    return children, count
+    return events_rows, count
 end
 
 ---Does not filter by forces because I think that is silly
@@ -76,10 +111,11 @@ local function create_events_table(spelevator_log_gui)
     --- and open_gui() re-calls create_events_table()
     spelevator_log_gui.events_contents.clear()
     spelevator_log_gui.summary_contents.clear()
+    local toolbar = spelevator_log_gui.toolbar
 
     local columns = { "timestamp", "contents"}
 
-    local children_guis, count = create_result_guis(storage.history, columns)
+    local events_rows, count = create_events_rows(storage.history, toolbar, columns)
 
 
     flib_gui.add(spelevator_log_gui.events_contents, {
@@ -98,7 +134,7 @@ local function create_events_table(spelevator_log_gui)
                 draw_horizontal_line_after_headers = true,
                 vertical_centering = true,
                 style_mods = {right_cell_padding = 3, left_cell_padding = 3},
-                children = children_guis
+                children = events_rows
                 }
             }
         }
