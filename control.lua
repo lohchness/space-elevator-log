@@ -152,8 +152,8 @@ function AddTrainLog(event)
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
 
-    log_entry.from_surface = space_elevator_info.opposite.surface_index
-    log_entry.to_surface = space_elevator_info.main.surface_index
+    log_entry.from_surface = space_elevator_info.main.surface_index
+    log_entry.to_surface = space_elevator_info.opposite.surface_index
     local surface_name = utils.title(space_elevator_info.main.surface.name)
     -- local opposite_surface_name = utils.title(space_elevator_info.opposite.surface.name)
 
