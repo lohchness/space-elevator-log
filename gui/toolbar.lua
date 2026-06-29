@@ -9,6 +9,14 @@ local function update_filters(toolbar)
         return
     end
 
+    -- Handle first time opening when selected_surface_index is 0
+    if toolbar.selected_surface_index == 0 then
+        for i, _ in pairs(storage.zone_by_surface) do
+            toolbar.selected_surface_index = i
+            break
+        end
+    end
+
     -- Save currently selected surface before rebuilding dropdown so it can be restored if it exists
     local old_index = toolbar.zone_list.selected_index
     local old_selected =
