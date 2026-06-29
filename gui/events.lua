@@ -2,9 +2,8 @@ local format = require("__flib__.format")
 local flib_gui = require("__flib__.gui")
 local time_filter = require("scripts/filter-time")
 
-local function sprite_button_name_amount(name, amount)
-    local prototype = prototypes.item[name]
-    local sprite = "item/"..name
+local function sprite_button_name_amount(item_type, name, amount)
+    local sprite = item_type.."/"..name
 
     return {
         type = "sprite-button",
@@ -29,10 +28,11 @@ local function create_row(entry, events_rows)
     }
 
     local contents_children = {}
-    if entry.contents then
-        for i, item in pairs(entry.contents) do
-            table.insert(contents_children, sprite_button_name_amount(item.name, item.count))
-        end
+    for i, item in pairs(entry.contents) do
+        table.insert(contents_children, sprite_button_name_amount("item", item.name, item.count))
+    end
+    for i, j in pairs(entry.fluid_contents) do
+        table.insert(contents_children, sprite_button_name_amount("fluid", i, j))
     end
     local contents_flow = {
         type = "flow",
@@ -49,9 +49,11 @@ local function matches_filter(log_entry, toolbar)
     local time_period = game.tick - time_filter.ticks(toolbar.time_period.selected_index)
     if log_entry.time < time_period then return false end
 
-    local check_content = (toolbar.selected_elem ~= nil)
+    local check_item = (toolbar.selected_item ~= nil)
+    local check_fluid = (toolbar.selected_fluid ~= nil)
+    local matches_content = not (check_item or check_fluid)
+
     local check_radio = toolbar.selected_radio
-    local matches_content = not check_content
 
     if check_radio == "incoming" then
         if not (log_entry.to_surface == toolbar.selected_surface_index) then return false end
@@ -64,9 +66,17 @@ local function matches_filter(log_entry, toolbar)
         ) then return false end
     end
 
-    if check_content then
+    if check_item then
         for _, i in pairs(log_entry.contents) do
-            if i.name == toolbar.selected_elem then
+            if i.name == toolbar.selected_item then
+                matches_content = true
+                break
+            end
+        end
+    end
+    if check_fluid then
+        for i, j in pairs(log_entry.fluid_contents) do
+            if i == toolbar.selected_fluid then
                 matches_content = true
                 break
             end

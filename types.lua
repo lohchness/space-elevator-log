@@ -21,12 +21,13 @@
 ---@field powered boolean
 
 ---@class LogEntry
----@field time MapTick                       tick of event
+---@field time MapTick                               tick of event
 ---@field train LuaTrain
----@field contents ItemWithQualityCount[]    copy of contents at the time
----@field records ScheduleRecord[]?          stops in schedule
----@field current int                        record index of next station
----@field teleporter_id int                  the elevator's LuaEntity unit number
+---@field contents ItemWithQualityCount[]            copy of contents at the time
+---@field fluid_contents table<string, FluidAmount>
+---@field records ScheduleRecord[]?                  stops in schedule
+---@field current int                                record index of next station
+---@field teleporter_id int                          the elevator's LuaEntity unit number
 ---@field from_surface int
 ---@field to_surface int
 
@@ -45,7 +46,8 @@
 ---@field radios LuaGuiElement
 ---@field selected_surface_index int
 ---@field selected_radio string
----@field selected_elem string?
+---@field selected_item string?
+---@field selected_fluid string?
 
 ---@class ElevatorZone
 ---@field name string              Titlecase of Surface name

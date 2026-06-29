@@ -136,6 +136,7 @@ function AddTrainLog(event)
         time = game.tick,
         train = event.train,
         contents = event.train.get_contents(),
+        fluid_contents = event.train.get_fluid_contents(),
         teleporter_id = event.teleporter.unit_number
     }
 

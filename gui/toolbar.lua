@@ -67,14 +67,29 @@ function gui_handlers.refresh_handler(event)
     refresh(storage.guis[event.element.tags.gui_id])
 end
 
-function gui_handlers.elem_button(event)
+function gui_handlers.select_item(event)
+    local gui_config = storage.guis[event.element.tags.gui_id]
+    gui_config.toolbar.selected_item = nil
+
+    if event.element.elem_value then
+        gui_config.toolbar.selected_item = event.element.elem_value
+
+        event.element.parent.filter_fluid.elem_value = nil
+        gui_config.toolbar.selected_fluid = nil
+    end
+
+    refresh(gui_config)
+end
+
+function gui_handlers.select_fluid(event)
     local gui_config = storage.guis[event.element.tags.gui_id]
 
-    gui_config.toolbar.selected_elem = event.element.elem_value
-    if event.element.name == "filter_item" then
-        event.element.parent.filter_fluid.elem_value = nil
-    else
+    gui_config.toolbar.selected_fluid = nil
+    if event.element.elem_value then
+        gui_config.toolbar.selected_fluid = event.element.elem_value
+
         event.element.parent.filter_item.elem_value = nil
+        gui_config.toolbar.selected_item = nil
     end
 
     refresh(gui_config)
@@ -149,7 +164,7 @@ local function create_toolbar(gui_id)
                         elem_type = "item",
                         name="filter_item",
                         handler = {[defines.events.on_gui_elem_changed] =
-                            gui_handlers.elem_button},
+                            gui_handlers.select_item},
                         tags = {gui_id = gui_id},
                     },
                     {
@@ -157,7 +172,7 @@ local function create_toolbar(gui_id)
                         elem_type = "fluid",
                         name="filter_fluid",
                         handler = {[defines.events.on_gui_elem_changed] =
-                            gui_handlers.elem_button},
+                            gui_handlers.select_fluid},
                         tags = {gui_id = gui_id},
                     },
                 }
