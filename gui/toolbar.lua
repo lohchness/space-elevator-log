@@ -106,6 +106,9 @@ end
 
 local function create_toolbar(gui_id)
     local radio_handler = {[defines.events.on_gui_checked_state_changed] = gui_handlers.select_radio}
+    local drop_down_handler = {[defines.events.on_gui_selection_state_changed] = gui_handlers.refresh_handler}
+    local select_item_handler = {[defines.events.on_gui_elem_changed] = gui_handlers.select_item}
+    local select_fluid_handler = {[defines.events.on_gui_elem_changed] = gui_handlers.select_fluid}
     return {
         type = "flow",
         direction = "vertical",
@@ -122,17 +125,15 @@ local function create_toolbar(gui_id)
                         type = "sprite",
                         sprite = "rocket-log-clock-white",
                     },
-
                     {
                         type = "drop-down",
                         name = "filter_time_period",
                         items = time_filter.time_period_items,
                         selected_index = time_filter.default_index,
                         tooltip = { "spelevator-log.filter-time-period-label" },
-                        handler = gui_handlers.refresh_handler,
+                        handler = drop_down_handler,
                         tags = {gui_id = gui_id},
                     },
-
                     {
                         type = "sprite-button",
                         sprite = "utility/refresh",
@@ -150,18 +151,17 @@ local function create_toolbar(gui_id)
 
                 children = {
                     {
-                        type = "sprite-button",
+                        type = "sprite",
                         sprite = "entity/se-space-elevator",
-                        tooltip = "spelevator-log.filter-surface-label",
+                        tooltip = { "spelevator-log.filter-surface-label" },
                     },
                     {
                         type = "drop-down",
                         name = "filter_zone_list",
                         items = {},
-                        handler = gui_handlers.refresh_handler,
+                        handler = drop_down_handler,
                         tags = {gui_id = gui_id},
                     },
-
                     {
                         type = "sprite",
                         sprite = "utility/search",
@@ -171,16 +171,14 @@ local function create_toolbar(gui_id)
                         type = "choose-elem-button",
                         elem_type = "item",
                         name="filter_item",
-                        handler = {[defines.events.on_gui_elem_changed] =
-                            gui_handlers.select_item},
+                        handler = select_item_handler,
                         tags = {gui_id = gui_id},
                     },
                     {
                         type = "choose-elem-button",
                         elem_type = "fluid",
                         name="filter_fluid",
-                        handler = {[defines.events.on_gui_elem_changed] =
-                            gui_handlers.select_fluid},
+                        handler = select_fluid_handler,
                         tags = {gui_id = gui_id},
                     },
                 }
