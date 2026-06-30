@@ -1,6 +1,7 @@
 local format = require("__flib__.format")
 local flib_gui = require("__flib__.gui")
 local time_filter = require("scripts/filter-time")
+local summary = require("gui/summary")
 
 local function sprite_button_name_amount(item_type, name, amount)
     local sprite = item_type.."/"..name
@@ -60,6 +61,8 @@ local function matches_filter(log_entry, toolbar)
     elseif check_radio == "outgoing" then
         if not (log_entry.from_surface == toolbar.selected_surface_index) then return false end
     elseif check_radio == "combined" then
+        -- virtual-signal/signal-input
+        -- virtual-signal/signal-output
         if not(
             (log_entry.to_surface == toolbar.selected_surface_index) or
             (log_entry.from_surface == toolbar.selected_surface_index)
@@ -88,9 +91,10 @@ end
 
 ---@param entries LogEntry[]
 ---@param columns string[]
----@return table, integer
+---@return table, table, integer
 local function create_events_rows(entries, toolbar, columns)
     local events_rows = {}
+    local summary = summary.create_new_summary()
     local count = 0
 
     -- First row is column names
@@ -108,7 +112,7 @@ local function create_events_rows(entries, toolbar, columns)
             count = count + 1
         end
     end
-    return events_rows, count
+    return events_rows, summary, count
 end
 
 ---Does not filter by forces because I think that is silly
@@ -125,7 +129,7 @@ local function create_events_table(spelevator_log_gui)
 
     local columns = { "timestamp", "contents"}
 
-    local events_rows, count = create_events_rows(storage.history, toolbar, columns)
+    local events_rows, summary, count = create_events_rows(storage.history, toolbar, columns)
 
 
     flib_gui.add(spelevator_log_gui.events_contents, {
