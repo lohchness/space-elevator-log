@@ -29,8 +29,10 @@ end
 --- remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = game.player.surface.index}).index
 --- ))
 function reset_storage()
-    for gui_id, gui_data in pairs(storage.guis) do
-        gui_data.gui.destroy()
+    if storage.guis then
+        for gui_id, gui_data in pairs(storage.guis) do
+            gui_data.gui.destroy()
+        end
     end
 
     storage = {}
