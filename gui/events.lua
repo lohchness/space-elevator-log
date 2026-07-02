@@ -94,7 +94,7 @@ end
 ---@return table, table, integer
 local function create_events_rows(entries, toolbar, columns)
     local events_rows = {}
-    local summary = summary.create_new_summary()
+    local summary_data = summary.create_new_summary() ---@type SummaryData
     local count = 0
 
     -- First row is column names
@@ -109,16 +109,16 @@ local function create_events_rows(entries, toolbar, columns)
         local log_entry = entries[i]
         if matches_filter(log_entry, toolbar) then
             create_row(log_entry, events_rows)
+            summary.add_event(summary_data, entries[i])
             count = count + 1
         end
     end
-    return events_rows, summary, count
+    return events_rows, summary_data, count
 end
 
 ---Does not filter by forces because I think that is silly
 ---@param spelevator_log_gui GuiConfig
 local function create_events_table(spelevator_log_gui)
-
     --- Destroys children to prevent event_contents.children from
     --- being populated with the same information because
     --- destroy_gui() does not destroy the GUI elements (yet?)
@@ -128,8 +128,7 @@ local function create_events_table(spelevator_log_gui)
     local toolbar = spelevator_log_gui.toolbar
 
     local columns = { "timestamp", "contents"}
-
-    local events_rows, summary, count = create_events_rows(storage.history, toolbar, columns)
+    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns)
 
 
     flib_gui.add(spelevator_log_gui.events_contents, {
@@ -138,7 +137,7 @@ local function create_events_table(spelevator_log_gui)
             style = "flib_naked_scroll_pane_no_padding",
             ref = { "scroll_pane" },
             vertical_scroll_policy = "always",
-            style_mods = {width = 1000, height = 600, padding = 6},
+            style_mods = {width = 650, height = 600, padding = 6},
             children = {
                 {
                 type = "table",
@@ -152,6 +151,24 @@ local function create_events_table(spelevator_log_gui)
                 }
             }
         }
+    })
+
+    local summary_children = summary.create_gui_from_data(summary_data)
+    flib_gui.add(spelevator_log_gui.summary_contents, {
+        {
+      type = "scroll-pane",
+      style = "flib_naked_scroll_pane_no_padding",
+      name = "scroll_pane",
+      vertical_scroll_policy = "always",
+      style_mods = {width = 650, height = 600, padding = 6},
+      children = {
+        {
+          type = "flow",
+          direction = "vertical",
+          children = summary_children
+        }
+      }
+    }
     })
 end
 

@@ -49,6 +49,12 @@
 ---@field selected_item string?
 ---@field selected_fluid string?
 
+---@class SummaryData
+---@field items table<string, ItemWithQualityCount>
+---@field fluids table<string, FluidAmount>
+---@field trains table
+---@field stations table
+
 ---@class ElevatorZone
 ---@field name string              Titlecase of Surface name
 ---@field type string              "orbit" or "planet"
