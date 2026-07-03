@@ -1,3 +1,22 @@
+---@param item_type string
+---@param name string
+---@param amount int
+---@param handler function?
+---@return flib.GuiElemDef
+local function sprite_button(item_type, name, amount, handler)
+    local sprite = item_type.."/"..name
+
+    return {
+        type = "sprite-button",
+        style = "flib_slot_button_default",
+        sprite = sprite,
+        number = amount,
+        handler = handler or nil,
+        -- tags = {filter = item_type, value = name, gui_id = gui_id},
+        -- tooltip = tooltip
+    }
+end
+
 --- initial word letters uppercase ('title case').
 -- Here 'words' mean chunks of non-space characters.
 ---@param s string
@@ -25,6 +44,7 @@ local function any(table, func, ...)
 end
 
 return {
+    sprite_button = sprite_button,
     title = title,
     find = find,
     any = any,

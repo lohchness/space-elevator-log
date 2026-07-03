@@ -2,20 +2,7 @@ local format = require("__flib__.format")
 local flib_gui = require("__flib__.gui")
 local time_filter = require("scripts/filter-time")
 local summary = require("gui/summary")
-
-local function sprite_button_name_amount(item_type, name, amount)
-    local sprite = item_type.."/"..name
-
-    return {
-        type = "sprite-button",
-        style = "flib_slot_button_default",
-        sprite = sprite,
-        number = amount,
-        -- handler = gui_handlers.set_filter_item,
-        -- tags = {filter = item_type, value = name, gui_id = gui_id},
-        -- tooltip = tooltip
-    }
-end
+local utils = require("scripts/utils")
 
 
 ---@param entry LogEntry
@@ -29,11 +16,11 @@ local function create_row(entry, events_rows)
     }
 
     local contents_children = {}
-    for i, item in pairs(entry.contents) do
-        table.insert(contents_children, sprite_button_name_amount("item", item.name, item.count))
+    for _, item in pairs(entry.contents) do
+        table.insert(contents_children, utils.sprite_button("item", item.name, item.count, nil))
     end
     for i, j in pairs(entry.fluid_contents) do
-        table.insert(contents_children, sprite_button_name_amount("fluid", i, j))
+        table.insert(contents_children, utils.sprite_button("fluid", i, j, nil))
     end
     local contents_flow = {
         type = "flow",
