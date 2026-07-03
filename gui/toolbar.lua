@@ -43,12 +43,6 @@ local function update_filters(toolbar)
 end
 
 local function update_toolbar(toolbar)
-    toolbar.item.tooltip = (
-        toolbar.item.elem_value and 
-        prototypes.item[toolbar.item.elem_value] and
-        prototypes.item[toolbar.item.elem_value].localised_name
-    ) or ""
-
     update_filters(toolbar)
 end
 
