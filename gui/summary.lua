@@ -1,4 +1,5 @@
 local flib_table = require("__flib__.table")
+local utils = require("scripts/utils")
 
 ---@return SummaryData
 local function create_new_summary()
@@ -13,30 +14,47 @@ end
 ---@param summary_data SummaryData
 ---@param event LogEntry
 local function add_event(summary_data, event)
-    if event.contents then
-        for _, item in pairs(event.contents) do
-            summary_data.items[item.name] = summary_data.items[item.name]
-                or {
-                    name = item.name,
-                    count = 0,
-                }
-            summary_data.items[item.name].count = summary_data.items[item.name].count + item.count
-        end
+    for _, item in pairs(event.contents) do
+        summary_data.items[item.name] = summary_data.items[item.name]
+            or {
+                name = item.name,
+                count = 0,
+            }
+        summary_data.items[item.name].count = summary_data.items[item.name].count + item.count
+    end
+
+    for name, amount in pairs(event.fluid_contents) do
+        summary_data.fluids[name] = summary_data.fluids[name] or 0
+        summary_data.fluids[name] = summary_data.fluids[name] + amount
     end
 end
 
+
+---@param summary_data SummaryData
 local function create_gui_from_data(summary_data)
     -- Array of sprite-buttons
     local top_items = {}
+    local top_fluids = {}
+
     table.sort(summary_data.items, function(a, b) return a.count > b.count end)
-    for name, item in pairs(summary_data.items) do
-        table.insert(top_items,
-        {
-            type = "sprite-button",
-            sprite = "item/"..name,
-            number = item.count,
-        }
-    )
+    table.sort(summary_data.fluids, function(a,b) return a > b end)
+
+    for _, item in pairs(summary_data.items) do
+        table.insert(top_items, utils.sprite_button(
+            "item",
+            item.name,
+            item.count,
+            nil
+        ))
+    end
+
+    for name, amount in pairs(summary_data.fluids) do
+        table.insert(top_fluids, utils.sprite_button(
+            "fluid",
+            name,
+            amount,
+            nil
+        ))
     end
 
     local summary_contents = {
@@ -56,7 +74,7 @@ local function create_gui_from_data(summary_data)
         {
             type = "table",
             column_count = 10,
-            children = {},
+            children = top_fluids,
         },
     }
     return summary_contents
