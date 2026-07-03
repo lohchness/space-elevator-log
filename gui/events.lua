@@ -7,7 +7,7 @@ local utils = require("scripts/utils")
 
 ---@param entry LogEntry
 ---@param events_rows table
-local function create_row(entry, events_rows)
+local function create_row(entry, events_rows, gui_id)
     local relative_time = game.tick - entry.time
 
     local timestamp = {
@@ -17,10 +17,10 @@ local function create_row(entry, events_rows)
 
     local contents_children = {}
     for _, item in pairs(entry.contents) do
-        table.insert(contents_children, utils.sprite_button("item", item.name, item.count, nil))
+        table.insert(contents_children, utils.sprite_button("item", item.name, item.count, gui_id))
     end
     for i, j in pairs(entry.fluid_contents) do
-        table.insert(contents_children, utils.sprite_button("fluid", i, j, nil))
+        table.insert(contents_children, utils.sprite_button("fluid", i, j, gui_id))
     end
     local contents_flow = {
         type = "flow",
@@ -79,7 +79,7 @@ end
 ---@param entries LogEntry[]
 ---@param columns string[]
 ---@return table, table, integer
-local function create_events_rows(entries, toolbar, columns)
+local function create_events_rows(entries, toolbar, columns, gui_id)
     local events_rows = {}
     local summary_data = summary.create_new_summary() ---@type SummaryData
     local count = 0
@@ -95,7 +95,7 @@ local function create_events_rows(entries, toolbar, columns)
     for i = table_size(entries), 1, -1 do
         local log_entry = entries[i]
         if matches_filter(log_entry, toolbar) then
-            create_row(log_entry, events_rows)
+            create_row(log_entry, events_rows, gui_id)
             summary.add_event(summary_data, entries[i])
             count = count + 1
         end
@@ -114,8 +114,13 @@ local function create_events_table(spelevator_log_gui)
     spelevator_log_gui.summary_contents.clear()
     local toolbar = spelevator_log_gui.toolbar
 
+    --- TODO: Refactor toolbar to contain an extra table 
+    --- for easy access to gui elements like elem-buttons
+    --- and for filters only (with gui id)
+    --- to avoid atrocious gui_id drilling below
+
     local columns = { "timestamp", "contents"}
-    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns)
+    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns, spelevator_log_gui.gui_id)
 
 
     flib_gui.add(spelevator_log_gui.events_contents, {
@@ -140,7 +145,7 @@ local function create_events_table(spelevator_log_gui)
         }
     })
 
-    local summary_children = summary.create_gui_from_data(summary_data)
+    local summary_children = summary.create_gui_from_data(summary_data, spelevator_log_gui.gui_id)
     flib_gui.add(spelevator_log_gui.summary_contents, {
         {
       type = "scroll-pane",

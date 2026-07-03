@@ -31,7 +31,8 @@ end
 
 
 ---@param summary_data SummaryData
-local function create_gui_from_data(summary_data)
+---@param gui_id string
+local function create_gui_from_data(summary_data, gui_id)
     -- Array of sprite-buttons
     local top_items = {}
     local top_fluids = {}
@@ -44,7 +45,7 @@ local function create_gui_from_data(summary_data)
             "item",
             item.name,
             item.count,
-            nil
+            gui_id
         ))
     end
 
@@ -53,7 +54,7 @@ local function create_gui_from_data(summary_data)
             "fluid",
             name,
             amount,
-            nil
+            gui_id
         ))
     end
 

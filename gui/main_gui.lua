@@ -86,6 +86,8 @@ local function open_gui(player)
       item = new_gui.toolbar.row2.filter_item,
       zone_list = new_gui.toolbar.row2.filter_zone_list,
       radios = new_gui.toolbar.row3,
+      filter_item_button = new_gui.toolbar.row2.filter_item,
+      filter_fluid_button = new_gui.toolbar.row2.filter_fluid,
       selected_surface_index = 0,
       selected_radio = new_gui.toolbar.row3.incoming.name,
       selected_item = nil,

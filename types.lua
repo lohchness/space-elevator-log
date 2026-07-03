@@ -44,6 +44,8 @@
 ---@field item LuaGuiElement
 ---@field zone_list LuaGuiElement
 ---@field radios LuaGuiElement
+---@field filter_item_button LuaGuiElement
+---@field filter_fluid_button LuaGuiElement
 ---@field selected_surface_index int
 ---@field selected_radio string
 ---@field selected_item string?
