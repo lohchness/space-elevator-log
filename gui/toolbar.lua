@@ -136,7 +136,7 @@ local function create_toolbar(gui_id)
                 children = {
                     {
                         type = "sprite",
-                        sprite = "rocket-log-clock-white",
+                        sprite = "virtual-signal/signal-clock",
                     },
                     {
                         type = "drop-down",
@@ -177,7 +177,7 @@ local function create_toolbar(gui_id)
                     },
                     {
                         type = "sprite",
-                        sprite = "utility/search",
+                        sprite = "virtual-signal/signal-stack-size",
                         tooltip = { "spelevator-log.filter-item-label" },
                     },
                     {
@@ -186,6 +186,11 @@ local function create_toolbar(gui_id)
                         name="filter_item",
                         handler = select_item_handler,
                         tags = {gui_id = gui_id},
+                    },
+                    {
+                        type = "sprite",
+                        sprite = "virtual-signal/signal-liquid",
+                        tooltip = { "spelevator-log.filter-item-label" },
                     },
                     {
                         type = "choose-elem-button",
