@@ -6,6 +6,11 @@ local spelevator_log_gui = require("gui/main_gui")
 local utils = require("scripts/utils")
 local mod_gui_button = require("gui/mod_gui_button")
 
+function reset_all()
+    destroy_player_gui()
+    reset_storage()
+end
+
 function destroy_player_gui()
     -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()  
     local c = game.player.gui.screen.children
@@ -15,9 +20,10 @@ function destroy_player_gui()
         end
     end
 
-    mod_gui_button.add_mod_gui_button(game.player)
+    local gui_id = "gui-" .. game.player.name
+    storage.guis[gui_id] = nil
 
-    reset_storage()
+    mod_gui_button.add_mod_gui_button(game.player)
 end
 
 --- Surface Index differs from Zone Index.
@@ -187,6 +193,7 @@ commands.add_command("sl_last_entry", nil, print_last_entry)
 commands.add_command("sl_print_storage_surfaces", nil, print_storage_surfaces)
 commands.add_command("sl_destroy_existing_gui_element_in_parent", nil, destroy_player_gui)
 commands.add_command("sl_clear_storage_surfaces", nil, clear_storage_surfaces)
+commands.add_command("sl_reset_all", nil, reset_all)
 
 
 flib_gui.handle_events()
