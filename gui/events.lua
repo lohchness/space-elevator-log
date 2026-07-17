@@ -15,6 +15,13 @@ local function create_row(entry, events_rows, gui_id)
         caption = format.time(relative_time, true)
     }
 
+    local train = {}
+    if entry.train.valid then
+        train = utils.sprite_button("item", entry.train.front_stock.prototype.name, nil, gui_id)
+    else
+        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id)
+    end
+
     local contents_children = {}
     for _, item in pairs(entry.contents) do
         table.insert(contents_children, utils.sprite_button("item", item.name, item.count, gui_id))
@@ -28,6 +35,7 @@ local function create_row(entry, events_rows, gui_id)
         children = contents_children
     }
     table.insert(events_rows, timestamp)
+    table.insert(events_rows, train)
     table.insert(events_rows, contents_flow)
 end
 
@@ -119,7 +127,7 @@ local function create_events_table(spelevator_log_gui)
     --- and for filters only (with gui id)
     --- to avoid atrocious gui_id drilling below
 
-    local columns = { "timestamp", "contents"}
+    local columns = { "timestamp", "train", "contents"}
     local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns, spelevator_log_gui.gui_id)
 
 

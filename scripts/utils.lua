@@ -2,10 +2,11 @@ local gui_handlers = require("gui/handlers")
 
 ---@param item_type string
 ---@param name string
----@param amount int
+---@param amount int?
 ---@param gui_id string
+---@param custom_handler function?
 ---@return flib.GuiElemDef
-local function sprite_button(item_type, name, amount, gui_id)
+local function sprite_button(item_type, name, amount, gui_id, custom_handler)
     local sprite = item_type.."/"..name
 
     return {
@@ -13,7 +14,7 @@ local function sprite_button(item_type, name, amount, gui_id)
         style = "flib_slot_button_default",
         sprite = sprite,
         number = amount,
-        handler = gui_handlers.set_filter_sprite_button,
+        handler = custom_handler or gui_handlers.set_filter_sprite_button,
         tags = {item_type = item_type, name = name, gui_id = gui_id},
         -- tooltip = tooltip
     }
