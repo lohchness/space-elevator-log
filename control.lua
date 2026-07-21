@@ -1,4 +1,4 @@
-local tables =  require("__flib__.table")
+local tables = require("__flib__.table")
 local format = require("__flib__.format")
 local util = require("util")
 local flib_gui = require("__flib__.gui")
@@ -12,7 +12,7 @@ function reset_all()
 end
 
 function destroy_player_gui()
-    -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()  
+    -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()
     local c = game.player.gui.screen.children
     for _, i in pairs(c) do
         if i.name == 'spelevator-log-window' then
@@ -27,8 +27,8 @@ function destroy_player_gui()
 end
 
 --- Surface Index differs from Zone Index.
---- Zone Index is SE's surface order starting from Calidus Orbit, 
---- then the first planet and its orbit, its moon (if any) and its orbit, 
+--- Zone Index is SE's surface order starting from Calidus Orbit,
+--- then the first planet and its orbit, its moon (if any) and its orbit,
 --- and so on to the next star system,
 --- whereas Surface Index increments on exploring a new surface.
 --- Surface Index can be reused if the surface is deleted and a new surface is generated.
@@ -58,9 +58,9 @@ function check_storage()
         game.player.print("storage not initiated")
         return
     end
-    game.player.print("History: "..table_size(storage.history).." entries")
-    game.player.print("Surfaces: "..table_size(storage.zone_by_surface).." entries")
-    game.player.print("Storage: "..table_size(storage.guis).." entries")
+    game.player.print("History: " .. table_size(storage.history) .. " entries")
+    game.player.print("Surfaces: " .. table_size(storage.zone_by_surface) .. " entries")
+    game.player.print("Storage: " .. table_size(storage.guis) .. " entries")
     -- game.player.print(serpent.dump(storage.zone_by_surface))
 end
 
@@ -68,21 +68,20 @@ function print_last_entry()
     ---@type LogEntry
     local entry = storage.history[table_size(storage.history)]
 
-    game.player.print(format.time(game.tick - entry.time, true).." ago")
+    game.player.print(format.time(game.tick - entry.time, true) .. " ago")
     game.player.print("Contents:")
-    for _,item in pairs(entry.contents) do
-        game.player.print(item.name..": "..item.count)
+    for _, item in pairs(entry.contents) do
+        game.player.print(item.name .. ": " .. item.count)
     end
 
     game.player.print("Remaining Stops:")
     if entry.records then
-        for _,record in pairs(entry.records) do
+        for _, record in pairs(entry.records) do
             game.player.print(record.station)
         end
     else
         print("No Records")
     end
-    
 end
 
 function clear_storage_surfaces()
@@ -96,9 +95,9 @@ function print_storage_surfaces()
     for i, j in pairs(storage.zone_by_surface) do
         -- game.player.print(j.name..", "..j.type..", "..j.zone_index)
         game.player.print(
-            serpent.block(j, { compact=true })
+            serpent.block(j, { compact = true })
         )
-    end 
+    end
 end
 
 local function store_zone_pair(planet_surface_index, orbit_surface_index)
@@ -111,16 +110,18 @@ local function store_zone_pair(planet_surface_index, orbit_surface_index)
     end
 
     ---@type SEZoneType
-    local planet_zone = remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = planet_surface_index})
+    local planet_zone = remote.call("space-exploration", "get_zone_from_surface_index",
+        { surface_index = planet_surface_index })
     ---@type SEZoneType
-    local orbit_zone = remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = orbit_surface_index})
+    local orbit_zone = remote.call("space-exploration", "get_zone_from_surface_index",
+        { surface_index = orbit_surface_index })
 
     storage.zone_by_surface[planet_surface_index] = {
         name = utils.title(planet_zone.name),
         type = planet_zone.type,
         zone_index = planet_zone.index,
         surface_index = planet_surface_index,
-        opposite = nil,
+        opposite = nil, ---@diagnostic disable-line: assign-type-mismatch
     }
     storage.zone_by_surface[orbit_surface_index] = {
         name = utils.title(orbit_zone.name),
@@ -138,9 +139,8 @@ function on_teleport_started(event)
     return
 end
 
-
 ---@param event TrainTeleportFinishedEvent
-function AddTrainLog(event) 
+function AddTrainLog(event)
     ---@type LogEntry
     ---@diagnostic disable-next-line: missing-fields
     local log_entry = {
@@ -158,7 +158,7 @@ function AddTrainLog(event)
         log_entry.current = schedule.current
     end
 
-    --- Insert surface names into storage here instead of iterating 
+    --- Insert surface names into storage here instead of iterating
     --- every entry upon opening GUI because train logs will be very large.
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
@@ -186,7 +186,7 @@ script.on_init(reset_storage)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
 -- For Custom Input defined in data.lua
-script.on_event("open-custom-input", function (event)
+script.on_event("open-custom-input", function(event)
     spelevator_log_gui.open_or_close_gui(game.players[event.player_index])
 end)
 

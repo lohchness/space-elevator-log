@@ -38,7 +38,7 @@ local function create_gui_from_data(summary_data, gui_id)
     local top_fluids = {}
 
     table.sort(summary_data.items, function(a, b) return a.count > b.count end)
-    table.sort(summary_data.fluids, function(a,b) return a > b end)
+    table.sort(summary_data.fluids, function(a, b) return a > b end)
 
     for _, item in pairs(summary_data.items) do
         table.insert(top_items, utils.sprite_button(

@@ -118,10 +118,10 @@ function gui_handlers.set_filter_sprite_button(event)
 end
 
 local function create_toolbar(gui_id)
-    local radio_handler = {[defines.events.on_gui_checked_state_changed] = gui_handlers.select_radio}
-    local drop_down_handler = {[defines.events.on_gui_selection_state_changed] = gui_handlers.refresh_handler}
-    local select_item_handler = {[defines.events.on_gui_elem_changed] = gui_handlers.select_item}
-    local select_fluid_handler = {[defines.events.on_gui_elem_changed] = gui_handlers.select_fluid}
+    local radio_handler = { [defines.events.on_gui_checked_state_changed] = gui_handlers.select_radio }
+    local drop_down_handler = { [defines.events.on_gui_selection_state_changed] = gui_handlers.refresh_handler }
+    local select_item_handler = { [defines.events.on_gui_elem_changed] = gui_handlers.select_item }
+    local select_fluid_handler = { [defines.events.on_gui_elem_changed] = gui_handlers.select_fluid }
     return {
         type = "flow",
         direction = "vertical",
@@ -145,7 +145,7 @@ local function create_toolbar(gui_id)
                         selected_index = time_filter.default_index,
                         tooltip = { "spelevator-log.filter-time-period-label" },
                         handler = drop_down_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                     {
                         type = "sprite-button",
@@ -153,7 +153,7 @@ local function create_toolbar(gui_id)
                         style = "item_and_count_select_confirm",
                         tooltip = { "spelevator-log.refresh" },
                         handler = gui_handlers.refresh_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                 },
             },
@@ -173,7 +173,7 @@ local function create_toolbar(gui_id)
                         name = "filter_zone_list",
                         items = {},
                         handler = drop_down_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                     {
                         type = "sprite",
@@ -183,9 +183,9 @@ local function create_toolbar(gui_id)
                     {
                         type = "choose-elem-button",
                         elem_type = "item",
-                        name="filter_item",
+                        name = "filter_item",
                         handler = select_item_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                     {
                         type = "sprite",
@@ -195,9 +195,9 @@ local function create_toolbar(gui_id)
                     {
                         type = "choose-elem-button",
                         elem_type = "fluid",
-                        name="filter_fluid",
+                        name = "filter_fluid",
                         handler = select_fluid_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                 }
             },
@@ -213,7 +213,7 @@ local function create_toolbar(gui_id)
                         name = "incoming",
                         caption = { "spelevator-log.incoming" },
                         handler = radio_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                     {
                         type = "radiobutton",
@@ -221,7 +221,7 @@ local function create_toolbar(gui_id)
                         name = "outgoing",
                         caption = { "spelevator-log.outgoing" },
                         handler = radio_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                     {
                         type = "radiobutton",
@@ -229,7 +229,7 @@ local function create_toolbar(gui_id)
                         name = "combined",
                         caption = { "spelevator-log.combined" },
                         handler = radio_handler,
-                        tags = {gui_id = gui_id},
+                        tags = { gui_id = gui_id },
                     },
                 }
             }

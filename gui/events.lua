@@ -58,10 +58,12 @@ local function matches_filter(log_entry, toolbar)
     elseif check_radio == "combined" then
         -- virtual-signal/signal-input
         -- virtual-signal/signal-output
-        if not(
-            (log_entry.to_surface == toolbar.selected_surface_index) or
-            (log_entry.from_surface == toolbar.selected_surface_index)
-        ) then return false end
+        if not (
+                (log_entry.to_surface == toolbar.selected_surface_index) or
+                (log_entry.from_surface == toolbar.selected_surface_index)
+            ) then
+            return false
+        end
     end
 
     if check_item then
@@ -96,7 +98,7 @@ local function create_events_rows(entries, toolbar, columns, gui_id)
     for _, col in pairs(columns) do
         table.insert(events_rows, {
             type = "label",
-            caption = { "spelevator-log.table-header-"..col }
+            caption = { "spelevator-log.table-header-" .. col }
         })
     end
 
@@ -122,13 +124,14 @@ local function create_events_table(spelevator_log_gui)
     spelevator_log_gui.summary_contents.clear()
     local toolbar = spelevator_log_gui.toolbar
 
-    --- TODO: Refactor toolbar to contain an extra table 
+    --- TODO: Refactor toolbar to contain an extra table
     --- for easy access to gui elements like elem-buttons
     --- and for filters only (with gui id)
     --- to avoid atrocious gui_id drilling below
 
-    local columns = { "timestamp", "train", "contents"}
-    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns, spelevator_log_gui.gui_id)
+    local columns = { "timestamp", "train", "contents" }
+    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns,
+        spelevator_log_gui.gui_id)
 
 
     flib_gui.add(spelevator_log_gui.events_contents, {
@@ -137,17 +140,17 @@ local function create_events_table(spelevator_log_gui)
             style = "flib_naked_scroll_pane_no_padding",
             ref = { "scroll_pane" },
             vertical_scroll_policy = "always",
-            style_mods = {width = 650, height = 600, padding = 6},
+            style_mods = { width = 650, height = 600, padding = 6 },
             children = {
                 {
-                type = "table",
-                name = "events_table",
-                column_count = table_size(columns),
-                draw_vertical_lines = true,
-                draw_horizontal_line_after_headers = true,
-                vertical_centering = true,
-                style_mods = {right_cell_padding = 3, left_cell_padding = 3},
-                children = events_rows
+                    type = "table",
+                    name = "events_table",
+                    column_count = table_size(columns),
+                    draw_vertical_lines = true,
+                    draw_horizontal_line_after_headers = true,
+                    vertical_centering = true,
+                    style_mods = { right_cell_padding = 3, left_cell_padding = 3 },
+                    children = events_rows
                 }
             }
         }
@@ -156,19 +159,19 @@ local function create_events_table(spelevator_log_gui)
     local summary_children = summary.create_gui_from_data(summary_data, spelevator_log_gui.gui_id)
     flib_gui.add(spelevator_log_gui.summary_contents, {
         {
-      type = "scroll-pane",
-      style = "flib_naked_scroll_pane_no_padding",
-      name = "scroll_pane",
-      vertical_scroll_policy = "always",
-      style_mods = {width = 650, height = 600, padding = 6},
-      children = {
-        {
-          type = "flow",
-          direction = "vertical",
-          children = summary_children
+            type = "scroll-pane",
+            style = "flib_naked_scroll_pane_no_padding",
+            name = "scroll_pane",
+            vertical_scroll_policy = "always",
+            style_mods = { width = 650, height = 600, padding = 6 },
+            children = {
+                {
+                    type = "flow",
+                    direction = "vertical",
+                    children = summary_children
+                }
+            }
         }
-      }
-    }
     })
 end
 

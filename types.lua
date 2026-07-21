@@ -64,7 +64,7 @@
 ---@field surface_index int
 
 ---@class SEZoneType
----@field name string           
+---@field name string
 ---@field index int             Zone Index
 ---@field surface_index int
 ---@field type string           "planet" or "orbit"
