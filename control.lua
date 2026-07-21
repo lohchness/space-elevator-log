@@ -27,10 +27,13 @@ function destroy_player_gui()
 end
 
 --- Surface Index differs from Zone Index.
---- Zone Index is the surface order starting from Calidus Orbit, 
+--- Zone Index is SE's surface order starting from Calidus Orbit, 
 --- then the first planet and its orbit, its moon (if any) and its orbit, 
 --- and so on to the next star system,
 --- whereas Surface Index increments on exploring a new surface.
+--- Surface Index can be reused if the surface is deleted and a new surface is generated.
+--- TODO: Refactor storage to store zone by zone index, and retrieve
+--- information with SE remote interface get_zone_from_zone_index
 --- /c game.print("Zone Index: "..serpent.block(
 --- remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = game.player.surface.index}).index
 --- ))
