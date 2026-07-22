@@ -57,7 +57,9 @@ function gui_handlers.select_radio(event)
 
     local toolbar = gui_config.toolbar
     for _, radio in pairs(toolbar.radios.children) do
-        radio.state = false
+        if radio.type == "radiobutton" then -- ???
+            radio.state = false
+        end
     end
     event.element.state = true
     toolbar.selected_radio = event.element.name
@@ -65,7 +67,7 @@ function gui_handlers.select_radio(event)
     refresh(gui_config)
 end
 
-function gui_handlers.refresh_handler(event)
+function gui_handlers.generic_refresh(event)
     refresh(storage.guis[event.element.tags.gui_id])
 end
 
@@ -119,9 +121,11 @@ end
 
 local function create_toolbar(gui_id)
     local radio_handler = { [defines.events.on_gui_checked_state_changed] = gui_handlers.select_radio }
-    local drop_down_handler = { [defines.events.on_gui_selection_state_changed] = gui_handlers.refresh_handler }
+    local drop_down_handler = { [defines.events.on_gui_selection_state_changed] = gui_handlers.generic_refresh }
     local select_item_handler = { [defines.events.on_gui_elem_changed] = gui_handlers.select_item }
     local select_fluid_handler = { [defines.events.on_gui_elem_changed] = gui_handlers.select_fluid }
+    local hide_empty_trains_handler = { [defines.events.on_gui_checked_state_changed] = gui_handlers.generic_refresh }
+
     return {
         type = "flow",
         direction = "vertical",
@@ -229,6 +233,15 @@ local function create_toolbar(gui_id)
                         name = "combined",
                         caption = { "spelevator-log.combined" },
                         handler = radio_handler,
+                        tags = { gui_id = gui_id },
+                    },
+                    {
+                        type = "checkbox",
+                        state = "false",
+                        name = "hide_empty_trains",
+                        caption = { "spelevator-log.hide_empty_trains" },
+                        style_mods = { left_margin = 15 },
+                        handler = hide_empty_trains_handler,
                         tags = { gui_id = gui_id },
                     },
                 }

@@ -52,6 +52,7 @@ local function matches_filter(log_entry, toolbar)
     local matches_content = not (check_item or check_fluid)
 
     local check_radio = toolbar.selected_radio
+    local check_empty_train = toolbar.hide_empty_trains.state
 
     if check_radio == "incoming" then
         if not (log_entry.to_surface == toolbar.selected_surface_index) then return false end
@@ -64,6 +65,14 @@ local function matches_filter(log_entry, toolbar)
                 (log_entry.to_surface == toolbar.selected_surface_index) or
                 (log_entry.from_surface == toolbar.selected_surface_index)
             ) then
+            return false
+        end
+    end
+
+    if check_empty_train then
+        if table_size(log_entry.contents) == 0
+            and table_size(log_entry.fluid_contents) == 0
+        then
             return false
         end
     end

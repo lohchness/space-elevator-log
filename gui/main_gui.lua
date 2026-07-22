@@ -89,6 +89,7 @@ local function open_gui(player)
             filter_fluid_button = new_gui.toolbar.row2.filter_fluid,
             selected_surface_index = 0,
             selected_radio = new_gui.toolbar.row3.incoming.name,
+            hide_empty_trains = new_gui.toolbar.row3.hide_empty_trains,
             selected_item = nil,
             selected_fluid = nil,
         }
@@ -150,7 +151,7 @@ local function open_or_close_gui(player)
     if storage.guis[gui_id] and storage.guis[gui_id].gui.visible then
         destroy_gui(gui_id) -- Hide existing gui
     else
-        open_gui(player) -- Create new or show existing gui
+        open_gui(player)    -- Create new or show existing gui
     end
 end
 

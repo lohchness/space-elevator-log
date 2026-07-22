@@ -47,6 +47,7 @@
 ---@field filter_fluid_button LuaGuiElement
 ---@field selected_surface_index int
 ---@field selected_radio string
+---@field hide_empty_trains LuaGuiElement
 ---@field selected_item string?
 ---@field selected_fluid string?
 
