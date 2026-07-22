@@ -17,9 +17,9 @@ local function create_row(entry, events_rows, gui_id)
 
     local train = {}
     if entry.train.valid then
-        train = utils.sprite_button("item", entry.train.front_stock.prototype.name, nil, gui_id)
+        train = utils.sprite_button("item", entry.train.front_stock.prototype.name, nil, gui_id, on_train_sprite_select)
     else
-        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id)
+        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id, on_train_sprite_select)
     end
 
     local contents_children = {}
@@ -38,6 +38,8 @@ local function create_row(entry, events_rows, gui_id)
     table.insert(events_rows, train)
     table.insert(events_rows, contents_flow)
 end
+
+function on_train_sprite_select() return end
 
 ---@param log_entry LogEntry
 ---@param toolbar ToolbarGui
