@@ -4,6 +4,7 @@ local time_filter = require("scripts/filter-time")
 local summary = require("gui/summary")
 local utils = require("scripts/utils")
 
+local function on_train_sprite_select() return end
 
 ---@param entry LogEntry
 ---@param events_rows table
@@ -38,8 +39,6 @@ local function create_row(entry, events_rows, gui_id)
     table.insert(events_rows, train)
     table.insert(events_rows, contents_flow)
 end
-
-function on_train_sprite_select() return end
 
 ---@param log_entry LogEntry
 ---@param toolbar ToolbarGui

@@ -42,15 +42,18 @@ local function update_filters(toolbar)
     toolbar.zone_list.selected_index = new_index
 end
 
+---@param toolbar ToolbarGui
 local function update_toolbar(toolbar)
     update_filters(toolbar)
 end
 
+---@param gui_config GuiConfig
 local function refresh(gui_config)
     update_toolbar(gui_config.toolbar)
     events_table.create_events_table(gui_config)
 end
 
+---@param event EventData.on_gui_checked_state_changed
 function gui_handlers.select_radio(event)
     local gui_id = event.element.tags.gui_id
     local gui_config = storage.guis[gui_id]
@@ -67,10 +70,12 @@ function gui_handlers.select_radio(event)
     refresh(gui_config)
 end
 
+---@param event flib.GuiEventData
 function gui_handlers.generic_refresh(event)
     refresh(storage.guis[event.element.tags.gui_id])
 end
 
+---@param event EventData.on_gui_elem_changed
 function gui_handlers.select_item(event)
     local gui_config = storage.guis[event.element.tags.gui_id]
     gui_config.toolbar.selected_item = nil
@@ -85,6 +90,7 @@ function gui_handlers.select_item(event)
     refresh(gui_config)
 end
 
+---@param event EventData.on_gui_elem_changed
 function gui_handlers.select_fluid(event)
     local gui_config = storage.guis[event.element.tags.gui_id]
 
@@ -98,7 +104,6 @@ function gui_handlers.select_fluid(event)
 
     refresh(gui_config)
 end
-
 
 local function create_toolbar(gui_id)
     local radio_handler = { [defines.events.on_gui_checked_state_changed] = gui_handlers.select_radio }
@@ -175,7 +180,7 @@ local function create_toolbar(gui_id)
                     {
                         type = "sprite",
                         sprite = "virtual-signal/signal-liquid",
-                        tooltip = { "spelevator-log.filter-item-label" },
+                        tooltip = { "spelevator-log.filter-fluid-label" },
                     },
                     {
                         type = "choose-elem-button",
