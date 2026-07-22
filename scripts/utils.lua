@@ -6,7 +6,14 @@ function gui_handlers.set_filter_sprite_button(event)
     local gui_config = storage.guis[event.element.tags.gui_id]
 
     -- Open factoriopedia here
-    if event.alt and event.button == defines.mouse_button_type.left then return end
+    if event.alt and event.button == defines.mouse_button_type.left then
+        if event.element.tags.item_type == "item" then
+            game.players[event.player_index].open_factoriopedia_gui(prototypes.item[event.element.tags.name])
+        elseif event.element.tags.item_type == "fluid" then
+            game.players[event.player_index].open_factoriopedia_gui(prototypes.fluid[event.element.tags.name])
+        end
+        return
+    end
 
     gui_config.toolbar.selected_item = nil
     gui_config.toolbar.selected_fluid = nil
