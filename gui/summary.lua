@@ -1,4 +1,3 @@
-local flib_table = require("__flib__.table")
 local utils = require("scripts/utils")
 
 ---@return SummaryData
@@ -24,8 +23,11 @@ local function add_event(summary_data, event)
     end
 
     for name, amount in pairs(event.fluid_contents) do
-        summary_data.fluids[name] = summary_data.fluids[name] or 0
-        summary_data.fluids[name] = summary_data.fluids[name] + amount
+        summary_data.fluids[name] = summary_data.fluids[name] or {
+            name = name,
+            amount = 0,
+        }
+        summary_data.fluids[name].amount = summary_data.fluids[name].amount + amount
     end
 end
 
@@ -33,14 +35,18 @@ end
 ---@param summary_data SummaryData
 ---@param gui_id string
 local function create_gui_from_data(summary_data, gui_id)
+    -- Convert to array for sorting
+    local items_array = utils.filter(summary_data.items, function() return true end)
+    local fluids_array = utils.filter(summary_data.fluids, function() return true end)
+
+    table.sort(items_array, function(a, b) return a.count > b.count end)
+    table.sort(fluids_array, function(a, b) return a.amount > b.amount end)
+
     -- Array of sprite-buttons
     local top_items = {}
     local top_fluids = {}
 
-    table.sort(summary_data.items, function(a, b) return a.count > b.count end)
-    table.sort(summary_data.fluids, function(a, b) return a > b end)
-
-    for _, item in pairs(summary_data.items) do
+    for _, item in pairs(items_array) do
         table.insert(top_items, utils.sprite_button(
             "item",
             item.name,
@@ -49,11 +55,11 @@ local function create_gui_from_data(summary_data, gui_id)
         ))
     end
 
-    for name, amount in pairs(summary_data.fluids) do
+    for _, fluid in pairs(fluids_array) do
         table.insert(top_fluids, utils.sprite_button(
             "fluid",
-            name,
-            amount,
+            fluid.name,
+            fluid.amount,
             gui_id
         ))
     end

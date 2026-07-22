@@ -66,15 +66,44 @@ end
 -- Passes the index as second argument to the function.
 ---@param tbl table             the table to be searched
 ---@param func function         the function to use when searching for any matching element
----@param ... any?
+---@param ... any? additional arguments passed to the function
 ---@return any, any|nil|?       the first found value
 local function find(tbl, func, ...)
     for k, v in pairs(tbl) do if func(v, k, ...) then return v, k end end
     return nil
 end
 
+---Given a candidate search function, iterates over the table, calling the function
+-- for each element in the table, and returns true if search function returned true.
+-- Passes the index as second argument to the function.
+---@param table table       the table to be searched
+---@param func function     the function to use to search for any matching element
+---@param ... any?          additional arguments passed to the function
+---@return boolean true     if an element was found, false if none was found
 local function any(table, func, ...)
     return find(table, func, ...) ~= nil
+end
+
+--- Given a filter function, creates a filtered copy of the table
+-- by calling the function for each element in the table, and
+-- filtering out any key-value pairs for non-true results. Passes the index as second argument to the function.
+---@param tbl table       the table to be filtered
+---@param func function   the function to filter values
+---@param ... any?        additional arguments passed to the function
+---@return table          a new table containing the filtered key-value pairs
+function filter(tbl, func, ...)
+    local new_tbl = {}
+    local add = table_size(tbl) > 0
+    for k, v in pairs(tbl) do
+        if func(v, k, ...) then
+            if add then
+                table.insert(new_tbl, v)
+            else
+                new_tbl[k] = v
+            end
+        end
+    end
+    return new_tbl
 end
 
 return {
@@ -82,4 +111,5 @@ return {
     title = title,
     find = find,
     any = any,
+    filter = filter,
 }

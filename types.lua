@@ -53,7 +53,7 @@
 
 ---@class SummaryData
 ---@field items table<string, ItemWithQualityCount>
----@field fluids table<string, FluidAmount>
+---@field fluids table<string, {name: string, amount: FluidAmount}>
 ---@field trains table
 ---@field stations table
 
