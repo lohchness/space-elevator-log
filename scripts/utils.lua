@@ -1,5 +1,29 @@
 local gui_handlers = require("gui/handlers")
 
+--- Handles clicking a sprite button in the contents column of an event row.
+--- @param event EventData.on_gui_click
+function gui_handlers.set_filter_sprite_button(event)
+    local gui_config = storage.guis[event.element.tags.gui_id]
+
+    -- Open factoriopedia here
+    if event.alt and event.button == defines.mouse_button_type.left then return end
+
+    gui_config.toolbar.selected_item = nil
+    gui_config.toolbar.selected_fluid = nil
+    gui_config.toolbar.filter_item_button.elem_value = nil
+    gui_config.toolbar.filter_fluid_button.elem_value = nil
+
+    if event.element.tags.item_type == "item" then
+        gui_config.toolbar.selected_item = event.element.tags.name
+        gui_config.toolbar.filter_item_button.elem_value = event.element.tags.name
+    elseif event.element.tags.item_type == "fluid" then
+        gui_config.toolbar.selected_fluid = event.element.tags.name
+        gui_config.toolbar.filter_fluid_button.elem_value = event.element.tags.name
+    end
+
+    gui_handlers.generic_refresh(event)
+end
+
 ---@param item_type string
 ---@param name string
 ---@param amount int?
