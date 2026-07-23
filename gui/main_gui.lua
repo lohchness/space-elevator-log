@@ -156,6 +156,7 @@ local function open_or_close_gui(player)
     end
 end
 
+---@param player LuaPlayer
 local function close_gui(player)
     local gui_id = "gui-" .. player.name
     -- Ignore close requests if we are not already open
@@ -189,6 +190,22 @@ end
 function gui_handlers.mod_gui_button_click(event)
     local player = game.players[event.player_index]
     open_or_close_gui(player)
+end
+
+---@param event EventData.on_gui_click
+function gui_handlers.view_train_position(event)
+    ---@diagnostic disable-next-line param-type-mismatch
+    local train = game.train_manager.get_train_by_id(event.element.tags.train_id)
+    local player = game.get_player(event.player_index)
+    if not player then return end
+    if not train then
+        player.print("Train not valid anymore")
+        toolbar.refresh(storage.guis["gui-" .. player.name])
+        return
+    end
+
+    close_gui(player)
+    player.opened = train.front_stock
 end
 
 flib_gui.add_handlers(gui_handlers, function(e, handler)

@@ -36,8 +36,9 @@ end
 ---@param amount int?
 ---@param gui_id string
 ---@param custom_handler function?
+---@param train_id int?
 ---@return flib.GuiElemDef
-local function sprite_button(item_type, name, amount, gui_id, custom_handler)
+local function sprite_button(item_type, name, amount, gui_id, custom_handler, train_id)
     local sprite = item_type .. "/" .. name
 
     return {
@@ -46,7 +47,7 @@ local function sprite_button(item_type, name, amount, gui_id, custom_handler)
         sprite = sprite,
         number = amount,
         handler = custom_handler or gui_handlers.set_filter_sprite_button,
-        tags = { item_type = item_type, name = name, gui_id = gui_id },
+        tags = { item_type = item_type, name = name, gui_id = gui_id, train_id = train_id },
         -- tooltip = tooltip
     }
 end

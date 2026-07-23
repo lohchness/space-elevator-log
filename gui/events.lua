@@ -3,8 +3,7 @@ local flib_gui = require("__flib__.gui")
 local time_filter = require("scripts/filter-time")
 local summary = require("gui/summary")
 local utils = require("scripts/utils")
-
-local function on_train_sprite_select() return end
+local gui_handlers = require("gui/handlers")
 
 ---@param entry LogEntry
 ---@param events_rows table
@@ -18,9 +17,10 @@ local function create_row(entry, events_rows, gui_id)
 
     local train = {}
     if entry.train.valid then
-        train = utils.sprite_button("item", entry.train.front_stock.prototype.name, nil, gui_id, on_train_sprite_select)
+        train = utils.sprite_button("item", entry.train.front_stock.prototype.name, nil, gui_id,
+            gui_handlers.view_train_position, entry.train.id)
     else
-        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id, on_train_sprite_select)
+        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id)
     end
 
     local contents_children = {}
