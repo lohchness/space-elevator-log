@@ -145,6 +145,11 @@ local function create_toolbar(gui_id)
                         handler = gui_handlers.refresh_handler,
                         tags = { gui_id = gui_id },
                     },
+                    {
+                        type = "label",
+                        name = "display_stats",
+                        style_mods = { left_margin = 10 }
+                    }
                 },
             },
             {
@@ -226,7 +231,7 @@ local function create_toolbar(gui_id)
                         state = "false",
                         name = "hide_empty_trains",
                         caption = { "spelevator-log.hide_empty_trains" },
-                        style_mods = { left_margin = 15 },
+                        style_mods = { left_margin = 10 },
                         handler = hide_empty_trains_handler,
                         tags = { gui_id = gui_id },
                     },

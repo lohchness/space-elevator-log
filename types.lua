@@ -41,6 +41,7 @@
 
 ---@class ToolbarGui
 ---@field time_period LuaGuiElement
+---@field display_stats LuaGuiElement
 ---@field zone_list LuaGuiElement
 ---@field radios LuaGuiElement
 ---@field filter_item_button LuaGuiElement

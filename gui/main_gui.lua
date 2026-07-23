@@ -83,6 +83,7 @@ local function open_gui(player)
         ---@type ToolbarGui
         local toolbar_struct = {
             time_period = new_gui.toolbar.row1.filter_time_period,
+            display_stats = new_gui.toolbar.row1.display_stats,
             zone_list = new_gui.toolbar.row2.filter_zone_list,
             radios = new_gui.toolbar.row3,
             filter_item_button = new_gui.toolbar.row2.filter_item,
