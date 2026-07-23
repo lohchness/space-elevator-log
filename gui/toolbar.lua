@@ -127,13 +127,13 @@ local function create_toolbar(gui_id)
                     {
                         type = "sprite",
                         sprite = "virtual-signal/signal-clock",
+                        tooltip = { "spelevator-log.filter-time-period" },
                     },
                     {
                         type = "drop-down",
                         name = "filter_time_period",
                         items = time_filter.time_period_items,
                         selected_index = time_filter.default_index,
-                        tooltip = { "spelevator-log.filter-time-period-label" },
                         handler = drop_down_handler,
                         tags = { gui_id = gui_id },
                     },
