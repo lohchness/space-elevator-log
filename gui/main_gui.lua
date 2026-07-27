@@ -2,6 +2,7 @@ local flib_gui = require("__flib__.gui")
 local toolbar = require("gui/toolbar")
 local events_table = require("gui/events")
 local gui_handlers = require("gui/handlers")
+local utils = require("scripts/utils")
 
 ---Create Header GuiELemDef for flib
 ---@param gui_id string
@@ -28,15 +29,10 @@ local function header(gui_id)
     }
 end
 
---- Creates
 --- @param player LuaPlayer
 local function open_gui(player)
     local gui_id = "gui-" .. player.name
-
-    --- If player hasn't opened GUI, then create a new GUI and put it in storage.guis.
     if not storage.guis[gui_id] then
-        --game.print(tostring(game.tick).." creating new gui")
-        -- log("Creating new gui for "..gui_id)
         ---@type flib.GuiElemDef[]
         local gui_contents = {
             {
@@ -105,86 +101,49 @@ local function open_gui(player)
         }
     end
 
-    --- Retrieve existing GUI element from storage.guis
-    --- and re-centers and/or replaces player's current GUI element.
+    --- Guis should be destroyed between closing and opening
     local spelevator_log_gui = storage.guis[gui_id]
     if player.opened and player.opened ~= spelevator_log_gui.gui then
-        --game.print(tostring(game.tick).." closing other gui before opening rocketlog")
         player.opened = nil
     end
-    -- toolbar.refresh(gui_id)
-    spelevator_log_gui.gui.visible = true
     spelevator_log_gui.gui.titlebar.drag_target = spelevator_log_gui.gui
     spelevator_log_gui.gui.force_auto_center()
     player.opened = spelevator_log_gui.gui
-    --game.print(tostring(player.opened))
-    --game.print(tostring(game.tick).." showing rocketlog gui")
 
     toolbar.refresh(spelevator_log_gui)
 end
 
 
-local function train_log_destroy_gui(gui_id)
-    local train_log_gui = storage.guis[gui_id]
-    train_log_gui.gui.window.destroy()
-    storage.guis[gui_id] = nil
+---@param player LuaPlayer
+local function destroy_player_gui(player)
+    local gui_id = utils.get_gui_id(player)
+    if storage.guis[gui_id] then
+        storage.guis[gui_id].gui.destroy()
+        storage.guis[gui_id] = nil
+    end
 end
 
-local function destroy_gui(gui_id)
-    if storage.guis[gui_id] then
-        --game.print(tostring(game.tick).." hiding gui")
-        local spelevator_log_gui = storage.guis[gui_id]
-        spelevator_log_gui.gui.visible = false
-        if storage.guis[gui_id].player.opened == spelevator_log_gui.gui then
-            storage.guis[gui_id].player.opened = nil
-            --game.print(tostring(game.tick).." player cleared")
-        end
-        --storage.guis[gui_id] = nil
-        --else
-        --game.print(tostring(game.tick).." no gui to hide")
-    end
+
+--- Fires on_gui_closed which calls destroy_player_gui
+---@param gui_id string
+local function request_close_gui(gui_id)
+    storage.guis[gui_id].player.opened = nil
 end
 
 
 ---@param player LuaPlayer
 local function open_or_close_gui(player)
-    local gui_id = "gui-" .. player.name
-    if storage.guis[gui_id] and storage.guis[gui_id].gui.visible then
-        destroy_gui(gui_id) -- Hide existing gui
-    else
-        open_gui(player)    -- Create new or show existing gui
-    end
-end
-
----@param player LuaPlayer
-local function close_gui(player)
-    local gui_id = "gui-" .. player.name
-    -- Ignore close requests if we are not already open
-    if storage.guis[gui_id] and storage.guis[gui_id].gui.visible then
-        destroy_gui(gui_id)
-    end
-end
-
-local function destroy_gui(gui_id)
+    local gui_id = utils.get_gui_id(player)
     if storage.guis[gui_id] then
-        --game.print(tostring(game.tick).." hiding gui")
-        local spelevator_log_gui = storage.guis[gui_id]
-        spelevator_log_gui.gui.visible = false
-        if storage.guis[gui_id].player.opened == spelevator_log_gui.gui then
-            --   storage.guis[gui_id].gui.window.destroy()
-            --   game.print(table_size(storage.guis[gui_id].events_contents.children))
-            storage.guis[gui_id].player.opened = nil
-            --game.print(tostring(game.tick).." player cleared")
-        end
-        --storage.guis[gui_id] = nil
-        --else
-        --game.print(tostring(game.tick).." no gui to hide")
+        request_close_gui(gui_id)
+    else
+        open_gui(player)
     end
 end
 
 function gui_handlers.close_window(event)
     local gui_id = event.element.tags.gui_id
-    destroy_gui(gui_id)
+    request_close_gui(gui_id)
 end
 
 function gui_handlers.mod_gui_button_click(event)
@@ -196,15 +155,15 @@ end
 function gui_handlers.view_train_position(event)
     ---@diagnostic disable-next-line param-type-mismatch
     local train = game.train_manager.get_train_by_id(event.element.tags.train_id)
-    local player = game.get_player(event.player_index)
+    local player = game.players[event.player_index]
     if not player then return end
     if not train then
         player.print("Train not valid anymore")
-        toolbar.refresh(storage.guis["gui-" .. player.name])
+        toolbar.refresh(utils.get_gui_id(player))
         return
     end
 
-    close_gui(player)
+    request_close_gui(utils.get_gui_id(player))
     player.opened = train.front_stock
 end
 
@@ -215,4 +174,5 @@ end)
 
 return {
     open_or_close_gui = open_or_close_gui,
+    destroy_player_gui = destroy_player_gui,
 }

@@ -126,12 +126,10 @@ end
 ---Does not filter by forces because I think that is silly
 ---@param spelevator_log_gui GuiConfig
 local function create_events_table(spelevator_log_gui)
-    --- Destroys children to prevent event_contents.children from
-    --- being populated with the same information because
-    --- destroy_gui() does not destroy the GUI elements (yet?)
-    --- and open_gui() re-calls create_events_table()
+    --- Destroys children to prevent persistent data when refreshing
     spelevator_log_gui.events_contents.clear()
     spelevator_log_gui.summary_contents.clear()
+
     local toolbar = spelevator_log_gui.toolbar
 
     --- TODO: Refactor toolbar to contain an extra table

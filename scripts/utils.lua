@@ -107,10 +107,16 @@ function filter(tbl, func, ...)
     return new_tbl
 end
 
+---@param player LuaPlayer
+function get_gui_id(player)
+    return "gui-" .. player.name
+end
+
 return {
     sprite_button = sprite_button,
     title = title,
     find = find,
     any = any,
     filter = filter,
+    get_gui_id = get_gui_id,
 }

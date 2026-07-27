@@ -7,20 +7,18 @@ local utils = require("scripts/utils")
 local mod_gui_button = require("gui/mod_gui_button")
 
 function reset_all()
-    destroy_player_gui()
+    reset_player_gui()
     reset_storage()
 end
 
-function destroy_player_gui()
-    -- game.get_player(data.player_index).gui.screen.children['spelevator-log-window'].destroy()
-    local c = game.player.gui.screen.children
-    for _, i in pairs(c) do
-        if i.name == 'spelevator-log-window' then
-            i.destroy()
+function reset_player_gui()
+    for _, gui in pairs(game.player.gui.screen.children) do
+        if gui.name == 'spelevator-log-window' then
+            gui.destroy()
         end
     end
 
-    local gui_id = "gui-" .. game.player.name
+    local gui_id = utils.get_gui_id(game.player)
     storage.guis[gui_id] = nil
 
     mod_gui_button.add_mod_gui_button(game.player)
@@ -38,9 +36,9 @@ end
 --- remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = game.player.surface.index}).index
 --- ))
 function reset_storage()
-    if storage.guis then
-        for gui_id, gui_data in pairs(storage.guis) do
-            gui_data.gui.destroy()
+    for _, gui in pairs(game.player.gui.screen.children) do
+        if gui.name == 'spelevator-log-window' then
+            gui.destroy()
         end
     end
 
@@ -61,7 +59,6 @@ function check_storage()
     game.player.print("History: " .. table_size(storage.history) .. " entries")
     game.player.print("Surfaces: " .. table_size(storage.zone_by_surface) .. " entries")
     game.player.print("Storage: " .. table_size(storage.guis) .. " entries")
-    -- game.player.print(serpent.dump(storage.zone_by_surface))
 end
 
 function print_last_entry()
@@ -177,24 +174,29 @@ function AddTrainLog(event)
     table.insert(storage.history, log_entry)
 end
 
--- function init_events()
---     script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
--- end
-
 script.on_init(reset_storage)
 -- script.on_load(init_events)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
--- For Custom Input defined in data.lua
+--- Custom hotkey
+---@param event EventData.on_lua_shortcut
 script.on_event("open-custom-input", function(event)
     spelevator_log_gui.open_or_close_gui(game.players[event.player_index])
+end)
+
+---@param event EventData.on_gui_closed
+script.on_event(defines.events.on_gui_closed, function(event)
+    local player = game.players[event.player_index]
+    if player and event.element and event.element.name == "spelevator-log-window" then
+        spelevator_log_gui.destroy_player_gui(player)
+    end
 end)
 
 commands.add_command("sl_reset_storage", nil, reset_storage)
 commands.add_command("sl_check_storage", nil, check_storage)
 commands.add_command("sl_last_entry", nil, print_last_entry)
 commands.add_command("sl_print_storage_surfaces", nil, print_storage_surfaces)
-commands.add_command("sl_destroy_existing_gui_element_in_parent", nil, destroy_player_gui)
+commands.add_command("sl_reset_player_gui", nil, reset_player_gui)
 commands.add_command("sl_clear_storage_surfaces", nil, clear_storage_surfaces)
 commands.add_command("sl_reset_all", nil, reset_all)
 
