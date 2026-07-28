@@ -1,8 +1,7 @@
 local flib_gui = require("__flib__.gui")
 local toolbar = require("gui/toolbar")
-local events_table = require("gui/events")
 local gui_handlers = require("gui/handlers")
-local utils = require("scripts/utils")
+local constants = require("scripts/constants")
 
 ---Create Header GuiELemDef for flib
 ---@param gui_id string
@@ -38,7 +37,7 @@ local function open_gui(player)
             {
                 type = "frame",
                 direction = "vertical",
-                name = "spelevator-log-window",
+                name = constants.root_gui_name,
                 children = {
                     header(gui_id),
                     toolbar.create_toolbar(gui_id),
@@ -116,7 +115,7 @@ end
 
 ---@param player LuaPlayer
 local function destroy_player_gui(player)
-    local gui_id = utils.get_gui_id(player)
+    local gui_id = constants.get_gui_id(player)
     if storage.guis[gui_id] then
         storage.guis[gui_id].gui.destroy()
         storage.guis[gui_id] = nil
@@ -133,7 +132,7 @@ end
 
 ---@param player LuaPlayer
 local function open_or_close_gui(player)
-    local gui_id = utils.get_gui_id(player)
+    local gui_id = constants.get_gui_id(player)
     if storage.guis[gui_id] then
         request_close_gui(gui_id)
     else
@@ -159,11 +158,11 @@ function gui_handlers.view_train_position(event)
     if not player then return end
     if not train then
         player.print("Train not valid anymore")
-        toolbar.refresh(utils.get_gui_id(player))
+        toolbar.refresh(constants.get_gui_id(player))
         return
     end
 
-    request_close_gui(utils.get_gui_id(player))
+    request_close_gui(constants.get_gui_id(player))
     player.opened = train.front_stock
 end
 
