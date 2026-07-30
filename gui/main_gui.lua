@@ -100,11 +100,12 @@ local function open_gui(player)
         }
     end
 
-    --- Guis should be destroyed between closing and opening
     local spelevator_log_gui = storage.guis[gui_id]
     if player.opened and player.opened ~= spelevator_log_gui.gui then
         player.opened = nil
     end
+
+    spelevator_log_gui.gui.visible = true
     spelevator_log_gui.gui.titlebar.drag_target = spelevator_log_gui.gui
     spelevator_log_gui.gui.force_auto_center()
     player.opened = spelevator_log_gui.gui
@@ -114,11 +115,10 @@ end
 
 
 ---@param player LuaPlayer
-local function destroy_player_gui(player)
+local function close_player_gui(player)
     local gui_id = constants.get_gui_id(player)
     if storage.guis[gui_id] then
-        storage.guis[gui_id].gui.destroy()
-        storage.guis[gui_id] = nil
+        storage.guis[gui_id].gui.visible = false
     end
 end
 
@@ -133,7 +133,7 @@ end
 ---@param player LuaPlayer
 local function open_or_close_gui(player)
     local gui_id = constants.get_gui_id(player)
-    if storage.guis[gui_id] then
+    if storage.guis[gui_id] and storage.guis[gui_id].gui.visible then
         request_close_gui(gui_id)
     else
         open_gui(player)
@@ -173,5 +173,5 @@ end)
 
 return {
     open_or_close_gui = open_or_close_gui,
-    destroy_player_gui = destroy_player_gui,
+    close_player_gui = close_player_gui,
 }

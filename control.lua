@@ -187,7 +187,7 @@ end)
 script.on_event(defines.events.on_gui_closed, function(event)
     local player = game.players[event.player_index]
     if player and event.element and event.element.name == constants.root_gui_name then
-        spelevator_log_gui.destroy_player_gui(player)
+        spelevator_log_gui.close_player_gui(player)
     end
 end)
 
