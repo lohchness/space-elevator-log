@@ -18,9 +18,9 @@ local function create_row(entry, events_rows, gui_id)
     local train = {}
     if entry.train.valid then
         train = utils.sprite_button("item", entry.train.front_stock.prototype.name, nil, gui_id,
-            gui_handlers.view_train_position, entry.train.id)
+            gui_handlers.view_train_position, entry.train.id, true)
     else
-        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id)
+        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id, nil, nil, true)
     end
 
     local contents_children = {}
