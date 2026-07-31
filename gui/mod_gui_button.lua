@@ -1,29 +1,41 @@
 local mod_gui = require("__core__.lualib.mod-gui")
 local flib_gui = require("__flib__.gui")
 local gui_handlers = require("gui/handlers")
+local constants = require("scripts/constants")
 
 --- This must be loaded with require() AFTER main_gui for gui_handlers.mod_gui_button_click
 
-local UNLOCK_TECH_NAME = "se-space-elevator"
-
+---@param player LuaPlayer
 local function add_mod_gui_button(player)
     local flow = mod_gui.get_button_flow(player)
 
-    if flow.space_elevator_log then return end
+    if flow[constants.button_name] then return end
 
     flib_gui.add(
         flow,
         {
             type = "sprite-button",
-            name = "space_elevator_log",
+            name = constants.button_name,
             style = "flib_slot_button_default",
-            sprite = "space-elevator-log-gui-button",
+            sprite = constants.button_sprite,
             handler = gui_handlers.mod_gui_button_click,
             tooltip = { "spelevator-log.mod-gui-tooltip" }
         }
     )
 end
 
+---@param player LuaPlayer
+local function remove_mod_gui_button(player)
+    local flow = mod_gui.get_button_flow(player)
+
+    for _, i in pairs(flow.children) do
+        if i.name == constants.button_name then
+            i.destroy()
+        end
+    end
+end
+
 return {
-    add_mod_gui_button = add_mod_gui_button
+    add_mod_gui_button = add_mod_gui_button,
+    remove_mod_gui_button = remove_mod_gui_button,
 }

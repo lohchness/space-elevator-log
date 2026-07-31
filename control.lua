@@ -12,7 +12,7 @@ end
 
 function reset_player_gui()
     for _, gui in pairs(game.player.gui.screen.children) do
-        if gui.name == constants.root_gui_name then
+        if gui.name == constants.window_name then
             gui.destroy()
         end
     end
@@ -20,6 +20,7 @@ function reset_player_gui()
     local gui_id = constants.get_gui_id(game.player)
     storage.guis[gui_id] = nil
 
+    mod_gui_button.remove_mod_gui_button(game.player)
     mod_gui_button.add_mod_gui_button(game.player)
 end
 
@@ -36,7 +37,7 @@ end
 --- ))
 function reset_storage()
     for _, gui in pairs(game.player.gui.screen.children) do
-        if gui.name == constants.root_gui_name then
+        if gui.name == constants.window_name then
             gui.destroy()
         end
     end
@@ -179,14 +180,14 @@ script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
 --- Custom hotkey
 ---@param event EventData.on_lua_shortcut
-script.on_event("open-custom-input", function(event)
+script.on_event(constants.custom_input_name, function(event)
     spelevator_log_gui.open_or_close_gui(game.players[event.player_index])
 end)
 
 ---@param event EventData.on_gui_closed
 script.on_event(defines.events.on_gui_closed, function(event)
     local player = game.players[event.player_index]
-    if player and event.element and event.element.name == constants.root_gui_name then
+    if player and event.element and event.element.name == constants.window_name then
         spelevator_log_gui.close_player_gui(player)
     end
 end)

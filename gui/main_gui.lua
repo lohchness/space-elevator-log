@@ -37,7 +37,7 @@ local function open_gui(player)
             {
                 type = "frame",
                 direction = "vertical",
-                name = constants.root_gui_name,
+                name = constants.window_name,
                 children = {
                     header(gui_id),
                     toolbar.create_toolbar(gui_id),
