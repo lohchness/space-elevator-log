@@ -3,6 +3,7 @@ local toolbar = require("gui/toolbar")
 local gui_handlers = require("gui/handlers")
 local constants = require("scripts/constants")
 
+
 ---Create Header GuiELemDef for flib
 ---@param gui_id string
 ---@return flib.GuiElemDef
@@ -27,6 +28,7 @@ local function header(gui_id)
         }
     }
 end
+
 
 --- @param player LuaPlayer
 local function open_gui(player)
@@ -123,26 +125,20 @@ local function close_player_gui(player)
 end
 
 
---- Fires on_gui_closed which calls destroy_player_gui
----@param gui_id string
-local function request_close_gui(gui_id)
-    storage.guis[gui_id].player.opened = nil
-end
-
-
 ---@param player LuaPlayer
 local function open_or_close_gui(player)
     local gui_id = constants.get_gui_id(player)
     if storage.guis[gui_id] and storage.guis[gui_id].gui.visible then
-        request_close_gui(gui_id)
+        storage.guis[gui_id].player.opened = nil
     else
         open_gui(player)
     end
 end
 
+
 function gui_handlers.close_window(event)
     local gui_id = event.element.tags.gui_id
-    request_close_gui(gui_id)
+    storage.guis[gui_id].player.opened = nil
 end
 
 function gui_handlers.mod_gui_button_click(event)
@@ -150,11 +146,28 @@ function gui_handlers.mod_gui_button_click(event)
     open_or_close_gui(player)
 end
 
+---@param event EventData.on_lua_shortcut
+script.on_event(constants.custom_input_name, function(event)
+    open_or_close_gui(game.players[event.player_index])
+end)
+
+
+--- Triggered by player.opened = nil
+---@param event EventData.on_gui_closed
+script.on_event(defines.events.on_gui_closed, function(event)
+    local player = game.players[event.player_index]
+    if player and event.element and event.element.name == constants.window_name then
+        close_player_gui(player)
+    end
+end)
+
+
 ---@param event EventData.on_gui_click
 function gui_handlers.view_train_position(event)
     ---@diagnostic disable-next-line param-type-mismatch
     local train = game.train_manager.get_train_by_id(event.element.tags.train_id)
     local player = game.players[event.player_index]
+
     if not player then return end
     if not train then
         player.print("Train not valid anymore")
@@ -162,13 +175,12 @@ function gui_handlers.view_train_position(event)
         return
     end
 
-    request_close_gui(constants.get_gui_id(player))
+    local gui_id = constants.get_gui_id(player)
+    storage.guis[gui_id].player.opened = nil
     player.opened = train.front_stock
 end
 
-flib_gui.add_handlers(gui_handlers, function(e, handler)
-    handler(e)
-end)
+flib_gui.add_handlers(gui_handlers, function(e, handler) handler(e) end)
 
 
 return {

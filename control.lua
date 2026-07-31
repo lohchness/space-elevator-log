@@ -175,22 +175,7 @@ function AddTrainLog(event)
 end
 
 script.on_init(reset_storage)
--- script.on_load(init_events)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
-
---- Custom hotkey
----@param event EventData.on_lua_shortcut
-script.on_event(constants.custom_input_name, function(event)
-    spelevator_log_gui.open_or_close_gui(game.players[event.player_index])
-end)
-
----@param event EventData.on_gui_closed
-script.on_event(defines.events.on_gui_closed, function(event)
-    local player = game.players[event.player_index]
-    if player and event.element and event.element.name == constants.window_name then
-        spelevator_log_gui.close_player_gui(player)
-    end
-end)
 
 commands.add_command("sl_reset_storage", nil, reset_storage)
 commands.add_command("sl_check_storage", nil, check_storage)
