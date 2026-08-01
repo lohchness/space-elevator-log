@@ -5,23 +5,27 @@ local constants = require("scripts/constants")
 local utils = require("scripts/utils")
 local mod_gui_button = require("gui/mod_gui_button")
 
-function reset_all()
-    reset_player_gui()
-    reset_storage()
-end
-
-function reset_player_gui()
-    for _, gui in pairs(game.player.gui.screen.children) do
+--- Destroys any splog gui elements and refreshes mod gui button.
+---@param player LuaPlayer
+local function reset_player_gui(player)
+    for _, gui in pairs(player.gui.screen.children) do
         if gui.name == constants.window_name then
             gui.destroy()
         end
     end
 
-    local gui_id = constants.get_gui_id(game.player)
+    local gui_id = constants.get_gui_id(player)
     storage.guis[gui_id] = nil
 
-    mod_gui_button.remove_mod_gui_button(game.player)
-    mod_gui_button.add_mod_gui_button(game.player)
+    mod_gui_button.remove_mod_gui_button(player)
+    mod_gui_button.add_mod_gui_button(player)
+end
+
+
+local function bulk_reset_player_gui()
+    for _, player in pairs(game.players) do
+        reset_player_gui(player)
+    end
 end
 
 --- Surface Index differs from Zone Index.
@@ -35,7 +39,9 @@ end
 --- /c game.print("Zone Index: "..serpent.block(
 --- remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = game.player.surface.index}).index
 --- ))
-function reset_storage()
+
+--- Destroys any gui elements and all storage data.
+local function destroy_storage()
     for _, gui in pairs(game.player.gui.screen.children) do
         if gui.name == constants.window_name then
             gui.destroy()
@@ -50,6 +56,13 @@ function reset_storage()
     ---@type table<int, ElevatorZone>
     storage.zone_by_surface = {}
 end
+
+
+local function reset_all()
+    bulk_reset_player_gui()
+    destroy_storage()
+end
+
 
 function check_storage()
     if not next(storage) then
@@ -174,14 +187,22 @@ function AddTrainLog(event)
     table.insert(storage.history, log_entry)
 end
 
-script.on_init(reset_storage)
+--- Migration applied, startup setting changed, prototypes changed, mod changed, game/mod version changed.
+---@param config ConfigurationChangedData
+local function on_configuration_changed(config)
+    bulk_reset_player_gui()
+end
+script.on_configuration_changed(on_configuration_changed)
+
+
+script.on_init(destroy_storage)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
-commands.add_command("sl_reset_storage", nil, reset_storage)
+commands.add_command("sl_destroy_storage", nil, destroy_storage)
 commands.add_command("sl_check_storage", nil, check_storage)
 commands.add_command("sl_last_entry", nil, print_last_entry)
 commands.add_command("sl_print_storage_surfaces", nil, print_storage_surfaces)
-commands.add_command("sl_reset_player_gui", nil, reset_player_gui)
+commands.add_command("sl_reset_player_gui", nil, function() reset_player_gui(game.player) end)
 commands.add_command("sl_clear_storage_surfaces", nil, clear_storage_surfaces)
 commands.add_command("sl_reset_all", nil, reset_all)
 
