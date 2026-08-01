@@ -31,30 +31,31 @@ function gui_handlers.set_filter_sprite_button(event)
     gui_handlers.generic_refresh(event)
 end
 
---- Shove these into an options table
----@param item_type string
----@param name string
----@param amount int?
----@param gui_id string
----@param custom_handler function?
----@param train_id int?
----@param hide_tooltip boolean?
+---@param options SpriteButtonOptions
 ---@return flib.GuiElemDef
-local function sprite_button(item_type, name, amount, gui_id, custom_handler, train_id, hide_tooltip)
-    local sprite = item_type .. "/" .. name
+local function sprite_button(options)
+    local sprite = options.item_type .. "/" .. options.name
     local prototype ---@type LuaItemPrototype | LuaFluidPrototype
-    if item_type == "item" then prototype = prototypes.item[name] end
-    if item_type == "fluid" then prototype = prototypes.fluid[name] end
+    if options.item_type == "item" then
+        prototype = prototypes.item[options.name]
+    elseif options.item_type == "fluid" then
+        prototype = prototypes.fluid[options.name]
+    end
 
     return {
         type = "sprite-button",
         style = "flib_slot_button_default",
         sprite = sprite,
-        number = amount,
-        handler = custom_handler or gui_handlers.set_filter_sprite_button,
-        tags = { item_type = item_type, name = name, gui_id = gui_id, train_id = train_id },
-        tooltip = not hide_tooltip and
-            { "spelevator-log.item_with_count", (prototype and prototype.localised_name), amount } or nil, -- ???
+        number = options.amount,
+        handler = options.custom_handler or gui_handlers.set_filter_sprite_button,
+        tags = {
+            item_type = options.item_type,
+            name = options.name,
+            gui_id = options.gui_id,
+            train_id = options.train_id,
+        },
+        tooltip = not options.hide_tooltip and
+            { "spelevator-log.item_with_count", (prototype and prototype.localised_name), options.amount } or nil, -- ???
     }
 end
 

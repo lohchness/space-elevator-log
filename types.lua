@@ -31,6 +31,15 @@
 ---@field from_surface int
 ---@field to_surface int
 
+---@class SpriteButtonOptions
+---@field item_type string
+---@field name string
+---@field amount int?
+---@field gui_id string
+---@field custom_handler function?
+---@field train_id int?
+---@field hide_tooltip boolean?
+
 ---@class GuiConfig
 ---@field gui_id string
 ---@field gui LuaGuiElement

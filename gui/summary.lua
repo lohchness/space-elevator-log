@@ -47,21 +47,21 @@ local function create_gui_from_data(summary_data, gui_id)
     local top_fluids = {}
 
     for _, item in pairs(items_array) do
-        table.insert(top_items, utils.sprite_button(
-            "item",
-            item.name,
-            item.count,
-            gui_id
-        ))
+        table.insert(top_items, utils.sprite_button {
+            item_type = "item",
+            name = item.name,
+            amount = item.count,
+            gui_id = gui_id,
+        })
     end
 
     for _, fluid in pairs(fluids_array) do
-        table.insert(top_fluids, utils.sprite_button(
-            "fluid",
-            fluid.name,
-            fluid.amount,
-            gui_id
-        ))
+        table.insert(top_fluids, utils.sprite_button {
+            item_type = "fluid",
+            name = fluid.name,
+            amount = fluid.amount,
+            gui_id = gui_id,
+        })
     end
 
     local summary_contents = {

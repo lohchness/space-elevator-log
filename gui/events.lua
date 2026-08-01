@@ -17,18 +17,39 @@ local function create_row(entry, events_rows, gui_id)
 
     local train = {}
     if entry.train.valid then
-        train = utils.sprite_button("item", entry.train.front_stock.prototype.name, nil, gui_id,
-            gui_handlers.view_train_position, entry.train.id, true)
+        train = utils.sprite_button {
+            item_type = "item",
+            name = entry.train.front_stock.prototype.name,
+            gui_id = gui_id,
+            custom_handler = gui_handlers.view_train_position,
+            train_id = entry.train.id,
+            hide_tooltip = true,
+        }
     else
-        train = utils.sprite_button("virtual-signal", "signal-no-entry", nil, gui_id, nil, nil, true)
+        train = utils.sprite_button {
+            item_type = "virtual-signal",
+            name = "signal-no-entry",
+            gui_id = gui_id,
+            hide_tooltip = true,
+        }
     end
 
     local contents_children = {}
     for _, item in pairs(entry.contents) do
-        table.insert(contents_children, utils.sprite_button("item", item.name, item.count, gui_id))
+        table.insert(contents_children, utils.sprite_button {
+            item_type = "item",
+            name = item.name,
+            amount = item.count,
+            gui_id = gui_id,
+        })
     end
     for i, j in pairs(entry.fluid_contents) do
-        table.insert(contents_children, utils.sprite_button("fluid", i, j, gui_id))
+        table.insert(contents_children, utils.sprite_button {
+            item_type = "fluid",
+            name = i,
+            amount = j,
+            gui_id = gui_id,
+        })
     end
     local contents_flow = {
         type = "flow",
