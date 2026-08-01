@@ -4,14 +4,14 @@ data:extend {
     {
         type = "custom-input",
         name = constants.custom_input_name,
-        key_sequence = "CONTROL + H",
+        key_sequence = constants.custom_input_key_sequence,
         enabled_while_spectating = true,
     },
 
     {
         type = "sprite",
         name = constants.button_sprite,
-        filename = "__space-exploration-graphics-5__/graphics/icons/space-elevator.png",
+        filename = constants.space_elevator_filename,
         size = 64,
     }
 }
