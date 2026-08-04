@@ -75,15 +75,15 @@ local function matches_filter(log_entry, toolbar)
     local check_empty_train = toolbar.hide_empty_trains.state
 
     if check_radio == "incoming" then
-        if not (log_entry.to_surface == toolbar.selected_surface_index) then return false end
+        if not (log_entry.to_zone == toolbar.selected_zone_index) then return false end
     elseif check_radio == "outgoing" then
-        if not (log_entry.from_surface == toolbar.selected_surface_index) then return false end
+        if not (log_entry.from_zone == toolbar.selected_zone_index) then return false end
     elseif check_radio == "combined" then
         -- virtual-signal/signal-input
         -- virtual-signal/signal-output
         if not (
-                (log_entry.to_surface == toolbar.selected_surface_index) or
-                (log_entry.from_surface == toolbar.selected_surface_index)
+                (log_entry.to_zone == toolbar.selected_zone_index) or
+                (log_entry.from_zone == toolbar.selected_zone_index)
             ) then
             return false
         end

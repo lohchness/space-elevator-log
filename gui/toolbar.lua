@@ -5,19 +5,20 @@ local utils = require("scripts/utils")
 
 ---@param toolbar ToolbarGui
 local function update_filters(toolbar)
-    if table_size(storage.zone_by_surface) == 0 then
+    if table_size(storage.zones) == 0 then
         return
     end
 
-    -- Handle first time opening when selected_surface_index is 0
-    if toolbar.selected_surface_index == 0 then
-        for i, _ in pairs(storage.zone_by_surface) do
-            toolbar.selected_surface_index = i
+    -- Handle first time opening when selected_zone_index is 0.
+    -- If the list is populated, set selected index to first in the drop down list.
+    if toolbar.selected_zone_index == 0 then
+        for i, _ in pairs(storage.zones) do
+            toolbar.selected_zone_index = i
             break
         end
     end
 
-    -- Save currently selected surface before rebuilding dropdown so it can be restored if it exists
+    -- Save currently selected zone before rebuilding dropdown so it can be restored if it exists
     local old_index = toolbar.zone_list.selected_index
     local old_selected =
         toolbar.zone_list.items and
@@ -29,11 +30,11 @@ local function update_filters(toolbar)
 
     local new_zone_list = {}
     local count = 1
-    for i, j in pairs(storage.zone_by_surface) do
-        table.insert(new_zone_list, j.name)
-        if j.name == old_selected then
+    for zone_index, zone_data in pairs(storage.zones) do
+        table.insert(new_zone_list, zone_data.name)
+        if zone_data.name == old_selected then
             new_index = count
-            toolbar.selected_surface_index = i
+            toolbar.selected_zone_index = zone_index
         end
         count = count + 1
     end

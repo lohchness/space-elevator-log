@@ -85,7 +85,7 @@ local function open_gui(player)
             radios = new_gui.toolbar.row3,
             filter_item_button = new_gui.toolbar.row2.filter_item,
             filter_fluid_button = new_gui.toolbar.row2.filter_fluid,
-            selected_surface_index = 0,
+            selected_zone_index = 0,
             selected_radio = new_gui.toolbar.row3.incoming.name,
             hide_empty_trains = new_gui.toolbar.row3.hide_empty_trains,
             selected_item = nil,

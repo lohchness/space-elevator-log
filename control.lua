@@ -34,8 +34,6 @@ end
 --- and so on to the next star system,
 --- whereas Surface Index increments on exploring a new surface.
 --- Surface Index can be reused if the surface is deleted and a new surface is generated.
---- TODO: Refactor storage to store zone by zone index, and retrieve
---- information with SE remote interface get_zone_from_zone_index
 --- /c game.print("Zone Index: "..serpent.block(
 --- remote.call("space-exploration", "get_zone_from_surface_index", {surface_index = game.player.surface.index}).index
 --- ))
@@ -54,7 +52,7 @@ local function destroy_storage()
     ---@type LogEntry[]
     storage.history = {}
     ---@type table<int, ElevatorZone>
-    storage.zone_by_surface = {}
+    storage.zones = {}
 end
 
 
@@ -70,7 +68,7 @@ function check_storage()
         return
     end
     game.player.print("History: " .. table_size(storage.history) .. " entries")
-    game.player.print("Surfaces: " .. table_size(storage.zone_by_surface) .. " entries")
+    game.player.print("Surfaces: " .. table_size(storage.zones) .. " entries")
     game.player.print("Storage: " .. table_size(storage.guis) .. " entries")
 end
 
@@ -95,14 +93,14 @@ function print_last_entry()
 end
 
 function clear_storage_surfaces()
-    storage.zone_by_surface = {}
+    storage.zones = {}
 end
 
 function print_storage_surfaces()
-    if table_size(storage.zone_by_surface) == 0 then
-        game.player.print("Storage zone by surface is empty")
+    if table_size(storage.zones) == 0 then
+        game.player.print("Storage zones empty")
     end
-    for i, j in pairs(storage.zone_by_surface) do
+    for i, j in pairs(storage.zones) do
         -- game.player.print(j.name..", "..j.type..", "..j.zone_index)
         game.player.print(
             serpent.block(j, { compact = true })
@@ -110,37 +108,32 @@ function print_storage_surfaces()
     end
 end
 
-local function store_zone_pair(planet_surface_index, orbit_surface_index)
-    --- Store zones from SE remote interface, with the key being surface index.
-    --- Easier lookup, will still have to sort by zone index in toolbar drop down list.
+---Storing as a pair to ensure entries have a start and end zone
+---@param solid_zone SEZoneType
+---@param orbit_zone SEZoneType
+local function store_solid_orbit_pair(solid_zone, orbit_zone)
+    --- Store zones from SE remote interface, with the key being zone index.
 
-    if storage.zone_by_surface[planet_surface_index] then
-        assert(storage.zone_by_surface[orbit_surface_index])
+    if storage.zones[solid_zone.index] then
+        assert(storage.zones[orbit_zone.index])
         return
     end
 
-    ---@type SEZoneType
-    local planet_zone = remote.call("space-exploration", "get_zone_from_surface_index",
-        { surface_index = planet_surface_index })
-    ---@type SEZoneType
-    local orbit_zone = remote.call("space-exploration", "get_zone_from_surface_index",
-        { surface_index = orbit_surface_index })
-
-    storage.zone_by_surface[planet_surface_index] = {
-        name = utils.title(planet_zone.name),
-        type = planet_zone.type,
-        zone_index = planet_zone.index,
-        surface_index = planet_surface_index,
+    storage.zones[solid_zone.index] = {
+        name = utils.title(solid_zone.name),
+        type = solid_zone.type,
+        zone_index = solid_zone.index,
+        surface_index = solid_zone.surface_index,
         opposite = nil, ---@diagnostic disable-line: assign-type-mismatch
     }
-    storage.zone_by_surface[orbit_surface_index] = {
+    storage.zones[orbit_zone.index] = {
         name = utils.title(orbit_zone.name),
         type = orbit_zone.type,
         zone_index = orbit_zone.index,
-        surface_index = orbit_surface_index,
-        opposite = storage.zone_by_surface[planet_surface_index],
+        surface_index = orbit_zone.surface_index,
+        opposite = storage.zones[solid_zone.index],
     }
-    storage.zone_by_surface[planet_surface_index].opposite = storage.zone_by_surface[orbit_surface_index]
+    storage.zones[solid_zone.index].opposite = storage.zones[orbit_zone.index]
 end
 
 
@@ -173,15 +166,22 @@ function AddTrainLog(event)
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
 
-    log_entry.from_surface = space_elevator_info.main.surface_index
-    log_entry.to_surface = space_elevator_info.opposite.surface_index
-    local surface_name = utils.title(space_elevator_info.main.surface.name)
+    ---@type SEZoneType
+    local from_zone = remote.call("space-exploration", "get_zone_from_surface_index",
+        { surface_index = space_elevator_info.main.surface_index })
+    ---@type SEZoneType
+    local to_zone = remote.call("space-exploration", "get_zone_from_surface_index",
+        { surface_index = space_elevator_info.opposite.surface_index })
+
+    log_entry.from_zone = from_zone.index
+    log_entry.to_zone = to_zone.index
+    local surface_name = utils.title(from_zone.name)
     -- local opposite_surface_name = utils.title(space_elevator_info.opposite.surface.name)
 
     if surface_name:find("Orbit") then
-        store_zone_pair(space_elevator_info.opposite.surface_index, space_elevator_info.main.surface.index)
+        store_solid_orbit_pair(to_zone, from_zone)
     else
-        store_zone_pair(space_elevator_info.main.surface.index, space_elevator_info.opposite.surface_index)
+        store_solid_orbit_pair(from_zone, to_zone)
     end
 
     table.insert(storage.history, log_entry)

@@ -28,8 +28,8 @@
 ---@field records ScheduleRecord[]?                  stops in schedule
 ---@field current int                                record index of next station
 ---@field teleporter_id int                          the elevator's LuaEntity unit number
----@field from_surface int
----@field to_surface int
+---@field from_zone int
+---@field to_zone int
 
 ---@class SpriteButtonOptions
 ---@field item_type string
@@ -55,7 +55,7 @@
 ---@field radios LuaGuiElement
 ---@field filter_item_button LuaGuiElement
 ---@field filter_fluid_button LuaGuiElement
----@field selected_surface_index int
+---@field selected_zone_index int
 ---@field selected_radio string
 ---@field hide_empty_trains LuaGuiElement
 ---@field selected_item string?
