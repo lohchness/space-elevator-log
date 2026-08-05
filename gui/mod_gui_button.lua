@@ -46,7 +46,7 @@ local function refresh_mod_gui_button(player)
 end
 
 local function bulk_refresh_mod_gui_button()
-    for _, player in game.players do
+    for _, player in pairs(game.players) do
         refresh_mod_gui_button(player)
     end
 end
