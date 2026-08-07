@@ -143,7 +143,7 @@ local function create_toolbar(gui_id)
                         sprite = "utility/refresh",
                         style = "item_and_count_select_confirm",
                         tooltip = { "spelevator-log.refresh" },
-                        handler = gui_handlers.refresh_handler,
+                        handler = gui_handlers.generic_refresh,
                         tags = { gui_id = gui_id },
                     },
                     {
