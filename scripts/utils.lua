@@ -1,4 +1,5 @@
 local gui_handlers = require("gui/handlers")
+local constants = require("scripts/constants")
 
 --- Handles clicking a sprite button in the contents column of an event row.
 --- @param event EventData.on_gui_click
@@ -34,7 +35,7 @@ end
 ---@param options SpriteButtonOptions
 ---@return flib.GuiElemDef
 local function sprite_button(options)
-    local sprite = options.item_type .. "/" .. options.name
+    local sprite = options.sprite_path or options.item_type .. "/" .. options.name -- ???
     local prototype ---@type LuaItemPrototype | LuaFluidPrototype
     if options.item_type == "item" then
         prototype = prototypes.item[options.name]

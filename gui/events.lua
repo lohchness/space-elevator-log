@@ -4,6 +4,7 @@ local time_filter = require("scripts/filter-time")
 local summary = require("gui/summary")
 local utils = require("scripts/utils")
 local gui_handlers = require("gui/handlers")
+local constants = require("scripts/constants")
 
 ---@param entry LogEntry
 ---@param events_rows table
@@ -27,8 +28,7 @@ local function create_row(entry, events_rows, gui_id)
         }
     else
         train = utils.sprite_button {
-            item_type = "virtual-signal",
-            name = "signal-no-entry",
+            sprite_path = constants.invalid_train,
             gui_id = gui_id,
             hide_tooltip = true,
         }

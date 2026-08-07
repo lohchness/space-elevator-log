@@ -13,5 +13,11 @@ data:extend {
         name = constants.button_sprite,
         filename = constants.space_elevator_filename,
         size = 64,
+    },
+    {
+        type = "sprite",
+        name = constants.invalid_train,
+        filename = constants.mod_base_path .. constants.invalid_train_filename,
+        size = 64,
     }
 }

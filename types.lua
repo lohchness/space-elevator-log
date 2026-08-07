@@ -32,8 +32,9 @@
 ---@field to_zone int
 
 ---@class SpriteButtonOptions
----@field item_type string
----@field name string
+---@field item_type string?
+---@field name string?
+---@field sprite_path string?        Required if item_type and name not defined.
 ---@field amount int?
 ---@field gui_id string
 ---@field custom_handler function?
