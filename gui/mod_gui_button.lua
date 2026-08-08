@@ -3,9 +3,6 @@ local flib_gui = require("__flib__.gui")
 local gui_handlers = require("gui/handlers")
 local constants = require("scripts/constants")
 
---- This must be loaded with require() AFTER main_gui for gui_handlers.mod_gui_button_click
-
-
 ---@param player LuaPlayer
 local function remove_mod_gui_button(player)
     local flow = mod_gui.get_button_flow(player)
@@ -19,9 +16,7 @@ end
 
 ---@param player LuaPlayer
 local function add_mod_gui_button(player)
-    if not player.force.technologies[constants.unlock_tech_name].researched then
-        remove_mod_gui_button(player)
-    end
+    if not player.force.technologies[constants.unlock_tech_name].researched then return end
 
     local flow = mod_gui.get_button_flow(player)
     if flow[constants.button_name] then return end
@@ -58,14 +53,14 @@ end)
 
 ---@param event EventData.on_research_finished
 script.on_event(defines.events.on_research_finished, function(event)
-    if event.research.name then
+    if event.research.name == constants.unlock_tech_name then
         bulk_refresh_mod_gui_button()
     end
 end)
 
 ---@param event EventData.on_research_reversed
 script.on_event(defines.events.on_research_reversed, function(event)
-    if event.research.name then
+    if event.research.name == constants.unlock_tech_name then
         bulk_refresh_mod_gui_button()
     end
 end)

@@ -1,9 +1,9 @@
 local format = require("__flib__.format")
 local flib_gui = require("__flib__.gui")
 local spelevator_log_gui = require("gui/main_gui")
+local mod_gui_button = require("gui/mod_gui_button")
 local constants = require("scripts/constants")
 local utils = require("scripts/utils")
-local mod_gui_button = require("gui/mod_gui_button")
 
 --- Destroys any splog gui elements and refreshes mod gui button.
 ---@param player LuaPlayer
