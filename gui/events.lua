@@ -129,7 +129,7 @@ local function create_events_rows(entries, toolbar, columns, gui_id)
     for _, col in pairs(columns) do
         table.insert(events_rows, {
             type = "label",
-            caption = { "spelevator-log.table-header-" .. col }
+            caption = { "se-log.table-header-" .. col }
         })
     end
 
@@ -162,7 +162,7 @@ local function create_events_table(spelevator_log_gui)
     local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns,
         spelevator_log_gui.gui_id)
 
-    toolbar.display_stats.caption = { "spelevator-log.display_stats", count, table_size(storage.history) }
+    toolbar.display_stats.caption = { "se-log.display_stats", count, table_size(storage.history) }
 
     flib_gui.add(spelevator_log_gui.events_contents, {
         {

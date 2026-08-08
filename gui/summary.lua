@@ -67,7 +67,7 @@ local function create_gui_from_data(summary_data, gui_id)
     local summary_contents = {
         {
             type = "label",
-            caption = { "spelevator-log.summary-top-items" },
+            caption = { "se-log.summary-top-items" },
         },
         {
             type = "table",
@@ -76,7 +76,7 @@ local function create_gui_from_data(summary_data, gui_id)
         },
         {
             type = "label",
-            caption = { "spelevator-log.summary-top-fluids" },
+            caption = { "se-log.summary-top-fluids" },
         },
         {
             type = "table",

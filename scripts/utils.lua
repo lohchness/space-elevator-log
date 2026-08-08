@@ -56,7 +56,7 @@ local function sprite_button(options)
             train_id = options.train_id,
         },
         tooltip = not options.hide_tooltip and
-            { "spelevator-log.item_with_count", (prototype and prototype.localised_name), options.amount } or nil, -- ???
+            { "se-log.item_with_count", (prototype and prototype.localised_name), options.amount } or nil, -- ???
     }
 end
 

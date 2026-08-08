@@ -136,8 +136,8 @@ script.on_configuration_changed(on_configuration_changed)
 script.on_init(destroy_storage)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
-commands.add_command("sel-rebuild-guis", { "spelevator-log.command_rebuild_guis" }, bulk_reset_player_gui)
-commands.add_command("sel-clear-storage", { "spelevator-log.command_clear_storage" }, destroy_storage)
+commands.add_command("sel-rebuild-guis", { "se-log.command_rebuild_guis" }, bulk_reset_player_gui)
+commands.add_command("sel-clear-storage", { "se-log.command_clear_storage" }, destroy_storage)
 
 
 flib_gui.handle_events()

@@ -12,7 +12,7 @@ local function header(gui_id)
         type = "flow",
         name = "titlebar",
         children = {
-            { type = "label",        style = "frame_title",               caption = { "spelevator-log.header" }, ignored_by_interaction = true },
+            { type = "label",        style = "frame_title",               caption = { "se-log.header" }, ignored_by_interaction = true },
             { type = "empty-widget", style = "flib_titlebar_drag_handle", ignored_by_interaction = true },
             {
                 type = "sprite-button",
@@ -50,7 +50,7 @@ local function open_gui(player)
                             {
                                 tab = {
                                     type = "tab",
-                                    caption = { "spelevator-log.tab-events" }
+                                    caption = { "se-log.tab-events" }
                                 },
                                 content = {
                                     type = "flow",
@@ -61,7 +61,7 @@ local function open_gui(player)
                             {
                                 tab = {
                                     type = "tab",
-                                    caption = { "spelevator-log.tab-summary" }
+                                    caption = { "se-log.tab-summary" }
                                 },
                                 content = {
                                     type = "flow",

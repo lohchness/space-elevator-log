@@ -6,8 +6,8 @@ data:extend {
         name = constants.custom_input_name,
         key_sequence = constants.custom_input_key_sequence,
         enabled_while_spectating = true,
+        localised_name = { "se-log.open-custom-input" },
     },
-
     {
         type = "sprite",
         name = constants.button_sprite,

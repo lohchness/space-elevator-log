@@ -128,7 +128,7 @@ local function create_toolbar(gui_id)
                     {
                         type = "sprite",
                         sprite = "virtual-signal/signal-clock",
-                        tooltip = { "spelevator-log.filter-time-period" },
+                        tooltip = { "se-log.filter-time-period" },
                     },
                     {
                         type = "drop-down",
@@ -142,7 +142,7 @@ local function create_toolbar(gui_id)
                         type = "sprite-button",
                         sprite = "utility/refresh",
                         style = "item_and_count_select_confirm",
-                        tooltip = { "spelevator-log.refresh" },
+                        tooltip = { "se-log.refresh" },
                         handler = gui_handlers.generic_refresh,
                         tags = { gui_id = gui_id },
                     },
@@ -162,7 +162,7 @@ local function create_toolbar(gui_id)
                     {
                         type = "sprite",
                         sprite = "entity/se-space-elevator",
-                        tooltip = { "spelevator-log.filter-surface-label" },
+                        tooltip = { "se-log.filter-surface-label" },
                     },
                     {
                         type = "drop-down",
@@ -174,7 +174,7 @@ local function create_toolbar(gui_id)
                     {
                         type = "sprite",
                         sprite = "virtual-signal/signal-stack-size",
-                        tooltip = { "spelevator-log.filter-item-label" },
+                        tooltip = { "se-log.filter-item-label" },
                     },
                     {
                         type = "choose-elem-button",
@@ -186,7 +186,7 @@ local function create_toolbar(gui_id)
                     {
                         type = "sprite",
                         sprite = "virtual-signal/signal-liquid",
-                        tooltip = { "spelevator-log.filter-fluid-label" },
+                        tooltip = { "se-log.filter-fluid-label" },
                     },
                     {
                         type = "choose-elem-button",
@@ -207,7 +207,7 @@ local function create_toolbar(gui_id)
                         type = "radiobutton",
                         state = "true",
                         name = "incoming",
-                        caption = { "spelevator-log.incoming" },
+                        caption = { "se-log.incoming" },
                         handler = radio_handler,
                         tags = { gui_id = gui_id },
                     },
@@ -215,7 +215,7 @@ local function create_toolbar(gui_id)
                         type = "radiobutton",
                         state = "false",
                         name = "outgoing",
-                        caption = { "spelevator-log.outgoing" },
+                        caption = { "se-log.outgoing" },
                         handler = radio_handler,
                         tags = { gui_id = gui_id },
                     },
@@ -223,7 +223,7 @@ local function create_toolbar(gui_id)
                         type = "radiobutton",
                         state = "false",
                         name = "combined",
-                        caption = { "spelevator-log.combined" },
+                        caption = { "se-log.combined" },
                         handler = radio_handler,
                         tags = { gui_id = gui_id },
                     },
@@ -231,7 +231,7 @@ local function create_toolbar(gui_id)
                         type = "checkbox",
                         state = "false",
                         name = "hide_empty_trains",
-                        caption = { "spelevator-log.hide_empty_trains" },
+                        caption = { "se-log.hide_empty_trains" },
                         style_mods = { left_margin = 10 },
                         handler = hide_empty_trains_handler,
                         tags = { gui_id = gui_id },

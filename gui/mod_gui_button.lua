@@ -29,7 +29,7 @@ local function add_mod_gui_button(player)
             style = "flib_slot_button_default",
             sprite = constants.button_sprite,
             handler = gui_handlers.mod_gui_button_click,
-            tooltip = { "spelevator-log.mod-gui-tooltip" }
+            tooltip = { "se-log.button-tooltip" }
         }
     )
 end
