@@ -90,7 +90,8 @@ function AddTrainLog(event)
         train = event.train,
         contents = event.train.get_contents(),
         fluid_contents = event.train.get_fluid_contents(),
-        teleporter_id = event.teleporter.unit_number
+        teleporter_id = event.teleporter.unit_number,
+        group = event.train.group,
     }
 
     local schedule = event.train.get_schedule()

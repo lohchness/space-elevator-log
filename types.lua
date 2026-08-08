@@ -23,6 +23,7 @@
 ---@class LogEntry
 ---@field time MapTick                               tick of event
 ---@field train LuaTrain
+---@field group string
 ---@field contents ItemWithQualityCount[]            copy of contents at the time
 ---@field fluid_contents table<string, FluidAmount>
 ---@field records ScheduleRecord[]?                  stops in schedule
