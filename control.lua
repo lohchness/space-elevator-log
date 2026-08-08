@@ -1,6 +1,5 @@
-local format = require("__flib__.format")
 local flib_gui = require("__flib__.gui")
-local spelevator_log_gui = require("gui/main_gui")
+local sel_gui = require("gui/main_gui")
 local mod_gui_button = require("gui/mod_gui_button")
 local constants = require("scripts/constants")
 local utils = require("scripts/utils")
@@ -40,11 +39,7 @@ end
 
 --- Destroys any gui elements and all storage data.
 local function destroy_storage()
-    for _, gui in pairs(game.player.gui.screen.children) do
-        if gui.name == constants.window_name then
-            gui.destroy()
-        end
-    end
+    bulk_reset_player_gui()
 
     storage = {}
     ---@type table<string, GuiConfig>
@@ -53,59 +48,6 @@ local function destroy_storage()
     storage.history = {}
     ---@type table<int, ElevatorZone>
     storage.zones = {}
-end
-
-
-local function reset_all()
-    bulk_reset_player_gui()
-    destroy_storage()
-end
-
-
-function check_storage()
-    if not next(storage) then
-        game.player.print("storage not initiated")
-        return
-    end
-    game.player.print("History: " .. table_size(storage.history) .. " entries")
-    game.player.print("Surfaces: " .. table_size(storage.zones) .. " entries")
-    game.player.print("Storage: " .. table_size(storage.guis) .. " entries")
-end
-
-function print_last_entry()
-    ---@type LogEntry
-    local entry = storage.history[table_size(storage.history)]
-
-    game.player.print(format.time(game.tick - entry.time, true) .. " ago")
-    game.player.print("Contents:")
-    for _, item in pairs(entry.contents) do
-        game.player.print(item.name .. ": " .. item.count)
-    end
-
-    game.player.print("Remaining Stops:")
-    if entry.records then
-        for _, record in pairs(entry.records) do
-            game.player.print(record.station)
-        end
-    else
-        print("No Records")
-    end
-end
-
-function clear_storage_surfaces()
-    storage.zones = {}
-end
-
-function print_storage_surfaces()
-    if table_size(storage.zones) == 0 then
-        game.player.print("Storage zones empty")
-    end
-    for i, j in pairs(storage.zones) do
-        -- game.player.print(j.name..", "..j.type..", "..j.zone_index)
-        game.player.print(
-            serpent.block(j, { compact = true })
-        )
-    end
 end
 
 ---Storing as a pair to ensure entries have a start and end zone
@@ -136,11 +78,8 @@ local function store_solid_orbit_pair(solid_zone, orbit_zone)
     storage.zones[solid_zone.index].opposite = storage.zones[orbit_zone.index]
 end
 
-
 ---@param event TrainTeleportStartedEvent
-function on_teleport_started(event)
-    return
-end
+function on_teleport_started(event) return end
 
 ---@param event TrainTeleportFinishedEvent
 function AddTrainLog(event)
@@ -194,17 +133,11 @@ local function on_configuration_changed(config)
 end
 script.on_configuration_changed(on_configuration_changed)
 
-
 script.on_init(destroy_storage)
 script.on_event(defines.events.se_on_train_teleport_finished, AddTrainLog)
 
-commands.add_command("sl_destroy_storage", nil, destroy_storage)
-commands.add_command("sl_check_storage", nil, check_storage)
-commands.add_command("sl_last_entry", nil, print_last_entry)
-commands.add_command("sl_print_storage_surfaces", nil, print_storage_surfaces)
-commands.add_command("sl_reset_player_gui", nil, function() reset_player_gui(game.player) end)
-commands.add_command("sl_clear_storage_surfaces", nil, clear_storage_surfaces)
-commands.add_command("sl_reset_all", nil, reset_all)
+commands.add_command("sel-rebuild-guis", { "spelevator-log.command_rebuild_guis" }, bulk_reset_player_gui)
+commands.add_command("sel-clear-storage", { "spelevator-log.command_clear_storage" }, destroy_storage)
 
 
 flib_gui.handle_events()
