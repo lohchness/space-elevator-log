@@ -26,8 +26,8 @@ local time_period_items = {
         text = { "spelevator-log.time-hours", 48 }
     },
     {
-        time = 60 * 60 * 96,
-        text = { "spelevator-log.time-hours", 96 }
+        time = math.huge,
+        text = { "spelevator-log.time-all" }
     },
 }
 local time_period_default_index = 2
