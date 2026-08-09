@@ -64,9 +64,6 @@ end
 ---@param log_entry LogEntry
 ---@param toolbar ToolbarGui
 local function matches_filter(log_entry, toolbar)
-    local time_period = game.tick - time_filter.ticks(toolbar.time_period.selected_index)
-    if log_entry.time < time_period then return false end
-
     local check_item = (toolbar.selected_item ~= nil)
     local check_fluid = (toolbar.selected_fluid ~= nil)
     local matches_content = not (check_item or check_fluid)
@@ -133,11 +130,15 @@ local function create_events_rows(entries, toolbar, columns, gui_id)
         })
     end
 
+    local time_period = game.tick - time_filter.ticks(toolbar.time_period.selected_index)
     for i = table_size(entries), 1, -1 do
         local log_entry = entries[i]
+        if log_entry.time < time_period then
+            break
+        end
         if matches_filter(log_entry, toolbar) then
             create_row(log_entry, events_rows, gui_id)
-            summary.add_event(summary_data, entries[i])
+            summary.add_event(summary_data, log_entry)
             count = count + 1
         end
     end
