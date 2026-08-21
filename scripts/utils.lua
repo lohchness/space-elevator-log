@@ -4,7 +4,7 @@ local constants = require("scripts/constants")
 --- Handles clicking a sprite button in the contents column of an event row.
 --- @param event EventData.on_gui_click
 function gui_handlers.set_filter_sprite_button(event)
-    local gui_config = storage.guis[event.element.tags.gui_id]
+    local gui_state = storage.guis[event.element.tags.gui_id]
 
     -- Open factoriopedia here
     if event.alt and event.button == defines.mouse_button_type.left then
@@ -16,23 +16,23 @@ function gui_handlers.set_filter_sprite_button(event)
         return
     end
 
-    gui_config.toolbar.selected_item = nil
-    gui_config.toolbar.selected_fluid = nil
-    gui_config.toolbar.filter_item_button.elem_value = nil
-    gui_config.toolbar.filter_fluid_button.elem_value = nil
+    gui_state.toolbar.selected_item = nil
+    gui_state.toolbar.selected_fluid = nil
+    gui_state.toolbar.filter_item_button.elem_value = nil
+    gui_state.toolbar.filter_fluid_button.elem_value = nil
 
     if event.element.tags.item_type == "item" then
-        gui_config.toolbar.selected_item = event.element.tags.name
-        gui_config.toolbar.filter_item_button.elem_value = event.element.tags.name
+        gui_state.toolbar.selected_item = event.element.tags.name
+        gui_state.toolbar.filter_item_button.elem_value = event.element.tags.name
     elseif event.element.tags.item_type == "fluid" then
-        gui_config.toolbar.selected_fluid = event.element.tags.name
-        gui_config.toolbar.filter_fluid_button.elem_value = event.element.tags.name
+        gui_state.toolbar.selected_fluid = event.element.tags.name
+        gui_state.toolbar.filter_fluid_button.elem_value = event.element.tags.name
     end
 
     gui_handlers.generic_refresh(event)
 end
 
----@param options SpriteButtonOptions
+---@param options sel.SpriteButtonOptions
 ---@return flib.GuiElemDef
 local function sprite_button(options)
     local sprite = options.sprite_path or options.item_type .. "/" .. options.name -- ???

@@ -1,6 +1,6 @@
 local utils = require("scripts/utils")
 
----@return SummaryData
+---@return sel.Summary
 local function create_new_summary()
     return {
         items = {},
@@ -10,8 +10,8 @@ local function create_new_summary()
     }
 end
 
----@param summary_data SummaryData
----@param event LogEntry
+---@param summary_data sel.Summary
+---@param event sel.LogEntry
 local function add_event(summary_data, event)
     for _, item in pairs(event.contents) do
         summary_data.items[item.name] = summary_data.items[item.name]
@@ -32,7 +32,7 @@ local function add_event(summary_data, event)
 end
 
 
----@param summary_data SummaryData
+---@param summary_data sel.Summary
 ---@param gui_id string
 local function create_gui_from_data(summary_data, gui_id)
     -- Convert to array for sorting

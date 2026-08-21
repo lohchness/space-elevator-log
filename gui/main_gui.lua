@@ -1,5 +1,5 @@
 local flib_gui = require("__flib__.gui")
-local toolbar = require("gui/toolbar")
+local Toolbar = require("gui/toolbar")
 local gui_handlers = require("gui/handlers")
 local constants = require("scripts/constants")
 
@@ -42,7 +42,7 @@ local function open_gui(player)
                 name = constants.window_name,
                 children = {
                     header(gui_id),
-                    toolbar.create_toolbar(gui_id),
+                    Toolbar.create_toolbar(gui_id),
                     {
                         type = "tabbed-pane",
                         name = "tabs_pane",
@@ -77,8 +77,8 @@ local function open_gui(player)
         ---@type table<string,LuaGuiElement>, LuaGuiElement
         local _, new_gui = flib_gui.add(player.gui.screen, gui_contents)
         log(new_gui.name)
-        ---@type ToolbarGui
-        local toolbar_struct = {
+        ---@type sel.ToolbarState
+        local toolbar_state = {
             time_period = new_gui.toolbar.row1.filter_time_period,
             display_stats = new_gui.toolbar.row1.display_stats,
             zone_list = new_gui.toolbar.row2.filter_zone_list,
@@ -91,28 +91,28 @@ local function open_gui(player)
             selected_item = nil,
             selected_fluid = nil,
         }
-        ---@type GuiConfig
+        ---@type sel.GuiState
         storage.guis[gui_id] = {
             gui_id = gui_id,
             gui = new_gui,
             player = player,
-            toolbar = toolbar_struct,
+            toolbar = toolbar_state,
             events_contents = new_gui.tabs_pane.events_contents,
             summary_contents = new_gui.tabs_pane.summary_contents
         }
     end
 
-    local spelevator_log_gui = storage.guis[gui_id]
-    if player.opened and player.opened ~= spelevator_log_gui.gui then
+    local gui_state = storage.guis[gui_id]
+    if player.opened and player.opened ~= gui_state.gui then
         player.opened = nil
     end
 
-    spelevator_log_gui.gui.visible = true
-    spelevator_log_gui.gui.titlebar.drag_target = spelevator_log_gui.gui
-    spelevator_log_gui.gui.force_auto_center()
-    player.opened = spelevator_log_gui.gui
+    gui_state.gui.visible = true
+    gui_state.gui.titlebar.drag_target = gui_state.gui
+    gui_state.gui.force_auto_center()
+    player.opened = gui_state.gui
 
-    toolbar.refresh(spelevator_log_gui)
+    Toolbar.refresh(gui_state)
 end
 
 

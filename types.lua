@@ -1,26 +1,19 @@
 ---@meta
 
----@class TrainTeleportFinishedEvent
+---@class sel.TrainTeleportFinishedEvent
 ---@field train LuaTrain                  fully built newly created train post transfer
 ---@field old_train_id_1 int              id of the train prior to transer start
 ---@field stranded? int                   optional: only if train is split due to incomplete transfer
 ---@field old_surface_index int
 ---@field teleporter LuaEntity            space elevator entity doing the transferring
 
----@class TrainTeleportStartedEvent
+---@class sel.TrainTeleportStartedEvent
 ---@field train LuaTrain
 ---@field old_train_id_1 int
 ---@field old_surface_index int
 ---@field teleporter LuaEntity
 
----@class SpaceElevatorInfo               Info about the space elevator
----@field main LuaEntity                  Entity doing the transfer
----@field train_stop string
----@field opposite LuaEntity              Space elevator on opposite side
----@field constructed boolean
----@field powered boolean
-
----@class LogEntry
+---@class sel.LogEntry
 ---@field time MapTick                               tick of event
 ---@field train LuaTrain
 ---@field group string
@@ -32,7 +25,7 @@
 ---@field from_zone int
 ---@field to_zone int
 
----@class SpriteButtonOptions
+---@class sel.SpriteButtonOptions
 ---@field item_type string?
 ---@field name string?
 ---@field sprite_path string?        Required if item_type and name not defined.
@@ -42,45 +35,54 @@
 ---@field train_id int?
 ---@field hide_tooltip boolean?
 
----@class GuiConfig
+---@class sel.GuiState
 ---@field gui_id string
 ---@field gui LuaGuiElement
 ---@field player LuaPlayer
----@field toolbar ToolbarGui
+---@field toolbar sel.ToolbarState
 ---@field events_contents LuaGuiElement
 ---@field summary_contents LuaGuiElement
 
----@class ToolbarGui
+---@class sel.ToolbarState
 ---@field time_period LuaGuiElement
 ---@field display_stats LuaGuiElement
 ---@field zone_list LuaGuiElement
----@field radios LuaGuiElement
----@field filter_item_button LuaGuiElement
----@field filter_fluid_button LuaGuiElement
 ---@field selected_zone_index int
+---@field radios LuaGuiElement
 ---@field selected_radio string
----@field hide_empty_trains LuaGuiElement
+---@field filter_item_button LuaGuiElement
 ---@field selected_item string?
+---@field filter_fluid_button LuaGuiElement
 ---@field selected_fluid string?
+---@field hide_empty_trains LuaGuiElement
 
----@class SummaryData
+---@class sel.Summary
 ---@field items table<string, ItemWithQualityCount>
 ---@field fluids table<string, {name: string, amount: FluidAmount}>
 ---@field trains table
 ---@field stations table
 
----@class ElevatorZone
+---@class sel.Elevator
 ---@field name string              Titlecase of Surface name
 ---@field type string              "orbit" or "planet"
 ---@field zone_index int           Zone Index given by Space Exploration
----@field opposite ElevatorZone
+---@field opposite sel.Elevator
 ---@field surface_index int
 
----@class SEZoneType
+---@class sel.Zone
 ---@field name string
 ---@field index int             Zone Index
 ---@field surface_index int
 ---@field type string           "planet" or "orbit"
+
+--- TYPES FROM OTHER MODS
+
+---@class SpaceElevatorInfo               Info about the space elevator
+---@field main LuaEntity
+---@field train_stop string
+---@field opposite LuaEntity              Space elevator on opposite side
+---@field constructed boolean
+---@field powered boolean
 
 --- A GUI element definition. This extends `LuaGuiElement.add_param` with several new attributes.
 --- Children may be defined in the array portion as an alternative to the `children` subtable.

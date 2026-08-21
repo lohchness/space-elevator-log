@@ -42,17 +42,17 @@ local function destroy_storage()
     bulk_reset_player_gui()
 
     storage = {}
-    ---@type table<string, GuiConfig>
+    ---@type table<string, sel.GuiState>
     storage.guis = {}
-    ---@type LogEntry[]
+    ---@type sel.LogEntry[]
     storage.history = {}
-    ---@type table<int, ElevatorZone>
+    ---@type table<int, sel.Elevator>
     storage.zones = {}
 end
 
 ---Storing as a pair to ensure entries have a start and end zone
----@param solid_zone SEZoneType
----@param orbit_zone SEZoneType
+---@param solid_zone sel.Zone
+---@param orbit_zone sel.Zone
 local function store_solid_orbit_pair(solid_zone, orbit_zone)
     --- Store zones from SE remote interface, with the key being zone index.
 
@@ -78,12 +78,12 @@ local function store_solid_orbit_pair(solid_zone, orbit_zone)
     storage.zones[solid_zone.index].opposite = storage.zones[orbit_zone.index]
 end
 
----@param event TrainTeleportStartedEvent
+---@param event sel.TrainTeleportStartedEvent
 function on_teleport_started(event) return end
 
----@param event TrainTeleportFinishedEvent
+---@param event sel.TrainTeleportFinishedEvent
 function AddTrainLog(event)
-    ---@type LogEntry
+    ---@type sel.LogEntry
     ---@diagnostic disable-next-line: missing-fields
     local log_entry = {
         time = game.tick,
@@ -106,10 +106,10 @@ function AddTrainLog(event)
     --- @type SpaceElevatorInfo
     local space_elevator_info = remote.call("space-exploration", "get_space_elevator_info", event.teleporter)
 
-    ---@type SEZoneType
+    ---@type sel.Zone
     local from_zone = remote.call("space-exploration", "get_zone_from_surface_index",
         { surface_index = space_elevator_info.main.surface_index })
-    ---@type SEZoneType
+    ---@type sel.Zone
     local to_zone = remote.call("space-exploration", "get_zone_from_surface_index",
         { surface_index = space_elevator_info.opposite.surface_index })
 

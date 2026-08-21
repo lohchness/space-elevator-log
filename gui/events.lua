@@ -6,7 +6,7 @@ local utils = require("scripts/utils")
 local gui_handlers = require("gui/handlers")
 local constants = require("scripts/constants")
 
----@param entry LogEntry
+---@param entry sel.LogEntry
 ---@param events_rows table
 local function create_row(entry, events_rows, gui_id)
     local relative_time = game.tick - entry.time
@@ -61,26 +61,26 @@ local function create_row(entry, events_rows, gui_id)
     table.insert(events_rows, contents_flow)
 end
 
----@param log_entry LogEntry
----@param toolbar ToolbarGui
-local function matches_filter(log_entry, toolbar)
-    local check_item = (toolbar.selected_item ~= nil)
-    local check_fluid = (toolbar.selected_fluid ~= nil)
+---@param log_entry sel.LogEntry
+---@param toolbar_state sel.ToolbarState
+local function matches_filter(log_entry, toolbar_state)
+    local check_item = (toolbar_state.selected_item ~= nil)
+    local check_fluid = (toolbar_state.selected_fluid ~= nil)
     local matches_content = not (check_item or check_fluid)
 
-    local check_radio = toolbar.selected_radio
-    local check_empty_train = toolbar.hide_empty_trains.state
+    local check_radio = toolbar_state.selected_radio
+    local check_empty_train = toolbar_state.hide_empty_trains.state
 
     if check_radio == "incoming" then
-        if not (log_entry.to_zone == toolbar.selected_zone_index) then return false end
+        if not (log_entry.to_zone == toolbar_state.selected_zone_index) then return false end
     elseif check_radio == "outgoing" then
-        if not (log_entry.from_zone == toolbar.selected_zone_index) then return false end
+        if not (log_entry.from_zone == toolbar_state.selected_zone_index) then return false end
     elseif check_radio == "combined" then
         -- virtual-signal/signal-input
         -- virtual-signal/signal-output
         if not (
-                (log_entry.to_zone == toolbar.selected_zone_index) or
-                (log_entry.from_zone == toolbar.selected_zone_index)
+                (log_entry.to_zone == toolbar_state.selected_zone_index) or
+                (log_entry.from_zone == toolbar_state.selected_zone_index)
             ) then
             return false
         end
@@ -96,7 +96,7 @@ local function matches_filter(log_entry, toolbar)
 
     if check_item then
         for _, i in pairs(log_entry.contents) do
-            if i.name == toolbar.selected_item then
+            if i.name == toolbar_state.selected_item then
                 matches_content = true
                 break
             end
@@ -104,7 +104,7 @@ local function matches_filter(log_entry, toolbar)
     end
     if check_fluid then
         for i, j in pairs(log_entry.fluid_contents) do
-            if i == toolbar.selected_fluid then
+            if i == toolbar_state.selected_fluid then
                 matches_content = true
                 break
             end
@@ -114,12 +114,14 @@ local function matches_filter(log_entry, toolbar)
     return matches_content
 end
 
----@param entries LogEntry[]
+---@param entries sel.LogEntry[]
+---@param toolbar_state sel.ToolbarState
 ---@param columns string[]
+---@param gui_id string
 ---@return table, table, integer
-local function create_events_rows(entries, toolbar, columns, gui_id)
+local function create_events_rows(entries, toolbar_state, columns, gui_id)
     local events_rows = {}
-    local summary_data = summary.create_new_summary() ---@type SummaryData
+    local summary_data = summary.create_new_summary() ---@type sel.Summary
     local count = 0
 
     -- First row is column names
@@ -130,13 +132,13 @@ local function create_events_rows(entries, toolbar, columns, gui_id)
         })
     end
 
-    local time_period = game.tick - time_filter.ticks(toolbar.time_period.selected_index)
+    local time_period = game.tick - time_filter.ticks(toolbar_state.time_period.selected_index)
     for i = table_size(entries), 1, -1 do
         local log_entry = entries[i]
         if log_entry.time < time_period then
             break
         end
-        if matches_filter(log_entry, toolbar) then
+        if matches_filter(log_entry, toolbar_state) then
             create_row(log_entry, events_rows, gui_id)
             summary.add_event(summary_data, log_entry)
             count = count + 1
@@ -146,13 +148,13 @@ local function create_events_rows(entries, toolbar, columns, gui_id)
 end
 
 ---Does not filter by forces because I think that is silly
----@param spelevator_log_gui GuiConfig
-local function create_events_table(spelevator_log_gui)
+---@param gui_state sel.GuiState
+local function create_events_table(gui_state)
     --- Destroys children to prevent persistent data when refreshing
-    spelevator_log_gui.events_contents.clear()
-    spelevator_log_gui.summary_contents.clear()
+    gui_state.events_contents.clear()
+    gui_state.summary_contents.clear()
 
-    local toolbar = spelevator_log_gui.toolbar
+    local toolbar_state = gui_state.toolbar
 
     --- TODO: Refactor toolbar to contain an extra table
     --- for easy access to gui elements like elem-buttons
@@ -160,12 +162,12 @@ local function create_events_table(spelevator_log_gui)
     --- to avoid atrocious gui_id drilling below
 
     local columns = { "timestamp", "train", "contents" }
-    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar, columns,
-        spelevator_log_gui.gui_id)
+    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar_state, columns,
+        gui_state.gui_id)
 
-    toolbar.display_stats.caption = { "se-log.display_stats", count, table_size(storage.history) }
+    toolbar_state.display_stats.caption = { "se-log.display_stats", count, table_size(storage.history) }
 
-    flib_gui.add(spelevator_log_gui.events_contents, {
+    flib_gui.add(gui_state.events_contents, {
         {
             type = "scroll-pane",
             style = "flib_naked_scroll_pane_no_padding",
@@ -187,8 +189,8 @@ local function create_events_table(spelevator_log_gui)
         }
     })
 
-    local summary_children = summary.create_gui_from_data(summary_data, spelevator_log_gui.gui_id)
-    flib_gui.add(spelevator_log_gui.summary_contents, {
+    local summary_children = summary.create_gui_from_data(summary_data, gui_state.gui_id)
+    flib_gui.add(gui_state.summary_contents, {
         {
             type = "scroll-pane",
             style = "flib_naked_scroll_pane_no_padding",

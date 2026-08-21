@@ -3,27 +3,27 @@ local gui_handlers = require("gui/handlers")
 local events_table = require("gui/events")
 local utils = require("scripts/utils")
 
----@param toolbar ToolbarGui
-local function update_filters(toolbar)
+---@param toolbar_state sel.ToolbarState
+local function update_filters(toolbar_state)
     if table_size(storage.zones) == 0 then
         return
     end
 
     -- Handle first time opening when selected_zone_index is 0.
     -- If the list is populated, set selected index to first in the drop down list.
-    if toolbar.selected_zone_index == 0 then
+    if toolbar_state.selected_zone_index == 0 then
         for i, _ in pairs(storage.zones) do
-            toolbar.selected_zone_index = i
+            toolbar_state.selected_zone_index = i
             break
         end
     end
 
     -- Save currently selected zone before rebuilding dropdown so it can be restored if it exists
-    local old_index = toolbar.zone_list.selected_index
+    local old_index = toolbar_state.zone_list.selected_index
     local old_selected =
-        toolbar.zone_list.items and
+        toolbar_state.zone_list.items and
         old_index ~= 0 and
-        toolbar.zone_list.get_item(old_index)
+        toolbar_state.zone_list.get_item(old_index)
         or 1
 
     local new_index = 1
@@ -34,41 +34,41 @@ local function update_filters(toolbar)
         table.insert(new_zone_list, zone_data.name)
         if zone_data.name == old_selected then
             new_index = count
-            toolbar.selected_zone_index = zone_index
+            toolbar_state.selected_zone_index = zone_index
         end
         count = count + 1
     end
 
-    toolbar.zone_list.items = new_zone_list
-    toolbar.zone_list.selected_index = new_index
+    toolbar_state.zone_list.items = new_zone_list
+    toolbar_state.zone_list.selected_index = new_index
 end
 
----@param toolbar ToolbarGui
-local function update_toolbar(toolbar)
-    update_filters(toolbar)
+---@param toolbar_state sel.ToolbarState
+local function update_toolbar(toolbar_state)
+    update_filters(toolbar_state)
 end
 
----@param gui_config GuiConfig
-local function refresh(gui_config)
-    update_toolbar(gui_config.toolbar)
-    events_table.create_events_table(gui_config)
+---@param gui_state sel.GuiState
+local function refresh(gui_state)
+    update_toolbar(gui_state.toolbar)
+    events_table.create_events_table(gui_state)
 end
 
 ---@param event EventData.on_gui_checked_state_changed
 function gui_handlers.select_radio(event)
     local gui_id = event.element.tags.gui_id
-    local gui_config = storage.guis[gui_id]
+    local gui_state = storage.guis[gui_id]
 
-    local toolbar = gui_config.toolbar
-    for _, radio in pairs(toolbar.radios.children) do
+    local toolbar_state = gui_state.toolbar
+    for _, radio in pairs(toolbar_state.radios.children) do
         if radio.type == "radiobutton" then -- ???
             radio.state = false
         end
     end
     event.element.state = true
-    toolbar.selected_radio = event.element.name
+    toolbar_state.selected_radio = event.element.name
 
-    refresh(gui_config)
+    refresh(gui_state)
 end
 
 ---@param event flib.GuiEventData
@@ -78,32 +78,32 @@ end
 
 ---@param event EventData.on_gui_elem_changed
 function gui_handlers.select_item(event)
-    local gui_config = storage.guis[event.element.tags.gui_id]
-    gui_config.toolbar.selected_item = nil
+    local gui_state = storage.guis[event.element.tags.gui_id]
+    gui_state.toolbar.selected_item = nil
 
     if event.element.elem_value then
-        gui_config.toolbar.selected_item = event.element.elem_value
+        gui_state.toolbar.selected_item = event.element.elem_value
 
         event.element.parent.filter_fluid.elem_value = nil
-        gui_config.toolbar.selected_fluid = nil
+        gui_state.toolbar.selected_fluid = nil
     end
 
-    refresh(gui_config)
+    refresh(gui_state)
 end
 
 ---@param event EventData.on_gui_elem_changed
 function gui_handlers.select_fluid(event)
-    local gui_config = storage.guis[event.element.tags.gui_id]
+    local gui_state = storage.guis[event.element.tags.gui_id]
 
-    gui_config.toolbar.selected_fluid = nil
+    gui_state.toolbar.selected_fluid = nil
     if event.element.elem_value then
-        gui_config.toolbar.selected_fluid = event.element.elem_value
+        gui_state.toolbar.selected_fluid = event.element.elem_value
 
         event.element.parent.filter_item.elem_value = nil
-        gui_config.toolbar.selected_item = nil
+        gui_state.toolbar.selected_item = nil
     end
 
-    refresh(gui_config)
+    refresh(gui_state)
 end
 
 local function create_toolbar(gui_id)
