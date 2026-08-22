@@ -95,7 +95,8 @@ end
 
 --- Given a filter function, creates a filtered copy of the table
 -- by calling the function for each element in the table, and
--- filtering out any key-value pairs for non-true results. Passes the index as second argument to the function.
+-- filtering out any key-value pairs for non-true results.
+-- Passes the index as second argument to the function.
 ---@param tbl table       the table to be filtered
 ---@param func function   the function to filter values
 ---@param ... any?        additional arguments passed to the function
@@ -115,10 +116,25 @@ function filter(tbl, func, ...)
     return new_tbl
 end
 
+--- Given a mapping function, creates a transformed copy of the table
+-- by calling the function for each element in the table, and using
+-- the result as the new value for the key.
+-- Passes the index as second argument to the function.
+---@param tbl table       the table to be mapped to the transform
+---@param func function   func the function to transform values
+---@param ... any?        additional arguments
+---@return table          a new table containing the keys and mapped values
+function map(tbl, func, ...)
+    local new_tbl = {}
+    for k, v in pairs(tbl) do new_tbl[k] = func(v, k, ...) end
+    return new_tbl
+end
+
 return {
     sprite_button = sprite_button,
     title = title,
     find = find,
     any = any,
     filter = filter,
+    map = map,
 }
