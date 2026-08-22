@@ -43,14 +43,9 @@ local function update_filters(toolbar_state)
     toolbar_state.zone_list.selected_index = new_index
 end
 
----@param toolbar_state sel.ToolbarState
-local function update_toolbar(toolbar_state)
-    update_filters(toolbar_state)
-end
-
 ---@param gui_state sel.GuiState
 local function refresh(gui_state)
-    update_toolbar(gui_state.toolbar)
+    update_filters(gui_state.toolbar)
     events_table.create_events_table(gui_state)
 end
 
@@ -234,6 +229,18 @@ local function create_toolbar(gui_id)
                         caption = { "se-log.hide_empty_trains" },
                         style_mods = { left_margin = 10 },
                         handler = hide_empty_trains_handler,
+                        tags = { gui_id = gui_id },
+                    },
+                    {
+                        type = "drop-down",
+                        name = "groupby",
+                        items = {
+                            { "se-log.group-by-none" },
+                            { "se-log.group-by-content" },
+                        },
+                        selected_index = 1,
+                        style_mods = { left_margin = 10 },
+                        handler = drop_down_handler,
                         tags = { gui_id = gui_id },
                     },
                 }

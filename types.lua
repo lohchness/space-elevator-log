@@ -43,11 +43,13 @@
 ---@field events_contents LuaGuiElement
 ---@field summary_contents LuaGuiElement
 
+---@alias sel.GroupOptions "none" | "content" | "traingroup"
+
 ---@class sel.ToolbarState
 ---@field time_period LuaGuiElement
 ---@field display_stats LuaGuiElement
 ---@field zone_list LuaGuiElement
----@field selected_zone_index int
+---@field selected_zone_index int            sel.Zone index, not index of zone_list drop down
 ---@field radios LuaGuiElement
 ---@field selected_radio string
 ---@field filter_item_button LuaGuiElement
@@ -55,6 +57,8 @@
 ---@field filter_fluid_button LuaGuiElement
 ---@field selected_fluid string?
 ---@field hide_empty_trains LuaGuiElement
+---@field group_by_list LuaGuiElement
+---@field selected_group_by sel.options
 
 ---@class sel.Summary
 ---@field items table<string, ItemWithQualityCount>
