@@ -2,64 +2,19 @@ local format = require("__flib__.format")
 local flib_gui = require("__flib__.gui")
 local time_filter = require("scripts/filter-time")
 local summary = require("gui/summary")
-local utils = require("scripts/utils")
-local gui_handlers = require("gui/handlers")
-local constants = require("scripts/constants")
+local filter_group = require("scripts/filter-group")
+
 
 ---@param entry sel.LogEntry
 ---@param events_rows table
-local function create_row(entry, events_rows, gui_id)
-    local relative_time = game.tick - entry.time
-
-    local timestamp = {
-        type = "label",
-        caption = format.time(relative_time, true)
-    }
-
-    local train = {}
-    if entry.train.valid then
-        train = utils.sprite_button {
-            item_type = "item",
-            name = entry.train.front_stock.prototype.name,
-            gui_id = gui_id,
-            custom_handler = gui_handlers.view_train_position,
-            train_id = entry.train.id,
-            hide_tooltip = true,
-        }
-    else
-        train = utils.sprite_button {
-            sprite_path = constants.invalid_train,
-            gui_id = gui_id,
-            hide_tooltip = true,
-        }
+---@param columns sel.GroupColumn[]
+---@param gui_id string
+local function create_row(entry, events_rows, columns, gui_id)
+    for _, col in pairs(columns) do
+        table.insert(events_rows, col.render(entry, gui_id))
     end
-
-    local contents_children = {}
-    for _, item in pairs(entry.contents) do
-        table.insert(contents_children, utils.sprite_button {
-            item_type = "item",
-            name = item.name,
-            amount = item.count,
-            gui_id = gui_id,
-        })
-    end
-    for i, j in pairs(entry.fluid_contents) do
-        table.insert(contents_children, utils.sprite_button {
-            item_type = "fluid",
-            name = i,
-            amount = j,
-            gui_id = gui_id,
-        })
-    end
-    local contents_flow = {
-        type = "flow",
-        direction = "horizontal",
-        children = contents_children
-    }
-    table.insert(events_rows, timestamp)
-    table.insert(events_rows, train)
-    table.insert(events_rows, contents_flow)
 end
+
 
 ---@param log_entry sel.LogEntry
 ---@param toolbar_state sel.ToolbarState
@@ -114,21 +69,22 @@ local function matches_filter(log_entry, toolbar_state)
     return matches_content
 end
 
+
 ---@param entries sel.LogEntry[]
 ---@param toolbar_state sel.ToolbarState
----@param columns string[]
+---@param group_def sel.GroupByDef
 ---@param gui_id string
 ---@return table, table, integer
-local function create_events_rows(entries, toolbar_state, columns, gui_id)
+local function create_events_rows(entries, toolbar_state, group_def, gui_id)
     local events_rows = {}
     local summary_data = summary.create_new_summary() ---@type sel.Summary
     local count = 0
 
     -- First row is column names
-    for _, col in pairs(columns) do
+    for _, col in pairs(group_def.columns) do
         table.insert(events_rows, {
             type = "label",
-            caption = { "se-log.table-header-" .. col }
+            caption = col.caption,
         })
     end
 
@@ -139,7 +95,7 @@ local function create_events_rows(entries, toolbar_state, columns, gui_id)
             break
         end
         if matches_filter(log_entry, toolbar_state) then
-            create_row(log_entry, events_rows, gui_id)
+            create_row(log_entry, events_rows, group_def.columns, gui_id)
             summary.add_event(summary_data, log_entry)
             count = count + 1
         end
@@ -161,8 +117,9 @@ local function create_events_table(gui_state)
     --- and for filters only (with gui id)
     --- to avoid atrocious gui_id drilling below
 
-    local columns = { "timestamp", "train", "contents" }
-    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar_state, columns,
+    ---@type sel.GroupByDef
+    local group_def = filter_group.get_group_columns(gui_state.toolbar.group_by_list.selected_index)
+    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar_state, group_def,
         gui_state.gui_id)
 
     toolbar_state.display_stats.caption = { "se-log.display_stats", count, table_size(storage.history) }
@@ -178,7 +135,7 @@ local function create_events_table(gui_state)
                 {
                     type = "table",
                     name = "events_table",
-                    column_count = table_size(columns),
+                    column_count = table_size(group_def.columns),
                     draw_vertical_lines = true,
                     draw_horizontal_line_after_headers = true,
                     vertical_centering = true,
@@ -207,6 +164,7 @@ local function create_events_table(gui_state)
         }
     })
 end
+
 
 return {
     create_events_table = create_events_table

@@ -90,6 +90,7 @@ local function open_gui(player)
             hide_empty_trains = new_gui.toolbar.row3.hide_empty_trains,
             selected_item = nil,
             selected_fluid = nil,
+            group_by_list = new_gui.toolbar.row3.groupby,
         }
         ---@type sel.GuiState
         storage.guis[gui_id] = {

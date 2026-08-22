@@ -43,7 +43,9 @@
 ---@field events_contents LuaGuiElement
 ---@field summary_contents LuaGuiElement
 
----@alias sel.GroupOptions "none" | "content" | "traingroup"
+---@alias sel.GroupName "none" | "content" | "traingroup"
+---@alias sel.GroupColumn { caption: string[], render: function }
+---@alias sel.GroupByDef { name: sel.GroupName, columns: sel.GroupColumn[] }
 
 ---@class sel.ToolbarState
 ---@field time_period LuaGuiElement
@@ -58,7 +60,6 @@
 ---@field selected_fluid string?
 ---@field hide_empty_trains LuaGuiElement
 ---@field group_by_list LuaGuiElement
----@field selected_group_by sel.options
 
 ---@class sel.Summary
 ---@field items table<string, ItemWithQualityCount>
