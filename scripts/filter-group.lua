@@ -91,7 +91,7 @@ local group_defs = {
         },
     },
     {
-        group_by = "contents",
+        group_by = "content",
         columns = {
             {
                 caption = { "se-log.table-header-train-count" },
