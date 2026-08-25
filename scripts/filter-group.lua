@@ -4,10 +4,10 @@ local constants = require("scripts/constants")
 local gui_handlers = require("gui/handlers")
 
 
----@param entry sel.LogEntry
+---@param event sel.EventRow
 ---@return flib.GuiElemDef
-local function render_timestamp(entry, _)
-    local relative_time = game.tick - entry.time
+local function render_timestamp(event, _)
+    local relative_time = game.tick - event.time
     return {
         type = "label",
         caption = format.time(relative_time, true)
@@ -15,10 +15,11 @@ local function render_timestamp(entry, _)
 end
 
 
----@param entry sel.LogEntry
+---@param event sel.EventRow
 ---@param gui_id string
 ---@return flib.GuiElemDef
-local function render_train(entry, gui_id)
+local function render_train(event, gui_id)
+    local entry = event.entries[1]
     if not entry.train.valid then
         return utils.sprite_button {
             sprite_path = constants.invalid_train,
@@ -38,10 +39,11 @@ local function render_train(entry, gui_id)
 end
 
 
----@param entry sel.LogEntry
+---@param event sel.EventRow
 ---@param gui_id string
 ---@return flib.GuiElemDef
-local function render_contents(entry, gui_id)
+local function render_contents(event, gui_id)
+    local entry = event.entries[1]
     local children = {}
 
     for _, item in pairs(entry.contents) do

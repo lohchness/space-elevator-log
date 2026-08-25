@@ -44,8 +44,23 @@
 ---@field summary_contents LuaGuiElement
 
 ---@alias sel.GroupName "none" | "content" | "traingroup"
----@alias sel.GroupColumn { caption: string[], render: function }
----@alias sel.GroupByDef { name: sel.GroupName, columns: sel.GroupColumn[] }
+
+---@class sel.EventRow
+---@field entries sel.LogEntry[]
+---@field time MapTick
+---@field count int
+---@field type string?             Grouped only
+---@field name string?             Grouped only
+---@field amount int?              Grouped only
+
+---@class sel.GroupColumn
+---@field caption string[]
+---@field render fun(row: sel.EventRow, gui_id: string): flib.GuiElemDef
+
+---@class sel.GroupByDef
+---@field group_by sel.GroupName
+---@field columns sel.GroupColumn[]
+---@field transform_entries fun(entries: sel.LogEntry[]): sel.EventRow[]
 
 ---@class sel.ToolbarState
 ---@field time_period LuaGuiElement
