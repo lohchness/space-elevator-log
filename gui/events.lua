@@ -118,7 +118,7 @@ local function create_events_table(gui_state)
     --- to avoid atrocious gui_id drilling below
 
     ---@type sel.GroupByDef
-    local group_def = filter_group.get_group_columns(gui_state.toolbar.group_by_list.selected_index)
+    local group_def = filter_group.get_group_def(gui_state.toolbar.group_by_list.selected_index)
     local events_rows, summary_data, count = create_events_rows(storage.history, toolbar_state, group_def,
         gui_state.gui_id)
 

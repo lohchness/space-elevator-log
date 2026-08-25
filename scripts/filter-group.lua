@@ -72,7 +72,7 @@ local function render_group_train_count() end
 local function render_group_content() end
 
 ---@type sel.GroupByDef[]
-local group_by_items = {
+local group_defs = {
     {
         group_by = "none",
         columns = {
@@ -111,10 +111,10 @@ local group_by_items = {
 
 ---@param selected_index int
 ---@return sel.GroupByDef
-local function get_group_columns(selected_index)
-    return group_by_items[selected_index]
+local function get_group_def(selected_index)
+    return group_defs[selected_index]
 end
 
 return {
-    get_group_columns = get_group_columns,
+    get_group_def = get_group_def,
 }
