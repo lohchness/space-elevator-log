@@ -70,8 +70,84 @@ local function render_contents(event, gui_id)
     }
 end
 
-local function render_group_train_count() end
-local function render_group_content() end
+---@param entries sel.LogEntry[]
+---@return sel.EventRow[]
+local function transform_entries_single(entries)
+    local rows = {}
+    for _, entry in pairs(entries) do
+        table.insert(rows, {
+            entries = { entry },
+            time = entry.time,
+            count = 1,
+        })
+    end
+    return rows
+end
+
+
+---@param event sel.EventRow
+local function render_group_entry_count(event, _)
+    return {
+        type = "label",
+        caption = event.count,
+    }
+end
+
+
+---@param event sel.EventRow
+---@param gui_id string
+local function render_group_content(event, gui_id)
+    return utils.sprite_button {
+        item_type = event.type,
+        name = event.name,
+        amount = event.amount,
+        gui_id = gui_id,
+    }
+end
+
+
+---@param entries sel.LogEntry[]
+---@return sel.EventRow[]
+local function transform_entries_by_content(entries)
+    local grouped_rows = {}
+
+    local function group_by_content(entry, content_type, name, amount)
+        local key = content_type .. ":" .. name
+
+        local row = grouped_rows[key] ---@type sel.EventRow
+        if not row then
+            row = {
+                entries = {},
+                time = entry.time,
+                count = 0,
+                type = content_type,
+                name = name,
+                amount = 0,
+            }
+            grouped_rows[key] = row
+        end
+
+        row.count = row.count + 1
+        row.amount = row.amount + amount
+    end
+
+    for _, entry in pairs(entries) do
+        for _, item in pairs(entry.contents) do
+            group_by_content(entry, "item", item.name, item.count)
+        end
+        for i, j in pairs(entry.fluid_contents) do
+            group_by_content(entry, "fluid", i, j)
+        end
+    end
+
+    local sorted_rows = {}
+    for _, v in pairs(grouped_rows) do
+        table.insert(sorted_rows, v)
+    end
+    table.sort(sorted_rows, function(a, b) return a.count > b.count end)
+
+    return sorted_rows
+end
 
 ---@type sel.GroupByDef[]
 local group_defs = {
@@ -91,23 +167,25 @@ local group_defs = {
                 render = render_contents,
             },
         },
+        transform_entries = transform_entries_single,
     },
     {
         group_by = "content",
         columns = {
             {
-                caption = { "se-log.table-header-train-count" },
-                render = render_group_train_count,
+                caption = { "se-log.table-header-num-trains" },
+                render = render_group_entry_count,
             },
             {
                 caption = { "se-log.table-header-content" },
                 render = render_group_content,
             },
             {
-                caption = { "se-log.table-header-timestamp" },
+                caption = { "se-log.table-header-last-train-time" },
                 render = render_timestamp,
             },
         },
+        transform_entries = transform_entries_by_content,
     },
 }
 

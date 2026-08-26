@@ -5,13 +5,13 @@ local summary = require("gui/summary")
 local filter_group = require("scripts/filter-group")
 
 
----@param entry sel.LogEntry
----@param events_rows table
+---@param entry sel.EventRow
+---@param rows_guis flib.GuiElemDef[]
 ---@param columns sel.GroupColumn[]
 ---@param gui_id string
-local function create_row(entry, events_rows, columns, gui_id)
+local function create_row(entry, rows_guis, columns, gui_id)
     for _, col in pairs(columns) do
-        table.insert(events_rows, col.render(entry, gui_id))
+        table.insert(rows_guis, col.render(entry, gui_id))
     end
 end
 
@@ -74,19 +74,11 @@ end
 ---@param toolbar_state sel.ToolbarState
 ---@param group_def sel.GroupByDef
 ---@param gui_id string
----@return table, table, integer
+---@return table, table, int, int
 local function create_events_rows(entries, toolbar_state, group_def, gui_id)
-    local events_rows = {}
+    local filtered_rows = {}
     local summary_data = summary.create_new_summary() ---@type sel.Summary
-    local count = 0
-
-    -- First row is column names
-    for _, col in pairs(group_def.columns) do
-        table.insert(events_rows, {
-            type = "label",
-            caption = col.caption,
-        })
-    end
+    local entry_count = 0
 
     local time_period = game.tick - time_filter.ticks(toolbar_state.time_period.selected_index)
     for i = table_size(entries), 1, -1 do
@@ -95,12 +87,28 @@ local function create_events_rows(entries, toolbar_state, group_def, gui_id)
             break
         end
         if matches_filter(log_entry, toolbar_state) then
-            create_row(log_entry, events_rows, group_def.columns, gui_id)
+            table.insert(filtered_rows, log_entry)
             summary.add_event(summary_data, log_entry)
-            count = count + 1
+            entry_count = entry_count + 1
         end
     end
-    return events_rows, summary_data, count
+
+    local rows_guis = {} ---@type flib.GuiElemDef[]
+
+    -- First row is column names
+    for _, col in pairs(group_def.columns) do
+        table.insert(rows_guis, {
+            type = "label",
+            caption = col.caption,
+        })
+    end
+
+    local transformed_rows = group_def.transform_entries(filtered_rows)
+    for _, row in pairs(transformed_rows) do
+        create_row(row, rows_guis, group_def.columns, gui_id)
+    end
+
+    return rows_guis, summary_data, entry_count, table_size(transformed_rows)
 end
 
 ---Does not filter by forces because I think that is silly
@@ -119,10 +127,11 @@ local function create_events_table(gui_state)
 
     ---@type sel.GroupByDef
     local group_def = filter_group.get_group_def(gui_state.toolbar.group_by_list.selected_index)
-    local events_rows, summary_data, count = create_events_rows(storage.history, toolbar_state, group_def,
-        gui_state.gui_id)
+    local events_rows, summary_data, entry_count, group_count = create_events_rows(
+        storage.history, toolbar_state, group_def, gui_state.gui_id
+    )
 
-    toolbar_state.display_stats.caption = { "se-log.display_stats", count, table_size(storage.history) }
+    toolbar_state.display_stats.caption = { "se-log.display_stats", entry_count, table_size(storage.history) }
 
     flib_gui.add(gui_state.events_contents, {
         {
