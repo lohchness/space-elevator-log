@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2026-08-26
+  Features:
+    - Add ability to group by content.
+  Changes:
+    - Train sprite shows front locomotive instead of front stock.
+---------------------------------------------------------------------------------------------------
 Version: 0.2.0
 Date: 2026-08-09
   Major Features:
