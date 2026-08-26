@@ -30,7 +30,7 @@ local function render_train(event, gui_id)
 
     return utils.sprite_button {
         item_type = "item",
-        name = entry.train.front_stock.prototype.name,
+        name = entry.train.locomotives.front_movers[1].prototype.name,
         gui_id = gui_id,
         custom_handler = gui_handlers.view_train_position,
         train_id = entry.train.id,
