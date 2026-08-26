@@ -10,6 +10,7 @@ Display stats and records of trains travelling through Space Exploration's space
 
 - Keeps a record of the train and its contents when a train travels through a space elevator.
 - Filter by location, item, fluid, direction, and time period.
+- Group by content.
 - View summary of most loaded items and fluids.
 - Click on a train to focus.
 - Click on content icon to quick set filter.
@@ -19,14 +20,14 @@ Display stats and records of trains travelling through Space Exploration's space
 ## Upcoming
 
 - GUI Overhaul
-- Group by train group, contents
+- Group by train group
 - Icon overlay to distinguish incoming and outgoing trains
 
 ## Performance
 
 Logging trains does not impact UPS.
 
-The only performance hit is a short lag when opening or refreshing the GUI if you choose to show 1,000+ entries. Reduce the amount of entries by choosing a smaller time period or selecting a single direction (Incoming/Outgoing).
+The only performance hit is a short lag when opening or refreshing the GUI if you choose to render 2,000+ icons (1,000+ entries). Reduce the amount of renders by choosing a smaller time period, grouping by content, or selecting a single direction (Incoming/Outgoing).
 
 ## Credits
 
