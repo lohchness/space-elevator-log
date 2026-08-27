@@ -46,6 +46,7 @@ local function open_gui(player)
                     {
                         type = "tabbed-pane",
                         name = "tabs_pane",
+                        selected_tab_index = 1,
                         children = {
                             {
                                 tab = {
