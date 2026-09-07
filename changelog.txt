@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 2026-09-07
+  Features:
+    - Updated for Factorio 2.1.
+  Changes:
+    - Opens Event tab by default after updating or rebuilding GUIs.
+---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2026-08-26
   Features:
