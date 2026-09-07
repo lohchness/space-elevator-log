@@ -25,15 +25,10 @@
 ---@field from_zone int
 ---@field to_zone int
 
----@class sel.SpriteButtonOptions
----@field item_type string?
----@field name string?
----@field sprite_path string?        Required if item_type and name not defined.
----@field amount int?
----@field gui_id string
----@field custom_handler function?
----@field train_id int?
----@field hide_tooltip boolean?
+---@class sel.Content
+---@field type "item" | "fluid"
+---@field name string
+---@field amount number
 
 ---@class sel.GuiState
 ---@field gui_id string
