@@ -3,15 +3,15 @@ local constants = require("scripts/constants")
 
 --- Handles clicking a sprite button in the contents column of an event row.
 --- @param event EventData.on_gui_click
-function gui_handlers.set_filter_sprite_button(event)
+function gui_handlers.set_filter_content(event)
     local gui_state = storage.guis[event.element.tags.gui_id]
 
     -- Open factoriopedia here
     if event.alt and event.button == defines.mouse_button_type.left then
-        if event.element.tags.item_type == "item" then
-            game.players[event.player_index].open_factoriopedia_gui(prototypes.item[event.element.tags.name])
-        elseif event.element.tags.item_type == "fluid" then
-            game.players[event.player_index].open_factoriopedia_gui(prototypes.fluid[event.element.tags.name])
+        if event.element.tags.content_type == "item" then
+            game.players[event.player_index].open_factoriopedia_gui(prototypes.item[event.element.tags.content_name])
+        elseif event.element.tags.content_type == "fluid" then
+            game.players[event.player_index].open_factoriopedia_gui(prototypes.fluid[event.element.tags.content_name])
         end
         return
     end
@@ -21,42 +21,71 @@ function gui_handlers.set_filter_sprite_button(event)
     gui_state.toolbar.filter_item_button.elem_value = nil
     gui_state.toolbar.filter_fluid_button.elem_value = nil
 
-    if event.element.tags.item_type == "item" then
-        gui_state.toolbar.selected_item = event.element.tags.name
-        gui_state.toolbar.filter_item_button.elem_value = event.element.tags.name
-    elseif event.element.tags.item_type == "fluid" then
-        gui_state.toolbar.selected_fluid = event.element.tags.name
-        gui_state.toolbar.filter_fluid_button.elem_value = event.element.tags.name
+    if event.element.tags.content_type == "item" then
+        gui_state.toolbar.selected_item = event.element.tags.content_name
+        gui_state.toolbar.filter_item_button.elem_value = event.element.tags.content_name
+    elseif event.element.tags.content_type == "fluid" then
+        gui_state.toolbar.selected_fluid = event.element.tags.content_name
+        gui_state.toolbar.filter_fluid_button.elem_value = event.element.tags.content_name
     end
 
     gui_handlers.generic_refresh(event)
 end
 
----@param options sel.SpriteButtonOptions
+---@param content sel.Content
+---@param gui_id string
 ---@return flib.GuiElemDef
-local function sprite_button(options)
-    local sprite = options.sprite_path or options.item_type .. "/" .. options.name -- ???
+local function content_button(content, gui_id)
     local prototype ---@type LuaItemPrototype | LuaFluidPrototype
-    if options.item_type == "item" then
-        prototype = prototypes.item[options.name]
-    elseif options.item_type == "fluid" then
-        prototype = prototypes.fluid[options.name]
+    if content.type == "item" then
+        prototype = prototypes.item[content.name]
+    else
+        prototype = prototypes.fluid[content.name]
     end
 
     return {
         type = "sprite-button",
         style = "flib_slot_button_default",
-        sprite = sprite,
-        number = options.amount,
-        handler = options.custom_handler or gui_handlers.set_filter_sprite_button,
+        sprite = content.type .. "/" .. content.name,
+        number = content.amount,
+        handler = gui_handlers.set_filter_content,
         tags = {
-            item_type = options.item_type,
-            name = options.name,
-            gui_id = options.gui_id,
-            train_id = options.train_id,
+            content_type = content.type,
+            content_name = content.name,
+            gui_id = gui_id,
         },
-        tooltip = not options.hide_tooltip and
-            { "se-log.item_with_count", (prototype and prototype.localised_name), options.amount } or nil, -- ???
+        tooltip = { "se-log.item_with_count", prototype.localised_name, content.amount },
+    }
+end
+
+---@param sprite string
+---@param train_id int
+---@param gui_id string
+---@return flib.GuiElemDef
+local function train_button(sprite, train_id, gui_id)
+    return {
+        type = "sprite-button",
+        style = "flib_slot_button_default",
+        sprite = sprite,
+        handler = gui_handlers.view_train_position,
+        tags = {
+            train_id = train_id,
+            gui_id = gui_id,
+        },
+    }
+end
+
+---@param sprite string
+---@param gui_id string
+---@return flib.GuiElemDef
+local function icon_button(sprite, gui_id)
+    return {
+        type = "sprite-button",
+        style = "flib_slot_button_default",
+        sprite = sprite,
+        tags = {
+            gui_id = gui_id,
+        },
     }
 end
 
@@ -131,7 +160,9 @@ function map(tbl, func, ...)
 end
 
 return {
-    sprite_button = sprite_button,
+    content_button = content_button,
+    train_button = train_button,
+    icon_button = icon_button,
     title = title,
     find = find,
     any = any,

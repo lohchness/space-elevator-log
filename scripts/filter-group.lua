@@ -21,21 +21,14 @@ end
 local function render_train(event, gui_id)
     local entry = event.entries[1]
     if not entry.train.valid then
-        return utils.sprite_button {
-            sprite_path = constants.invalid_train,
-            gui_id = gui_id,
-            hide_tooltip = true,
-        }
+        return utils.icon_button(constants.invalid_train, gui_id)
     end
 
-    return utils.sprite_button {
-        item_type = "item",
-        name = entry.train.locomotives.front_movers[1].prototype.name,
-        gui_id = gui_id,
-        custom_handler = gui_handlers.view_train_position,
-        train_id = entry.train.id,
-        hide_tooltip = true,
-    }
+    return utils.train_button(
+        "item/" .. entry.train.locomotives.front_movers[1].prototype.name,
+        entry.train.id,
+        gui_id
+    )
 end
 
 
@@ -47,20 +40,18 @@ local function render_contents(event, gui_id)
     local children = {}
 
     for _, item in pairs(entry.contents) do
-        table.insert(children, utils.sprite_button {
-            item_type = "item",
+        table.insert(children, utils.content_button({
+            type = "item",
             name = item.name,
             amount = item.count,
-            gui_id = gui_id,
-        })
+        }, gui_id))
     end
     for i, j in pairs(entry.fluid_contents) do
-        table.insert(children, utils.sprite_button {
-            item_type = "fluid",
+        table.insert(children, utils.content_button({
+            type = "fluid",
             name = i,
             amount = j,
-            gui_id = gui_id,
-        })
+        }, gui_id))
     end
 
     return {
@@ -97,12 +88,11 @@ end
 ---@param event sel.EventRow
 ---@param gui_id string
 local function render_group_content(event, gui_id)
-    return utils.sprite_button {
-        item_type = event.type,
+    return utils.content_button({
+        type = event.type,
         name = event.name,
         amount = event.amount,
-        gui_id = gui_id,
-    }
+    }, gui_id)
 end
 
 
