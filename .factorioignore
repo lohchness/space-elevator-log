@@ -1,0 +1,9 @@
+.factorioignore/
+.git/
+.github/
+.gitignore
+.vscode
+*.tmp
+*.log
+*.bak
+README.md
