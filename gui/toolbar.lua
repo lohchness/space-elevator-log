@@ -194,7 +194,7 @@ local function create_toolbar(gui_id)
             },
             {
                 type = "flow",
-                direction = "horizontal",
+                direction = "vertical",
                 name = "row3",
 
                 children = {
