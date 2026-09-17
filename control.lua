@@ -39,8 +39,6 @@ end
 
 --- Destroys any gui elements and all storage data.
 local function destroy_storage()
-    bulk_reset_player_gui()
-
     storage = {}
     ---@type table<string, sel.GuiState>
     storage.guis = {}
@@ -48,6 +46,8 @@ local function destroy_storage()
     storage.history = {}
     ---@type table<int, sel.Elevator>
     storage.zones = {}
+
+    bulk_reset_player_gui()
 end
 
 ---Storing as a pair to ensure entries have a start and end zone
