@@ -96,6 +96,9 @@ local function render_group_content(event, gui_id)
 end
 
 
+local function empty_widget() return {type="empty-widget"} end
+
+
 ---@param entries sel.LogEntry[]
 ---@return sel.EventRow[]
 local function transform_entries_by_content(entries)
@@ -156,6 +159,10 @@ local group_defs = {
                 caption = { "se-log.table-header-contents" },
                 render = render_contents,
             },
+            {
+                caption = nil,
+                render = empty_widget,
+            },
         },
         transform_entries = transform_entries_single,
     },
@@ -173,6 +180,10 @@ local group_defs = {
             {
                 caption = { "se-log.table-header-last-train-time" },
                 render = render_timestamp,
+            },
+            {
+                caption = nil,
+                render = empty_widget,
             },
         },
         transform_entries = transform_entries_by_content,
