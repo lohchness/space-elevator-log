@@ -96,7 +96,7 @@ local function render_group_content(event, gui_id)
 end
 
 
-local function empty_widget() return {type="empty-widget"} end
+local function render_empty_widget() return { type = "empty-widget" } end
 
 
 ---@param entries sel.LogEntry[]
@@ -142,26 +142,42 @@ local function transform_entries_by_content(entries)
     return sorted_rows
 end
 
+--- indexed by drop down selected_index
 ---@type sel.GroupByDef[]
 local group_defs = {
     {
         group_by = "none",
         columns = {
             {
-                caption = { "se-log.table-header-timestamp" },
+                header = {
+                    type = "label",
+                    style = "bold_label",
+                    caption = { "se-log.table-header-timestamp" },
+                },
                 render = render_timestamp,
             },
             {
-                caption = { "se-log.table-header-train" },
+                header = {
+                    type = "label",
+                    style = "bold_label",
+                    caption = { "se-log.table-header-train" },
+                },
                 render = render_train,
             },
             {
-                caption = { "se-log.table-header-contents" },
+                header = {
+                    type = "label",
+                    style = "bold_label",
+                    caption = { "se-log.table-header-contents" },
+                },
                 render = render_contents,
             },
             {
-                caption = nil,
-                render = empty_widget,
+                header = {
+                    type = "empty-widget",
+                    style = "fflib_horizontal_pusher"
+                },
+                render = render_empty_widget,
             },
         },
         transform_entries = transform_entries_single,
@@ -170,20 +186,35 @@ local group_defs = {
         group_by = "content",
         columns = {
             {
-                caption = { "se-log.table-header-num-trains" },
+                header = {
+                    type = "label",
+                    style = "bold_label",
+                    caption = { "se-log.table-header-num-trains" },
+                },
                 render = render_group_entry_count,
             },
             {
-                caption = { "se-log.table-header-content" },
+                header = {
+                    type = "label",
+                    style = "bold_label",
+                    caption = { "se-log.table-header-content" },
+                },
                 render = render_group_content,
             },
             {
-                caption = { "se-log.table-header-last-train-time" },
+                header = {
+                    type = "label",
+                    style = "bold_label",
+                    caption = { "se-log.table-header-last-train-time" },
+                },
                 render = render_timestamp,
             },
             {
-                caption = nil,
-                render = empty_widget,
+                header = {
+                    type = "empty-widget",
+                    style = "fflib_horizontal_pusher"
+                },
+                render = render_empty_widget,
             },
         },
         transform_entries = transform_entries_by_content,

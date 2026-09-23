@@ -97,15 +97,10 @@ local function create_events_rows(entries, toolbar_state, group_def, gui_id)
 
     -- First row is column names
     for _, col in pairs(group_def.columns) do
-        if col.caption then
-            table.insert(rows_guis, {
-                type = "label",
-                style = "bold_label",
-                caption = col.caption,
-            })
+        if col.header then
+            table.insert(rows_guis, col.header)
         end
     end
-    table.insert(rows_guis, {type="empty-widget", style="fflib_horizontal_pusher"})
 
     local transformed_rows = group_def.transform_entries(filtered_rows)
     for _, row in pairs(transformed_rows) do
