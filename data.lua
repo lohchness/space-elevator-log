@@ -21,3 +21,13 @@ data:extend {
         size = 64,
     }
 }
+
+data.raw["gui-style"]["default"]["sel_events_table"] =
+{
+  type = "table_style",
+    odd_row_graphical_set = {
+        filename = "__core__/graphics/gui-new.png",
+        position = {472, 25},
+        size = 1
+    }
+}

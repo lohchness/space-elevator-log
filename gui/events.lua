@@ -99,9 +99,11 @@ local function create_events_rows(entries, toolbar_state, group_def, gui_id)
     for _, col in pairs(group_def.columns) do
         table.insert(rows_guis, {
             type = "label",
+            style = "bold_label",
             caption = col.caption,
         })
     end
+    table.insert(rows_guis, {{type="empty-widget", style="fflib_horizontal_pusher"}})
 
     local transformed_rows = group_def.transform_entries(filtered_rows)
     for _, row in pairs(transformed_rows) do
@@ -139,13 +141,14 @@ local function create_events_table(gui_state)
             style = "flib_naked_scroll_pane_no_padding",
             ref = { "scroll_pane" },
             vertical_scroll_policy = "always",
-            style_mods = { width = 470, height = 600, padding = 6 },
+            style_mods = { width = 470, height = 600, padding = {6, 0, 0, 12} },
             children = {
                 {
                     type = "table",
+                    style = "sel_events_table",
                     name = "events_table",
                     column_count = table_size(group_def.columns),
-                    draw_vertical_lines = true,
+                    -- draw_vertical_lines = true,
                     draw_horizontal_line_after_headers = true,
                     vertical_centering = true,
                     style_mods = { right_cell_padding = 3, left_cell_padding = 3 },
