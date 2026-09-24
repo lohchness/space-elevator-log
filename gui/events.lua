@@ -138,7 +138,7 @@ local function create_events_table(gui_state)
             style = "flib_naked_scroll_pane_no_padding",
             ref = { "scroll_pane" },
             vertical_scroll_policy = "always",
-            style_mods = { width = 470, height = 600 },
+            style_mods = { width = 484, height = 600 },
             children = {
                 {
                     type = "table",
@@ -162,7 +162,7 @@ local function create_events_table(gui_state)
             style = "flib_naked_scroll_pane_no_padding",
             name = "scroll_pane",
             vertical_scroll_policy = "always",
-            style_mods = { width = 470, height = 600, padding = 6 },
+            style_mods = { width = 484, height = 600, padding = 6 },
             children = {
                 {
                     type = "flow",

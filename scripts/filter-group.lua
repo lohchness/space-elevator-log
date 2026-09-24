@@ -10,7 +10,8 @@ local function render_timestamp(event, _)
     local relative_time = game.tick - event.time
     return {
         type = "label",
-        caption = format.time(relative_time, true)
+        caption = format.time(relative_time, true),
+        style_mods = { width = 54 },
     }
 end
 
@@ -55,8 +56,8 @@ local function render_contents(event, gui_id)
     end
 
     return {
-        type = "flow",
-        direction = "horizontal",
+        type = "table",
+        column_count = 8,
         children = children,
     }
 end
