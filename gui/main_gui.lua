@@ -59,9 +59,10 @@ local function open_gui(player)
                                             caption = { "se-log.tab-events" }
                                         },
                                         content = {
-                                            type = "flow",
+                                            type = "frame",
                                             direction = "vertical",
-                                            name = "events_contents"
+                                            name = "events_contents",
+                                            style = "deep_frame_in_shallow_frame",
                                         }
                                     },
                                     {
