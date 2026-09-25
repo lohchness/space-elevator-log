@@ -44,8 +44,8 @@ local function open_gui(player)
                     header(gui_id),
                     {
                         type = "flow",
-                        name = "hbox",
-                        direction = "horizontal",
+                        name = "vbox",
+                        direction = "vertical",
                         children = {
                             Toolbar.create_toolbar(gui_id),
                             {
@@ -84,22 +84,22 @@ local function open_gui(player)
             }
         }
         ---@type table<string,LuaGuiElement>, LuaGuiElement
-        local _, new_gui = flib_gui.add(player.gui.screen, gui_contents)
+        local elems, new_gui = flib_gui.add(player.gui.screen, gui_contents)
         log(new_gui.name)
         ---@type sel.ToolbarState
         local toolbar_state = {
-            time_period = new_gui.hbox.toolbar.row1.filter_time_period,
-            display_stats = new_gui.hbox.toolbar.row1.display_stats,
-            zone_list = new_gui.hbox.toolbar.row2.filter_zone_list,
-            radios = new_gui.hbox.toolbar.row3,
-            filter_item_button = new_gui.hbox.toolbar.row2.filter_item,
-            filter_fluid_button = new_gui.hbox.toolbar.row2.filter_fluid,
+            time_period = elems.filter_time_period,
+            display_stats = elems.display_stats,
+            zone_list = elems.filter_zone_list,
             selected_zone_index = 0,
-            selected_radio = new_gui.hbox.toolbar.row3.incoming.name,
-            hide_empty_trains = new_gui.hbox.toolbar.row3.hide_empty_trains,
+            filter_item_button = elems.filter_item,
+            filter_fluid_button = elems.filter_fluid,
             selected_item = nil,
             selected_fluid = nil,
-            group_by_list = new_gui.hbox.toolbar.row3.groupby,
+            radios = elems.row2,
+            selected_radio = elems.incoming.name,
+            hide_empty_trains = elems.hide_empty_trains,
+            group_by_list = elems.groupby,
         }
         ---@type sel.GuiState
         storage.guis[gui_id] = {
@@ -107,8 +107,8 @@ local function open_gui(player)
             gui = new_gui,
             player = player,
             toolbar = toolbar_state,
-            events_contents = new_gui.hbox.tabs_pane.events_contents,
-            summary_contents = new_gui.hbox.tabs_pane.summary_contents
+            events_contents = elems.events_contents,
+            summary_contents = elems.summary_contents
         }
     end
 

@@ -109,14 +109,17 @@ local function create_toolbar(gui_id)
     local hide_empty_trains_handler = { [defines.events.on_gui_checked_state_changed] = gui_handlers.generic_refresh }
 
     return {
-        type = "flow",
+        type = "frame",
         direction = "vertical",
+        style = "inside_deep_frame",
+        style_mods = { padding = { 6, 4, 6, 4 }, width = 484 },
         name = "toolbar",
 
         children = {
             {
                 type = "flow",
                 direction = "horizontal",
+                style_mods = { vertical_align = "center" },
                 name = "row1",
 
                 children = {
@@ -128,8 +131,22 @@ local function create_toolbar(gui_id)
                     {
                         type = "drop-down",
                         name = "filter_time_period",
+                        style_mods = { width = 140 },
                         items = time_filter.time_period_items,
                         selected_index = time_filter.default_index,
+                        handler = drop_down_handler,
+                        tags = { gui_id = gui_id },
+                    },
+                    {
+                        type = "sprite",
+                        sprite = "entity/se-space-elevator",
+                        tooltip = { "se-log.filter-surface-label" },
+                    },
+                    {
+                        type = "drop-down",
+                        name = "filter_zone_list",
+                        style_mods = { minimal_width = 140 },
+                        items = {},
                         handler = drop_down_handler,
                         tags = { gui_id = gui_id },
                     },
@@ -145,57 +162,14 @@ local function create_toolbar(gui_id)
                         type = "label",
                         name = "display_stats",
                         style_mods = { left_margin = 10 }
-                    }
+                    },
                 },
             },
             {
                 type = "flow",
                 direction = "horizontal",
+                style_mods = { vertical_align = "center" },
                 name = "row2",
-
-                children = {
-                    {
-                        type = "sprite",
-                        sprite = "entity/se-space-elevator",
-                        tooltip = { "se-log.filter-surface-label" },
-                    },
-                    {
-                        type = "drop-down",
-                        name = "filter_zone_list",
-                        items = {},
-                        handler = drop_down_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "sprite",
-                        sprite = "virtual-signal/signal-stack-size",
-                        tooltip = { "se-log.filter-item-label" },
-                    },
-                    {
-                        type = "choose-elem-button",
-                        elem_type = "item",
-                        name = "filter_item",
-                        handler = select_item_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "sprite",
-                        sprite = "virtual-signal/signal-liquid",
-                        tooltip = { "se-log.filter-fluid-label" },
-                    },
-                    {
-                        type = "choose-elem-button",
-                        elem_type = "fluid",
-                        name = "filter_fluid",
-                        handler = select_fluid_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                }
-            },
-            {
-                type = "flow",
-                direction = "vertical",
-                name = "row3",
 
                 children = {
                     {
@@ -223,15 +197,6 @@ local function create_toolbar(gui_id)
                         tags = { gui_id = gui_id },
                     },
                     {
-                        type = "checkbox",
-                        state = "false",
-                        name = "hide_empty_trains",
-                        caption = { "se-log.hide_empty_trains" },
-                        style_mods = { left_margin = 10 },
-                        handler = hide_empty_trains_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
                         type = "drop-down",
                         name = "groupby",
                         items = {
@@ -239,12 +204,52 @@ local function create_toolbar(gui_id)
                             { "se-log.group-by-content" },
                         },
                         selected_index = 1,
-                        style_mods = { left_margin = 10 },
                         handler = drop_down_handler,
                         tags = { gui_id = gui_id },
                     },
                 }
-            }
+            },
+            {
+                type = "flow",
+                direction = "horizontal",
+                style_mods = { vertical_align = "center" },
+                name = "row3",
+
+                children = {
+                    {
+                        type = "sprite",
+                        sprite = "virtual-signal/signal-stack-size",
+                        tooltip = { "se-log.filter-item-label" },
+                    },
+                    {
+                        type = "choose-elem-button",
+                        elem_type = "item",
+                        name = "filter_item",
+                        handler = select_item_handler,
+                        tags = { gui_id = gui_id },
+                    },
+                    {
+                        type = "sprite",
+                        sprite = "virtual-signal/signal-liquid",
+                        tooltip = { "se-log.filter-fluid-label" },
+                    },
+                    {
+                        type = "choose-elem-button",
+                        elem_type = "fluid",
+                        name = "filter_fluid",
+                        handler = select_fluid_handler,
+                        tags = { gui_id = gui_id },
+                    },
+                    {
+                        type = "checkbox",
+                        state = "false",
+                        name = "hide_empty_trains",
+                        caption = { "se-log.hide_empty_trains" },
+                        handler = hide_empty_trains_handler,
+                        tags = { gui_id = gui_id },
+                    },
+                }
+            },
         }
     }
 end
