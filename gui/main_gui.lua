@@ -96,7 +96,7 @@ local function open_gui(player)
             filter_fluid_button = elems.filter_fluid,
             selected_item = nil,
             selected_fluid = nil,
-            radios = elems.row2,
+            radios = elems.radios,
             selected_radio = elems.incoming.name,
             hide_empty_trains = elems.hide_empty_trains,
             group_by_list = elems.groupby,

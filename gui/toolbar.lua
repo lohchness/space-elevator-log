@@ -56,9 +56,7 @@ function gui_handlers.select_radio(event)
 
     local toolbar_state = gui_state.toolbar
     for _, radio in pairs(toolbar_state.radios.children) do
-        if radio.type == "radiobutton" then -- ???
             radio.state = false
-        end
     end
     event.element.state = true
     toolbar_state.selected_radio = event.element.name
@@ -113,143 +111,168 @@ local function create_toolbar(gui_id)
         direction = "vertical",
         style = "inside_deep_frame",
         style_mods = { padding = { 6, 4, 6, 4 }, width = 484 },
-        name = "toolbar",
-
         children = {
             {
                 type = "flow",
-                direction = "horizontal",
-                style_mods = { vertical_align = "center" },
-                name = "row1",
-
+                direction = "vertical",
+                style_mods = { vertical_spacing = 5 },
                 children = {
                     {
-                        type = "sprite",
-                        sprite = "virtual-signal/signal-clock",
-                        tooltip = { "se-log.filter-time-period" },
+                        type = "flow",
+                        direction = "horizontal",
+                        style_mods = { vertical_align = "center" },
+                        children = {
+                            {
+                                type = "sprite",
+                                sprite = "virtual-signal/signal-clock",
+                                tooltip = { "se-log.filter-time-period" },
+                            },
+                            {
+                                type = "drop-down",
+                                name = "filter_time_period",
+                                style_mods = { width = 100, right_margin = 3 },
+                                items = time_filter.time_period_items,
+                                selected_index = time_filter.default_index,
+                                handler = drop_down_handler,
+                                tags = { gui_id = gui_id },
+                            },
+                            {
+                                type = "sprite",
+                                sprite = "entity/se-space-elevator",
+                                tooltip = { "se-log.filter-surface-label" },
+                            },
+                            {
+                                type = "drop-down",
+                                name = "filter_zone_list",
+                                style_mods = { natural_width = 100, maximal_width = 150, right_margin = 3 },
+                                items = {},
+                                handler = drop_down_handler,
+                                tags = { gui_id = gui_id },
+                            },
+                            {
+                                type = "sprite-button",
+                                sprite = "utility/refresh",
+                                style = "item_and_count_select_confirm",
+                                tooltip = { "se-log.refresh" },
+                                handler = gui_handlers.generic_refresh,
+                                tags = { gui_id = gui_id },
+                            },
+                            {
+                                type = "empty-widget",
+                                style = "fflib_horizontal_pusher",
+                            },
+                            {
+                                type = "label",
+                                name = "display_stats",
+                                style_mods = { right_margin = 5 }
+                            },
+                        }
                     },
                     {
-                        type = "drop-down",
-                        name = "filter_time_period",
-                        style_mods = { width = 140 },
-                        items = time_filter.time_period_items,
-                        selected_index = time_filter.default_index,
-                        handler = drop_down_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "sprite",
-                        sprite = "entity/se-space-elevator",
-                        tooltip = { "se-log.filter-surface-label" },
-                    },
-                    {
-                        type = "drop-down",
-                        name = "filter_zone_list",
-                        style_mods = { minimal_width = 140 },
-                        items = {},
-                        handler = drop_down_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "sprite-button",
-                        sprite = "utility/refresh",
-                        style = "item_and_count_select_confirm",
-                        tooltip = { "se-log.refresh" },
-                        handler = gui_handlers.generic_refresh,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "label",
-                        name = "display_stats",
-                        style_mods = { left_margin = 10 }
-                    },
-                },
-            },
-            {
-                type = "flow",
-                direction = "horizontal",
-                style_mods = { vertical_align = "center" },
-                name = "row2",
-
-                children = {
-                    {
-                        type = "radiobutton",
-                        state = "true",
-                        name = "incoming",
-                        caption = { "se-log.incoming" },
-                        handler = radio_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "radiobutton",
-                        state = "false",
-                        name = "outgoing",
-                        caption = { "se-log.outgoing" },
-                        handler = radio_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "radiobutton",
-                        state = "false",
-                        name = "combined",
-                        caption = { "se-log.combined" },
-                        handler = radio_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "drop-down",
-                        name = "groupby",
-                        items = {
-                            { "se-log.group-by-none" },
-                            { "se-log.group-by-content" },
+                        type = "flow",
+                        direction = "horizontal",
+                        style_mods = { vertical_align = "center" },
+                        children = {
+                            {
+                                type = "flow",
+                                direction = "horizontal",
+                                style_mods = { vertical_align = "center", right_margin = 10, left_padding = -4 },
+                                children = {
+                                    {
+                                        type = "label",
+                                        style = "subheader_caption_label",
+                                        caption = "Group by:",
+                                    },
+                                    {
+                                        type = "drop-down",
+                                        name = "groupby",
+                                        style_mods = { maximal_width = 100 },
+                                        items = {
+                                            { "se-log.group-by-none" },
+                                            { "se-log.group-by-content" },
+                                        },
+                                        selected_index = 1,
+                                        handler = drop_down_handler,
+                                        tags = { gui_id = gui_id },
+                                    },
+                                },
+                            },
+                            {
+                                type = "flow",
+                                direction = "horizontal",
+                                name = "radios",
+                                style_mods = { vertical_align = "center" },
+                                children = {
+                                    {
+                                        type = "radiobutton",
+                                        state = "true",
+                                        name = "incoming",
+                                        caption = { "se-log.incoming" },
+                                        handler = radio_handler,
+                                        tags = { gui_id = gui_id },
+                                    },
+                                    {
+                                        type = "radiobutton",
+                                        state = "false",
+                                        name = "outgoing",
+                                        caption = { "se-log.outgoing" },
+                                        handler = radio_handler,
+                                        tags = { gui_id = gui_id },
+                                    },
+                                    {
+                                        type = "radiobutton",
+                                        state = "false",
+                                        name = "combined",
+                                        caption = { "se-log.combined" },
+                                        handler = radio_handler,
+                                        tags = { gui_id = gui_id },
+                                    },
+                                },
+                            },
                         },
-                        selected_index = 1,
-                        handler = drop_down_handler,
-                        tags = { gui_id = gui_id },
+                    },
+                    {
+                        type = "flow",
+                        direction = "horizontal",
+                        style_mods = { vertical_align = "center" },
+                        children = {
+                            {
+                                type = "sprite",
+                                sprite = "virtual-signal/signal-stack-size",
+                                tooltip = { "se-log.filter-item-label" },
+                            },
+                            {
+                                type = "choose-elem-button",
+                                elem_type = "item",
+                                name = "filter_item",
+                                handler = select_item_handler,
+                                tags = { gui_id = gui_id },
+                            },
+                            {
+                                type = "sprite",
+                                sprite = "virtual-signal/signal-liquid",
+                                tooltip = { "se-log.filter-fluid-label" },
+                            },
+                            {
+                                type = "choose-elem-button",
+                                elem_type = "fluid",
+                                name = "filter_fluid",
+                                handler = select_fluid_handler,
+                                tags = { gui_id = gui_id },
+                            },
+                            {
+                                type = "checkbox",
+                                style_mods = { left_margin = 15 },
+                                state = "false",
+                                name = "hide_empty_trains",
+                                caption = { "se-log.hide_empty_trains" },
+                                handler = hide_empty_trains_handler,
+                                tags = { gui_id = gui_id },
+                            },
+                        }
                     },
                 }
-            },
-            {
-                type = "flow",
-                direction = "horizontal",
-                style_mods = { vertical_align = "center" },
-                name = "row3",
-
-                children = {
-                    {
-                        type = "sprite",
-                        sprite = "virtual-signal/signal-stack-size",
-                        tooltip = { "se-log.filter-item-label" },
-                    },
-                    {
-                        type = "choose-elem-button",
-                        elem_type = "item",
-                        name = "filter_item",
-                        handler = select_item_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "sprite",
-                        sprite = "virtual-signal/signal-liquid",
-                        tooltip = { "se-log.filter-fluid-label" },
-                    },
-                    {
-                        type = "choose-elem-button",
-                        elem_type = "fluid",
-                        name = "filter_fluid",
-                        handler = select_fluid_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                    {
-                        type = "checkbox",
-                        state = "false",
-                        name = "hide_empty_trains",
-                        caption = { "se-log.hide_empty_trains" },
-                        handler = hide_empty_trains_handler,
-                        tags = { gui_id = gui_id },
-                    },
-                }
-            },
+            }
         }
     }
 end
