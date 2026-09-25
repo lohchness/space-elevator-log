@@ -49,7 +49,7 @@
 ---@field amount int?              Grouped only
 
 ---@class sel.GroupColumn
----@field caption string[]
+---@field header flib.GuiElemDef
 ---@field render fun(row: sel.EventRow, gui_id: string): flib.GuiElemDef
 
 ---@class sel.GroupByDef

@@ -42,56 +42,64 @@ local function open_gui(player)
                 name = constants.window_name,
                 children = {
                     header(gui_id),
-                    Toolbar.create_toolbar(gui_id),
                     {
-                        type = "tabbed-pane",
-                        name = "tabs_pane",
-                        selected_tab_index = 1,
+                        type = "flow",
+                        name = "vbox",
+                        direction = "vertical",
                         children = {
+                            Toolbar.create_toolbar(gui_id),
                             {
-                                tab = {
-                                    type = "tab",
-                                    caption = { "se-log.tab-events" }
-                                },
-                                content = {
-                                    type = "flow",
-                                    direction = "vertical",
-                                    name = "events_contents"
+                                type = "tabbed-pane",
+                                name = "tabs_pane",
+                                selected_tab_index = 1,
+                                children = {
+                                    {
+                                        tab = {
+                                            type = "tab",
+                                            caption = { "se-log.tab-events" }
+                                        },
+                                        content = {
+                                            type = "frame",
+                                            direction = "vertical",
+                                            name = "events_contents",
+                                            style = "deep_frame_in_shallow_frame",
+                                        }
+                                    },
+                                    {
+                                        tab = {
+                                            type = "tab",
+                                            caption = { "se-log.tab-summary" }
+                                        },
+                                        content = {
+                                            type = "flow",
+                                            direction = "vertical",
+                                            name = "summary_contents"
+                                        }
+                                    }
                                 }
                             },
-                            {
-                                tab = {
-                                    type = "tab",
-                                    caption = { "se-log.tab-summary" }
-                                },
-                                content = {
-                                    type = "flow",
-                                    direction = "vertical",
-                                    name = "summary_contents"
-                                }
-                            }
                         }
-                    },
+                    }
                 }
             }
         }
         ---@type table<string,LuaGuiElement>, LuaGuiElement
-        local _, new_gui = flib_gui.add(player.gui.screen, gui_contents)
+        local elems, new_gui = flib_gui.add(player.gui.screen, gui_contents)
         log(new_gui.name)
         ---@type sel.ToolbarState
         local toolbar_state = {
-            time_period = new_gui.toolbar.row1.filter_time_period,
-            display_stats = new_gui.toolbar.row1.display_stats,
-            zone_list = new_gui.toolbar.row2.filter_zone_list,
-            radios = new_gui.toolbar.row3,
-            filter_item_button = new_gui.toolbar.row2.filter_item,
-            filter_fluid_button = new_gui.toolbar.row2.filter_fluid,
+            time_period = elems.filter_time_period,
+            display_stats = elems.display_stats,
+            zone_list = elems.filter_zone_list,
             selected_zone_index = 0,
-            selected_radio = new_gui.toolbar.row3.incoming.name,
-            hide_empty_trains = new_gui.toolbar.row3.hide_empty_trains,
+            filter_item_button = elems.filter_item,
+            filter_fluid_button = elems.filter_fluid,
             selected_item = nil,
             selected_fluid = nil,
-            group_by_list = new_gui.toolbar.row3.groupby,
+            radios = elems.radios,
+            selected_radio = elems.incoming.name,
+            hide_empty_trains = elems.hide_empty_trains,
+            group_by_list = elems.groupby,
         }
         ---@type sel.GuiState
         storage.guis[gui_id] = {
@@ -99,8 +107,8 @@ local function open_gui(player)
             gui = new_gui,
             player = player,
             toolbar = toolbar_state,
-            events_contents = new_gui.tabs_pane.events_contents,
-            summary_contents = new_gui.tabs_pane.summary_contents
+            events_contents = elems.events_contents,
+            summary_contents = elems.summary_contents
         }
     end
 

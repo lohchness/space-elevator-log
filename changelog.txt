@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.0
+Date: 2026-09-25
+  Features:
+    - Overhauled GUI and Events tab. Summary tab to be updated next.
+    - Displays contents with multiple items as wrapped instead of a long row.
+---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: 2026-09-17
   Bugfixes:
