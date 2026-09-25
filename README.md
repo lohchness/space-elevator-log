@@ -19,7 +19,6 @@ Display stats and records of trains travelling through Space Exploration's space
 
 ## Upcoming
 
-- GUI Overhaul
 - Group by train group
 - Icon overlay to distinguish incoming and outgoing trains
 
